@@ -1,3 +1,24 @@
-# Treball de fi de grau
-## Gestió d'inventari
-En aquest document es van publicant les versions del treball de fi de grau
+# warehouse
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
