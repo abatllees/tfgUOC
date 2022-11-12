@@ -1,6 +1,8 @@
 <template>
   <NavBar/>
-  <router-view/>
+  <main class="container my-5">
+    <router-view/>
+  </main>
 </template>
 
 <script>
