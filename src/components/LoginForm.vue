@@ -8,7 +8,7 @@
             <label for="passwordLogin">Contrasenya</label>
             <input type="password" class="form-control" id="passwordLogin" v-model="this.password">
         </div>
-        <button type="submit" class="btn btn-primary my-2">Inicia sessió</button>
+        <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
     </form>    
 </template>
 <script>
@@ -28,8 +28,11 @@ export default {
     },
     methods:{
         handleLogin: function(){
-            console.log(this.email)
-            console.log(this.password)
+            let payload = {
+                email: this.email,
+                password: this.password
+            }
+            this.$store.commit("login", payload)
         }
     }
 }
