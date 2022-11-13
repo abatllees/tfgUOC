@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-lg bg-primary text-white" v-if="this.$store.state.login">
+	<nav class="navbar navbar-expand-lg bg-primary text-white" v-if="this.viewNavbar">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -10,7 +10,7 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item">
-						<router-link to="persones" class="nav-link">Persones</router-link>
+						<router-link to="users" class="nav-link">Persones</router-link>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
@@ -32,16 +32,16 @@
 						</ul>
 					</li>
 					<li class="nav-item">
-						<router-link to="persones" class="nav-link">Inventari</router-link>
+						<router-link to="collections" class="nav-link">Inventari</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link to="persones" class="nav-link">Moviments</router-link>
+						<router-link to="" class="nav-link">Moviments</router-link>
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search">
 				</form>
-				<span class="mx-2">{{user.first_name}} {{user.last_name}}</span>
+			
 				<button v-on:click="logout()" class="btn btn-secondary m-1">Logout</button>
 			</div>
 		</div>
@@ -49,38 +49,28 @@
 </template>
   
 <script>
-import axios from "axios"
-const BASE_URL = "https://weekob4y.directus.app/"
+//import router from "@/router"
+
+//<span class="mx-2">{{this.$store.state.user.first_name}} {{this.$store.state.user.last_name}}</span>
 export default {
 	name: 'NavBar',
 	data() {
 		return {
-			user: ""
+			viewNavbar: true
 		}
 	},
 	components: {
 
 	},
 	mounted() {
-		if(!localStorage.getItem('user')){
-			this.$router.push("/login")
-		}			
+
 	},
-	async created(){
-		if(JSON.parse(localStorage.getItem('user'))){
-			let URL = BASE_URL + "users/me?access_token=" + JSON.parse(localStorage.getItem('user')).access_token
-			await axios.get(URL)
-			.then(response => {
-				console.log(response.data.data)
-				this.user = response.data.data
-			})
-			.catch(error => console.log(error.message))
-		}
+	created(){
 
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = JSON.parse(localStorage.getItem('user')).refresh_token
+			let refresh_token = JSON.parse(localStorage.getItem('token')).refresh_token
 
 			this.$store.commit("logout", refresh_token)
 		},

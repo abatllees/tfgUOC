@@ -22,7 +22,7 @@ export default {
         }
     },
     created(){
-        if(this.$store.state.login){
+        if(localStorage.getItem('token')){
             router.push("/")
         }
     },
@@ -30,10 +30,7 @@ export default {
 
     },
     methods:{
-        handleLogin: function(){
-            console.log(this.email)
-            console.log(this.password)
-        }
+
     }
 }
 </script>

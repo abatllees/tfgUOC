@@ -6,12 +6,11 @@
       <CardButton :msg="option.name"></CardButton>
     </div>
     </section>
-
   </main>
 </template>
 
 <script>
-import router from "../router"
+import router from "@/router"
 
 import CardButton from "@/components/CardButton.vue"
 export default {
@@ -37,11 +36,9 @@ export default {
     }
   },
   created() {
-    var login = this.$store.getters.getLogin
-    console.log("Logged in:", login)
-    if (!login) {
-      router.push("/login")
-    }
+    if(!localStorage.getItem('token')){
+			router.push("/login")
+		}
   }
 }
 </script>
