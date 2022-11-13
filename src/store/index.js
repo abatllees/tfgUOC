@@ -2,8 +2,8 @@ import { createStore } from 'vuex'
 import axios from "axios"
 import router from '../router'
 
-const API_URL = "https://weekob4y.directus.app/"
-
+//const API_URL = "https://weekob4y.directus.app/"
+axios.baseURL= "https://weekob4y.directus.app/"
 /*const debugLog = (msg)=>{
 	if(env.var.NODE_ENV ==='DEV') console.log(...msg)
 }*/
@@ -28,7 +28,7 @@ export default createStore({
 	},
 	mutations: {
 		HANDLE_LOGIN(state, payload) {
-			return axios.post(API_URL + "auth/login", {
+			return axios.post("auth/login", {
 				email: payload.email,
 				password: payload.password
 			})
@@ -49,7 +49,7 @@ export default createStore({
 		},
 		//Get the current logged in user
 		async GET_USER(state,token) {
-			let URL = API_URL + "users/me?access_token=" + token
+			let URL = "users/me?access_token=" + token
 			await axios.get(URL)
 				.then(response => {
 					console.log(response.data.data)
@@ -59,7 +59,7 @@ export default createStore({
 				.catch(error => console.log(error.message))
 		},
 		logout(state, payload) {
-			axios.post(API_URL + "auth/logout", {
+			axios.post("auth/logout", {
 				refresh_token: payload
 			})
 				.then(response => {
@@ -74,7 +74,7 @@ export default createStore({
 		async GET_ITEM(state, payload){
 			console.log("Collection to get:", payload)
 			if(!state.item[payload]) return false
-			const url = API_URL + "items/" + payload + "?access_token=" + sessionStorage.getItem('access_token')
+			const url = "items/" + payload + "?access_token=" + sessionStorage.getItem('access_token')
 			console.log(url)
 			await axios.get(url)
 				.then(response => {
