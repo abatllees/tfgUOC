@@ -8,8 +8,10 @@
     </section>
 </template>
 <script>
+import { mapState, mapGetters } from 'vuex'
+
 export default {
-    name: 'LoginView',
+    name: 'CollectionsView',
     components:{
     },
     data(){
@@ -19,12 +21,14 @@ export default {
     created(){
         
     },
-    async mounted(){
-        await this.$store.commit("getItem","Category")
+    mounted(){
+        this.$store.dispatch('getItem',"Category")
+        this.$store.dispatch('getItem',"Subcategory")
 
     },
     computed:{
-
+        ...mapState(['Category']),
+        ...mapGetters(['getCategories'])
     },
     methods:{
 

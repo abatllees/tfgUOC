@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-lg bg-primary text-white" v-if="this.$store.state.auth">
+	<nav class="navbar navbar-expand-lg bg-primary text-white">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -52,6 +52,8 @@
 //import router from "@/router"
 
 //<span class="mx-2">{{this.$store.state.user.first_name}} {{this.$store.state.user.last_name}}</span>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
 	name: 'NavBar',
 	data() {
@@ -63,20 +65,18 @@ export default {
 
 	},
 	watch:{
-
-	},
-	computed:{
-
-	},
-	mounted() {
-
-	},
-	created(){
-		if(sessionStorage.getItem('user')){
-
-			this.fullname = JSON.parse(sessionStorage.getItem('user')).first_name + " " +JSON.parse(sessionStorage.getItem('user')).last_name
-			console.log(this.fullname)
+		setName(){
 		}
+	},
+    mounted(){
+        this.$store.dispatch('getUser', sessionStorage.getItem('access_token'))
+    },
+    computed:{
+		...mapActions(['getUser']),
+        ...mapGetters(['getUser'])
+    },
+	created(){
+
 	},
 	methods: {
 		logout: function () {
