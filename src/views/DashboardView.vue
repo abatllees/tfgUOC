@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    if(!sessionStorage.getItem('token')){
+    if(!sessionStorage.getItem('access_token')){
 			router.push("/login")
 		}
   }

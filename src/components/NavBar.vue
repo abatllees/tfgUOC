@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-lg bg-primary text-white">
+	<nav class="navbar navbar-expand-lg bg-primary text-white" v-if="this.$store.state.auth">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -41,7 +41,7 @@
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search">
 				</form>
-			
+				<span class="mx-2">{{fullname}}</span>
 				<button v-on:click="logout()" class="btn btn-secondary m-1">Logout</button>
 			</div>
 		</div>
@@ -56,23 +56,31 @@ export default {
 	name: 'NavBar',
 	data() {
 		return {
-
+			fullname: null
 		}
 	},
 	components: {
 
 	},
+	watch:{
+
+	},
+	computed:{
+
+	},
 	mounted() {
-		if(sessionStorage.getItem('user')){
-			console.log("Nav User info",sessionStorage.getItem('user'))
-		}
+
 	},
 	created(){
+		if(sessionStorage.getItem('user')){
 
+			this.fullname = JSON.parse(sessionStorage.getItem('user')).first_name + " " +JSON.parse(sessionStorage.getItem('user')).last_name
+			console.log(this.fullname)
+		}
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = sessionStorage.getItem('token').refresh_token
+			let refresh_token = sessionStorage.getItem('refresh_token')
 
 			this.$store.commit("logout", refresh_token)
 		},

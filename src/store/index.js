@@ -7,7 +7,8 @@ const API_URL = "https://weekob4y.directus.app/"
 export default createStore({
 	state: {
 		Category: null,
-		element: null
+		element: null,
+		auth: false
 	},
 	getters: {
 		getLogin(state) {
@@ -26,7 +27,11 @@ export default createStore({
 				//.then(this.handleResponse)
 				.then(response => {
 					if (response.data.data.access_token) {
-						sessionStorage.setItem('token', response.data.data)
+						sessionStorage.setItem("access_token", response.data.data.access_token)
+						sessionStorage.setItem("expires", response.data.data.expires)
+						sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
+						this.state.auth = true
+						
 						this.commit("getUser")
 						router.push("/")
 					}
@@ -35,20 +40,20 @@ export default createStore({
 		},
 		//Get the current logged in user
 		async getUser() {
-			let URL = API_URL + "users/me?access_token=" + sessionStorage.getItem('token').access_token
+			let URL = API_URL + "users/me?access_token=" + sessionStorage.getItem('access_token')
 			await axios.get(URL)
 				.then(response => {
+					console.log(response.data.data)
 					sessionStorage.setItem("user", JSON.stringify(response.data.data))
+					console.log("UserObject",JSON.parse(sessionStorage.user))
 				})
 				.catch(error => console.log(error.message))
 		},
 		async getItem(state, item) {
-			let URL = API_URL + "items/" + item + "?access_token=" + sessionStorage.getItem('token').access_token
+			let URL = API_URL + "items/" + item + "?access_token=" + sessionStorage.getItem('access_token')
 			await axios.get(URL)
 				.then(response => {
-					console.log(item)
 					this.state.item = response.data.data
-					console.log("item", this.state.item)
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -59,6 +64,7 @@ export default createStore({
 				.then(response => {
 					console.log(response)
 					sessionStorage.clear()
+					this.state.auth = false
 					router.push("/login")
 				})
 				.catch(error => console.log(error))
