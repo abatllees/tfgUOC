@@ -41,7 +41,7 @@
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search">
 				</form>
-				<span class="mx-2">{{fullname}}</span>
+				<span class="mx-2">{{ fullname }}</span>
 				<button v-on:click="logout()" class="btn btn-secondary m-1">Logout</button>
 			</div>
 		</div>
@@ -64,25 +64,30 @@ export default {
 	components: {
 
 	},
-	watch:{
-		setName(){
+	mounted() {
+
+	},
+	watch: {
+		getName() {
+			this.fullname = this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
 		}
 	},
-    mounted(){
-        this.$store.dispatch('getUser', sessionStorage.getItem('access_token'))
-    },
-    computed:{
+	computed: {
 		...mapActions(['getUser']),
-        ...mapGetters(['getUser'])
-    },
-	created(){
+		...mapGetters(['getUser']),
 
+		getName: function () {
+			console.log('Updated!')
+			if (this.$store.state.user) {
+				return this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
+			}
+			return null
+		}
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = sessionStorage.getItem('refresh_token')
-
-			this.$store.commit("logout", refresh_token)
+			let refresh_token = sessionStorage.refresh_token;
+			this.$store.commit("logout", refresh_token);
 		},
 	}
 }

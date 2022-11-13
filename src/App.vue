@@ -1,7 +1,7 @@
 <template>
-  <NavBar/>
+  <NavBar v-if="this.$store.state.auth" />
   <main class="container my-5">
-    <router-view/>
+    <router-view />
   </main>
 </template>
 
@@ -15,18 +15,18 @@ export default {
   components: {
     NavBar
   },
-  created(){
-  
+  created() {
+
     console.log("Logged in:", sessionStorage.getItem('user'))
 
-    if(!sessionStorage.getItem('user')){
-			router.push("/login")
-		}
+    if (!sessionStorage.getItem('user')) {
+      router.push("/login")
+    }
   }
 }
 </script>
 
 <style lang="scss">
-  @import "./styles/custom.scss";
-  @import '../node_modules/bootstrap/scss/bootstrap.scss';
+@import "./styles/custom.scss";
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
 </style>
