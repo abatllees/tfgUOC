@@ -1,6 +1,5 @@
 import { createStore } from 'vuex'
 import axios from "axios"
-
 import router from '../router'
 
 const API_URL = "https://weekob4y.directus.app/"
@@ -27,7 +26,7 @@ export default createStore({
 				//.then(this.handleResponse)
 				.then(response => {
 					if (response.data.data.access_token) {
-						sessionStorage.setItem('token', JSON.stringify(response.data.data))
+						sessionStorage.setItem('token', response.data.data)
 						this.commit("getUser")
 						router.push("/")
 					}
@@ -36,7 +35,7 @@ export default createStore({
 		},
 		//Get the current logged in user
 		async getUser() {
-			let URL = API_URL + "users/me?access_token=" + JSON.parse(sessionStorage.getItem('token')).access_token
+			let URL = API_URL + "users/me?access_token=" + sessionStorage.getItem('token').access_token
 			await axios.get(URL)
 				.then(response => {
 					sessionStorage.setItem("user", JSON.stringify(response.data.data))
@@ -44,7 +43,7 @@ export default createStore({
 				.catch(error => console.log(error.message))
 		},
 		async getItem(state, item) {
-			let URL = API_URL + "items/" + item + "?access_token=" + JSON.parse(sessionStorage.getItem('token')).access_token
+			let URL = API_URL + "items/" + item + "?access_token=" + sessionStorage.getItem('token').access_token
 			await axios.get(URL)
 				.then(response => {
 					console.log(item)
@@ -58,6 +57,7 @@ export default createStore({
 				refresh_token: payload
 			})
 				.then(response => {
+					console.log(response)
 					sessionStorage.clear()
 					router.push("/login")
 				})

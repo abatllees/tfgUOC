@@ -7,7 +7,6 @@
 </template>
 <script>
 import LoginForm from "@/components/LoginForm.vue"
-
 import router from "../router"
 
 export default {
@@ -22,7 +21,7 @@ export default {
         }
     },
     created(){
-        if(localStorage.getItem('token')){
+        if(sessionStorage.getItem('token')){
             router.push("/")
         }
     },

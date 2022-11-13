@@ -64,7 +64,7 @@ export default {
 	},
 	mounted() {
 		if(sessionStorage.getItem('user')){
-			console.log("Nav User info",JSON.parse(sessionStorage.getItem('user')))
+			console.log("Nav User info",sessionStorage.getItem('user'))
 		}
 	},
 	created(){
@@ -72,7 +72,7 @@ export default {
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = JSON.parse(sessionStorage.getItem('token')).refresh_token
+			let refresh_token = sessionStorage.getItem('token').refresh_token
 
 			this.$store.commit("logout", refresh_token)
 		},

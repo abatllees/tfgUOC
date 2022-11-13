@@ -16,8 +16,8 @@ export default {
     NavBar
   },
   created(){
-    var login = this.$store.getters.getLogin
-    console.log("Logged in:", JSON.parse(sessionStorage.getItem('user')))
+  
+    console.log("Logged in:", sessionStorage.getItem('user'))
 
     if(!sessionStorage.getItem('user')){
 			router.push("/login")
