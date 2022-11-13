@@ -36,7 +36,7 @@ export default {
     }
   },
   created() {
-    if(!localStorage.getItem('token')){
+    if(!sessionStorage.getItem('token')){
 			router.push("/login")
 		}
   }

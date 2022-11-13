@@ -6,6 +6,8 @@
 </template>
 
 <script>
+/* eslint-disable */
+
 import NavBar from "@/components/NavBar.vue"
 import router from "@/router"
 export default {
@@ -15,10 +17,9 @@ export default {
   },
   created(){
     var login = this.$store.getters.getLogin
-    console.log("Logged in:", login)
-    console.log("LocalStorage",localStorage.getItem('user'))
+    console.log("Logged in:", JSON.parse(sessionStorage.getItem('user')))
 
-    if(!localStorage.getItem('user')){
+    if(!sessionStorage.getItem('user')){
 			router.push("/login")
 		}
   }

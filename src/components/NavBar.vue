@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-lg bg-primary text-white" v-if="this.viewNavbar">
+	<nav class="navbar navbar-expand-lg bg-primary text-white">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -56,21 +56,23 @@ export default {
 	name: 'NavBar',
 	data() {
 		return {
-			viewNavbar: true
+
 		}
 	},
 	components: {
 
 	},
 	mounted() {
-
+		if(sessionStorage.getItem('user')){
+			console.log("Nav User info",JSON.parse(sessionStorage.getItem('user')))
+		}
 	},
 	created(){
 
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = JSON.parse(localStorage.getItem('token')).refresh_token
+			let refresh_token = JSON.parse(sessionStorage.getItem('token')).refresh_token
 
 			this.$store.commit("logout", refresh_token)
 		},

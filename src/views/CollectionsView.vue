@@ -14,7 +14,6 @@ export default {
     },
     data(){
         return{
-            categories: null
         }
     },
     created(){
@@ -22,8 +21,6 @@ export default {
     },
     async mounted(){
         await this.$store.commit("getItem","Category")
-        this.categories = this.$store.getters.getCategories
-        console.log("Mounted categories",this.categories)
 
     },
     computed:{

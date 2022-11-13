@@ -27,7 +27,7 @@ export default createStore({
 				//.then(this.handleResponse)
 				.then(response => {
 					if (response.data.data.access_token) {
-						localStorage.setItem('token', JSON.stringify(response.data.data))
+						sessionStorage.setItem('token', JSON.stringify(response.data.data))
 						this.commit("getUser")
 						router.push("/")
 					}
@@ -36,20 +36,20 @@ export default createStore({
 		},
 		//Get the current logged in user
 		async getUser() {
-			let URL = API_URL + "users/me?access_token=" + JSON.parse(localStorage.getItem('token')).access_token
+			let URL = API_URL + "users/me?access_token=" + JSON.parse(sessionStorage.getItem('token')).access_token
 			await axios.get(URL)
 				.then(response => {
-					localStorage.setItem("user", response.data.data)
+					sessionStorage.setItem("user", JSON.stringify(response.data.data))
 				})
 				.catch(error => console.log(error.message))
 		},
 		async getItem(state, item) {
-			let URL = API_URL + "items/" + item + "?access_token=" + JSON.parse(localStorage.getItem('token')).access_token
+			let URL = API_URL + "items/" + item + "?access_token=" + JSON.parse(sessionStorage.getItem('token')).access_token
 			await axios.get(URL)
 				.then(response => {
+					console.log(item)
 					this.state.item = response.data.data
-					console.log(this.state.item)
-					console.log("item", item)
+					console.log("item", this.state.item)
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -58,9 +58,7 @@ export default createStore({
 				refresh_token: payload
 			})
 				.then(response => {
-					console.log(response)
-					localStorage.removeItem('token')
-					this.state.login = false
+					sessionStorage.clear()
 					router.push("/login")
 				})
 				.catch(error => console.log(error))
