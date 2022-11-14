@@ -1,36 +1,38 @@
 <template>
-    <h1 class="text-center">Collections view</h1>
+    <h1 class="text-center">Categories</h1>
     <section class="row">
-        <div class="col col-md-3 col-sm-9">
-            
+        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="category in this.$store.state.Category" :key="category">
+            <CardButton :msg=category.CategoryName> </CardButton>
         </div>
-        {{this.$store.state}}
     </section>
 </template>
 <script>
+import CardButton from '@/components/CardButton.vue'
 import { mapState, mapGetters } from 'vuex'
 
 export default {
     name: 'CollectionsView',
-    components:{
+    components: {
+        CardButton
     },
-    data(){
-        return{
+    data() {
+        return {
+            //categories: this.$store.state.Category
         }
     },
-    created(){
-        
-    },
-    mounted(){
-        this.$store.dispatch('getItem',"Category")
-        this.$store.dispatch('getItem',"Subcategory")
+    created() {
 
     },
-    computed:{
+    mounted() {
+        this.$store.dispatch('getItem', "Category")
+        this.$store.dispatch('getItem', "Subcategory")
+
+    },
+    computed: {
         ...mapState(['Category']),
         ...mapGetters(['getCategories'])
     },
-    methods:{
+    methods: {
 
     }
 }

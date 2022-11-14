@@ -49,9 +49,6 @@
 </template>
   
 <script>
-//import router from "@/router"
-
-//<span class="mx-2">{{this.$store.state.user.first_name}} {{this.$store.state.user.last_name}}</span>
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -86,7 +83,7 @@ export default {
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = sessionStorage.refresh_token;
+			let refresh_token = localStorage.refresh_token;
 			this.$store.commit("logout", refresh_token);
 		},
 	}

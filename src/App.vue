@@ -17,9 +17,9 @@ export default {
   },
   created() {
 
-    console.log("Logged in:", sessionStorage.getItem('user'))
+    console.log("Logged in:", localStorage.getItem('user'))
 
-    if (!sessionStorage.getItem('user')) {
+    if (!localStorage.getItem('user')) {
       router.push("/login")
     }
   }

@@ -1,5 +1,5 @@
 import { createStore } from 'vuex'
-//import axios from "axios"
+import VuexPersistence from 'vuex-persist'
 import router from '../router'
 
 import api from "@/api"
@@ -13,10 +13,6 @@ import api from "@/api"
 
 export default createStore({
 	state: {
-		item: {
-			Category: [],
-			Subcategory: []
-		},
 		auth: false,
 		user: null //Only if I can not save it to SessionStorage
 	},
@@ -38,9 +34,9 @@ export default createStore({
 				.then(async response => {
 					if (response.data.data.access_token) {
 
-						sessionStorage.setItem("access_token", response.data.data.access_token)
-						sessionStorage.setItem("expires", response.data.data.expires)
-						sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
+						localStorage.setItem("access_token", response.data.data.access_token)
+						localStorage.setItem("expires", response.data.data.expires)
+						localStorage.setItem("refresh_token", response.data.data.refresh_token)
 						state.auth = true
 						await this.commit("GET_USER")
 						router.push("/")
@@ -54,8 +50,8 @@ export default createStore({
 			await api.get(URL)
 				.then(response => {
 					state.user = response.data.data
-					console.log("User object", state.user)
-					console.log('Qui esborri aquesta linia deu al Oscar (osharo(at)uoc(dot)edu) un sopar.')
+					localStorage.setItem("user", JSON.stringify(state.user))
+
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -65,20 +61,20 @@ export default createStore({
 			})
 				.then(response => {
 					console.log(response)
-					sessionStorage.clear()
+					localStorage.clear()
 					state.auth = false
-					console.log(sessionStorage)
+					console.log(localStorage)
 					router.push("/login")
 				})
 				.catch(error => console.log(error))
 		},
 		async GET_ITEM(state, payload) {
 			console.log("Collection to get:", payload)
-			if (!state.item[payload]) return false
+			//if (!state[payload]) return false
 
 			await api.get("items/" + payload)
 				.then(response => {
-					state.item[payload] = response.data.data
+					state[payload] = response.data.data
 					//console.log(response.data.data)
 				})
 				.catch(error => console.log(error.message))
@@ -97,5 +93,14 @@ export default createStore({
 	},
 	modules: {
 
-	}
+	},
+	plugins: [
+		new VuexPersistence({
+			storage: window.localStorage,
+			reducer: (state) => ({
+				auth: state.auth,
+				user: state.user
+			})
+		}).plugin
+	]
 })
