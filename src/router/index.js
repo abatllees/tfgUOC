@@ -4,6 +4,7 @@ import DashboardView from '../views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AboutView from "@/views/AboutView.vue"
 import CollectionsView from "@/views/CollectionsView.vue"
+import SubCollectionView from "@/views/SubCollectionView.vue"
 import UsersView from "@/views/UsersView.vue"
 
 const routes = [
@@ -24,12 +25,18 @@ const routes = [
   },
   {
     path: "/collections",
-    name : "collections",
+    name: "collections",
     component: CollectionsView
   },
   {
+    path: "/collections/:id",
+    name: "subcollection",
+    component: SubCollectionView,
+    params: true
+  },
+  {
     path: "/users",
-    name : "users",
+    name: "users",
     component: UsersView
   }
 ]

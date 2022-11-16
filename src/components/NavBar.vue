@@ -35,7 +35,7 @@
 						<router-link to="collections" class="nav-link">Inventari</router-link>
 					</li>
 					<li class="nav-item">
-						<router-link to="" class="nav-link">Moviments</router-link>
+						<router-link to="moviments" class="nav-link">Moviments</router-link>
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
@@ -61,8 +61,11 @@ export default {
 	components: {
 
 	},
-	mounted() {
-
+	beforeMount() {
+		if (this.$store.state.user) {
+			return this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
+		}
+		return null
 	},
 	watch: {
 		getName() {

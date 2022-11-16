@@ -2,13 +2,13 @@
     <h1 class="text-center">Categories</h1>
     <section class="row">
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="category in this.$store.state.Category" :key="category">
-            <CardButton :msg=category.CategoryName> </CardButton>
+            <CardButton :msg=category.CategoryName :id="category.id"> </CardButton>
         </div>
     </section>
 </template>
 <script>
 import CardButton from '@/components/CardButton.vue'
-import { mapState, mapGetters } from 'vuex'
+import api from "@/api"
 
 export default {
     name: 'CollectionsView',
@@ -17,20 +17,25 @@ export default {
     },
     data() {
         return {
-            //categories: this.$store.state.Category
+            filter: "?filter[status][_eq]=published"
         }
     },
     created() {
 
     },
-    mounted() {
-        this.$store.dispatch('getItem', "Category")
-        this.$store.dispatch('getItem', "Subcategory")
+    async mounted() {
+        console.log("Collection to get: Category")
+
+        await api.get("items/Category" + this.filter)
+            .then(response => {
+                this.$store.state.Category = response.data.data
+                console.log(response.data.data)
+            })
+            .catch(error => console.log(error.message))
 
     },
     computed: {
-        ...mapState(['Category']),
-        ...mapGetters(['getCategories'])
+
     },
     methods: {
 

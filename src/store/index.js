@@ -31,14 +31,14 @@ export default createStore({
 				password: payload.password
 			})
 				//.then(this.handleResponse)
-				.then(async response => {
+				.then(response => {
 					if (response.data.data.access_token) {
 
 						localStorage.setItem("access_token", response.data.data.access_token)
 						localStorage.setItem("expires", response.data.data.expires)
 						localStorage.setItem("refresh_token", response.data.data.refresh_token)
 						state.auth = true
-						await this.commit("GET_USER")
+						this.commit("GET_USER")
 						router.push("/")
 					}
 				})
@@ -63,26 +63,30 @@ export default createStore({
 					console.log(response)
 					localStorage.clear()
 					state.auth = false
-					console.log(localStorage)
+					state.user = null
 					router.push("/login")
 				})
 				.catch(error => console.log(error))
 		},
 		async GET_ITEM(state, payload) {
-			console.log("Collection to get:", payload)
-			//if (!state[payload]) return false
+			console.log("Collection to get:", payload["collection"])
 
-			await api.get("items/" + payload)
+			let parameters = {
+				collection: payload,
+				filter: "?filter[status][_eq]=published"
+			}
+
+			await api.get("items/" + parameters["collection"] + parameters["filter"])
 				.then(response => {
 					state[payload] = response.data.data
-					//console.log(response.data.data)
+					console.log(response.data.data)
 				})
 				.catch(error => console.log(error.message))
 		},
 	},
 	actions: {
-		getItem({ commit }, payload, collection) {
-			commit('GET_ITEM', payload, collection)
+		getItem({ commit }, payload) {
+			commit('GET_ITEM', payload)
 		},
 		getUser({ commit }, token) {
 			commit('GET_USER', token)
