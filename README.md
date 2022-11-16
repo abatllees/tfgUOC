@@ -1,8 +1,12 @@
 # warehouse
 
 ## Project setup
+You have to install the following packages to run this application:
 ```
 npm install
+npm install axios
+npm install vuex-persist
+npm install bootstrap
 ```
 
 ### Compiles and hot-reloads for development
