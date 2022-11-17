@@ -3,7 +3,9 @@
     <h1 class="text-center">Tauler principal</h1>
     <section class="row">
       <div class="col-6 col-sm-4 col-md-2" v-for="option in options" :key="option">
-        <CardButton :msg="option.name" :id="option.id"></CardButton>
+        <router-link :to="{ path: option.router, params: { id: '2' } }">
+          <CardButton :msg="option.name" :icon="option.icon"></CardButton>
+        </router-link>
       </div>
     </section>
   </main>
@@ -23,17 +25,14 @@ export default {
       options: [
         {
           id: 0,
-          icon: "none",
+          icon: "fa-solid fa-user-secret",
+          router: "lliurament",
           name: "Lliurament de material"
         },
         {
-          id: 1,
-          icon: "plane",
-          name: "Lliurament en préstec"
-        },
-        {
           id: 2,
-          icon: "plane",
+          icon: "fa-solid fa-plane-departure",
+          router: "retorn",
           name: "Retorn de material"
         }
       ]

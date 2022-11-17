@@ -1,6 +1,6 @@
 <template>
     <section class="row">
-        <div class="col col-md-3 col-sm-9 mx-auto">
+        <div class="col col-sm-9 col-md-4 mx-auto">
             <LoginForm></LoginForm>
         </div>
     </section>
@@ -11,24 +11,24 @@ import router from "../router"
 
 export default {
     name: 'LoginView',
-    components:{
+    components: {
         LoginForm
     },
-    data(){
-        return{
+    data() {
+        return {
             email: null,
             password: null
         }
     },
-    created(){
-        if(sessionStorage.getItem('token')){
+    created() {
+        if (sessionStorage.getItem('token')) {
             router.push("/")
         }
     },
-    computed:{
+    computed: {
 
     },
-    methods:{
+    methods: {
 
     }
 }

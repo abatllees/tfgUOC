@@ -9,25 +9,25 @@
             <input type="password" class="form-control" id="passwordLogin" v-model="this.password">
         </div>
         <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
-    </form>    
+    </form>
 </template>
 <script>
 export default {
     name: 'LoginForm',
-    components:{
+    components: {
 
     },
-    data(){
-        return{
+    data() {
+        return {
             email: null,
             password: null
         }
     },
-    computed:{
+    computed: {
 
     },
-    methods:{
-        handleLogin: function(){
+    methods: {
+        handleLogin: function () {
             let payload = {
                 email: this.email,
                 password: this.password
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style scoped>
-form{
+form {
     margin: 5px solid #bb0000;
     margin-right: 30px solid #bb0000
 }

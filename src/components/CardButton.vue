@@ -1,8 +1,7 @@
 <template>
   <div class="card text-white text-center h-100">
-    <h2>
-      <router-link :to="{ name: 'subcollection', params: { id: this.id } }">{{ msg }} </router-link>
-    </h2>
+    <font-awesome-icon :icon="icon" size="5x" />
+    <h2> {{ msg }}</h2>
   </div>
 </template>
 
@@ -12,7 +11,7 @@ export default {
   name: 'CardButton',
   props: {
     msg: String,
-    id: Number
+    icon: String
   }
 }
 </script>
@@ -26,10 +25,5 @@ export default {
 a {
   color: white;
   text-decoration: none;
-}
-
-a:hover {
-  color: inherit;
-  text-decoration: underline;
 }
 </style>

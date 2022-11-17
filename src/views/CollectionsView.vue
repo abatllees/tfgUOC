@@ -2,7 +2,9 @@
     <h1 class="text-center">Categories</h1>
     <section class="row">
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="category in this.$store.state.Category" :key="category">
-            <CardButton :msg=category.CategoryName :id="category.id"> </CardButton>
+            <router-link :to="{ name: 'subcollection', params: { collectionName: category.id } }">
+                <CardButton :msg=category.CategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
+            </router-link>
         </div>
     </section>
 </template>

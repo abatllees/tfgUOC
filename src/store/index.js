@@ -4,13 +4,6 @@ import router from '../router'
 
 import api from "@/api"
 
-//const API_URL = "https://weekob4y.directus.app/"
-//axios.baseURL = "https://weekob4y.directus.app/"
-/*const debugLog = (msg)=>{
-	if(env.var.NODE_ENV ==='DEV') console.log(...msg)
-}*/
-
-
 export default createStore({
 	state: {
 		auth: false,
