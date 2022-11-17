@@ -29,7 +29,7 @@ const routes = [
     component: CollectionsView
   },
   {
-    path: "/collections/:collectionName",
+    path: "/collections/:id",
     name: "subcollection",
     component: SubCollectionView,
     params: true
