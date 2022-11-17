@@ -1,7 +1,7 @@
 <template>
   <div class="card text-white text-center h-100">
-    <font-awesome-icon :icon="icon" size="5x" />
-    <h2> {{ msg }}</h2>
+    <font-awesome-icon :icon="icon" size="4x" class="py-2" />
+    <h5> {{ msg }}</h5>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
 .card {
   background-color: #bb0000;
   border-radius: 0px;
+  padding: 8px 16px 8px 16px;
 }
 
 a {

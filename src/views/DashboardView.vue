@@ -8,6 +8,12 @@
         </router-link>
       </div>
     </section>
+    <section class="row">
+
+    </section>
+    <section class="row">
+      <h5>Material en préstec pendent de retornar</h5>
+    </section>
   </main>
 </template>
 
@@ -25,13 +31,13 @@ export default {
       options: [
         {
           id: 0,
-          icon: "fa-solid fa-user-secret",
+          icon: "fa-solid fa-plane-departure",
           router: "lliurament",
           name: "Lliurament de material"
         },
         {
           id: 2,
-          icon: "fa-solid fa-plane-departure",
+          icon: "fa-solid fa-plane-arrival",
           router: "retorn",
           name: "Retorn de material"
         }

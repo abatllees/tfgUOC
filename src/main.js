@@ -11,11 +11,12 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faPlaneDeparture, faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faPlaneArrival, faPlaneDeparture, faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
 library.add(faUserSecret)
 library.add(faPlaneDeparture)
+library.add(faPlaneArrival)
 
 
 createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')

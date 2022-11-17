@@ -10,6 +10,7 @@
         </div>
         <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
     </form>
+    <img src="@/assets/logoCCMA.png" alt="Logotip CCCMA" class="mx-auto d-block py-5">
 </template>
 <script>
 export default {
@@ -40,7 +41,8 @@ export default {
 
 <style scoped>
 form {
-    margin: 5px solid #bb0000;
-    margin-right: 30px solid #bb0000
+    border: 2px solid #bb0000;
+    border-right: 70px solid #bb0000;
+    padding: 56px 16px 56px 16px;
 }
 </style>
