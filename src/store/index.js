@@ -78,9 +78,6 @@ export default createStore({
 		},
 	},
 	actions: {
-		getItem({ commit }, payload) {
-			commit('GET_ITEM', payload)
-		},
 		getUser({ commit }, token) {
 			commit('GET_USER', token)
 		},

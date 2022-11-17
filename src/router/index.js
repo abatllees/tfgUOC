@@ -26,7 +26,7 @@ const routes = [
   {
     path: "/collections",
     name: "collections",
-    component: CollectionsView
+    component: CollectionsView,
   },
   {
     path: "/collections/:id",
