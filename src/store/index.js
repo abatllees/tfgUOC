@@ -62,18 +62,13 @@ export default createStore({
 				})
 				.catch(error => console.log(error))
 		},
-		async GET_ITEM(state, payload) {
+		async GET_COLLECTION(state, payload) {
 			console.log("Collection to get:", payload["collection"])
 
-			let parameters = {
-				collection: payload,
-				filter: "?filter[status][_eq]=published"
-			}
-
-			await api.get("items/" + parameters["collection"] + parameters["filter"])
+			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
-					state[payload] = response.data.data
-					console.log(response.data.data)
+					state[payload.collection] = response.data.data
+					console.log(state[payload.collection])
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -84,6 +79,9 @@ export default createStore({
 		},
 		handleLogin({ commit }, credentials) {
 			commit('HANDLE_LOGIN', credentials)
+		},
+		getCollection({ commit }, payload) {
+			commit('GET_COLLECTION', payload)
 		}
 	},
 	modules: {

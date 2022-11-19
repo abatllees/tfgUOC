@@ -1,17 +1,18 @@
 <template>
     <form @submit.prevent="addToList()">
         <h4 class="text-center">Lliurament de material</h4>
-        <div class="form-group mx-sm-3 mb-2">
+        <div class="form-group mb-2">
             <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
         </div>
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
                 <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="opel">Opel</option>
-                    <option value="audi">Audi</option>
+                    <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
+                        :value="subcategory.id">{{
+                                subcategory.SubcategoryName
+                        }}
+                    </option>
                 </select>
             </div>
             <div class="col-12 col-sm-6 my-1">
@@ -56,7 +57,6 @@
 export default {
     name: 'LliuramentForm',
     components: {
-
     },
     data() {
         return {
@@ -68,17 +68,34 @@ export default {
             usuari: null
         }
     },
-    computed: {
+    watch: {
+        tipusMaterial() {
+            console.log(this.tipusMaterial)
+            let params = {
+                collection: "Model",
+                fields: "?fields=*.*",
+                filter: "&filter[Subcategory][_eq]=" + this.tipusMaterial
+            }
 
+            this.$store.dispatch("getCollection", params);
+        }
+    },
+    beforeMount() {
+
+        let params = {
+            collection: "Subcategory",
+            fields: "?fields=*.*",
+            filter: "&filter[status][_eq]=published"
+        }
+
+        this.$store.dispatch("getCollection", params);
+    },
+    mounted() {
+        this.tipusMaterial = this.$store.state.Subcategory
     },
     methods: {
         addToList: function () {
             console.log(this.tipusMaterial)
-            /*let payload = {
-                email: this.email,
-                password: this.password
-            }
-            this.$store.dispatch("handleLogin", payload)*/
         }
     }
 }

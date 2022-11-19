@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+import Vue3EasyDataTable from 'vue3-easy-data-table';
+import "vue3-easy-data-table/dist/style.css"
+
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -19,4 +22,7 @@ library.add(faPlaneDeparture)
 library.add(faPlaneArrival)
 
 
-createApp(App).use(store).use(router).component('font-awesome-icon', FontAwesomeIcon).mount('#app')
+createApp(App)
+    .use(store).use(router)
+    .component('font-awesome-icon', FontAwesomeIcon).component('EasyDataTable', Vue3EasyDataTable)
+    .mount('#app')
