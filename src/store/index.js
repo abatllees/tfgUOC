@@ -49,8 +49,13 @@ export default createStore({
 				})
 				.catch(error => console.log(error.message))
 		},
-		logout(state, payload) {
-			api.post("auth/logout", {
+		async GET_USERS(state) {
+			await api.get("/users")
+				.then(response => state.users = response.data.data)
+				.catch(error => console.log(error.message))
+		},
+		async logout(state, payload) {
+			await api.post("auth/logout", {
 				refresh_token: payload
 			})
 				.then(response => {
@@ -60,7 +65,12 @@ export default createStore({
 					state.user = null
 					router.push("/login")
 				})
-				.catch(error => console.log(error))
+				.catch(error => {
+					if (error.response.data.errors[0].extensions.code == "TOKEN_EXPIRED") {
+						console.log(error.response.data.errors[0].extensions.code)
+						this.commit("REFRESH_TOKEN")
+					}
+				})
 		},
 		async GET_COLLECTION(state, payload) {
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
@@ -69,6 +79,13 @@ export default createStore({
 					console.log(state[payload.collection])
 				})
 				.catch(error => console.log(error.message))
+		},
+		async REFRESH_TOKEN() {
+			await api.post("auth/refresh")
+				.then(response => {
+					localStorage.setItem("refresh_token", response.data.data.refresh_token)
+				})
+				.catch(error => console.log(error.response.data.errors))
 		},
 	},
 	actions: {
@@ -80,10 +97,10 @@ export default createStore({
 		},
 		getCollection({ commit }, payload) {
 			commit('GET_COLLECTION', payload)
+		},
+		getUsers({ commit }) {
+			commit("GET_USERS")
 		}
-	},
-	modules: {
-
 	},
 	plugins: [
 		new VuexPersistence({
