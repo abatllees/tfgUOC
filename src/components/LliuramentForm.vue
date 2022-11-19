@@ -18,10 +18,10 @@
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model">
-                    <option value="volvo">Volvo</option>
-                    <option value="saab">Saab</option>
-                    <option value="opel">Opel</option>
-                    <option value="audi">Audi</option>
+                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.ID">{{
+                            model.ModelName
+                    }}
+                    </option>
                 </select>
             </div>
         </div>
@@ -35,6 +35,7 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
+        <button class="btn btn-secondary my-2">Cercar element</button>
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
@@ -50,7 +51,7 @@
                     v-model="usuari">
             </div>
         </div>
-        <input type="submit" value="Afegir a la llista" class="btn btn-primary my-1">
+        <input type="submit" value="Afegir a la llista" class="btn btn-primary my-2">
     </form>
 </template>
 <script>

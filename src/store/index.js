@@ -63,8 +63,6 @@ export default createStore({
 				.catch(error => console.log(error))
 		},
 		async GET_COLLECTION(state, payload) {
-			console.log("Collection to get:", payload["collection"])
-
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
 					state[payload.collection] = response.data.data
