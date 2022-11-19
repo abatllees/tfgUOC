@@ -6,6 +6,7 @@ import AboutView from "@/views/AboutView.vue"
 import CollectionsView from "@/views/CollectionsView.vue"
 import SubCollectionView from "@/views/SubCollectionView.vue"
 import UsersView from "@/views/UsersView.vue"
+import LliuramentView from "@/views/LliuramentView.vue"
 
 const routes = [
   {
@@ -38,6 +39,11 @@ const routes = [
     path: "/users",
     name: "users",
     component: UsersView
+  },
+  {
+    path: "/lliurament",
+    name: "lliurament",
+    component: LliuramentView
   }
 ]
 

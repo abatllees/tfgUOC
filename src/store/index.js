@@ -7,7 +7,8 @@ import api from "@/api"
 export default createStore({
 	state: {
 		auth: false,
-		user: null //Only if I can not save it to SessionStorage
+		user: null, //Only if I can not save it to SessionStorage
+		Category: null
 	},
 	getters: {
 		getAuth: state => {
