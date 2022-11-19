@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="addToList()">
+    <form @submit.prevent="searchElement()">
         <h4 class="text-center">Lliurament de material</h4>
         <div class="form-group mb-2">
             <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
-                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial">
+                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial" required>
                     <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
                         :value="subcategory.id">{{
                                 subcategory.SubcategoryName
@@ -17,8 +17,8 @@
             </div>
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
-                <select class="form-control" name="model" id="model" v-model="model">
-                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.ID">{{
+                <select class="form-control" name="model" id="model" v-model="model" required>
+                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
                             model.ModelName
                     }}
                     </option>
@@ -35,7 +35,8 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
-        <button class="btn btn-secondary my-2">Cercar element</button>
+        <button type="submit" class="btn btn-secondary my-2">Cercar element</button>
+        <button type="button" class="btn btn-primary" @click="showModal">Open modal</button>
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
@@ -53,11 +54,14 @@
         </div>
         <input type="submit" value="Afegir a la llista" class="btn btn-primary my-2">
     </form>
+    <ModalComponent v-show="isModalVisible" @close="closeModal" />
 </template>
 <script>
+import ModalComponent from "@/components/ModalComponent.vue"
 export default {
     name: 'LliuramentForm',
     components: {
+        ModalComponent
     },
     data() {
         return {
@@ -66,7 +70,9 @@ export default {
             numMag: null,
             numSerie: null,
             destinacio: null,
-            usuari: null
+            usuari: null,
+
+            isModalVisible: false
         }
     },
     watch: {
@@ -97,6 +103,16 @@ export default {
     methods: {
         addToList: function () {
             console.log(this.tipusMaterial)
+        },
+        searchElement: function () {
+            console.log(this.tipusMaterial)
+            console.log(this.model)
+        },
+        showModal() {
+            this.isModalVisible = true;
+        },
+        closeModal() {
+            this.isModalVisible = false;
         }
     }
 }
