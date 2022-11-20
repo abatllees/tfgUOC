@@ -35,8 +35,7 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
-        <button type="submit" class="btn btn-secondary my-2">Cercar element</button>
-        <button type="button" class="btn btn-primary" @click="showModal">Open modal</button>
+        <button type="button" class="btn btn-secondary my-2" @click="showModal">Cercar elements</button>
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
@@ -54,7 +53,7 @@
         </div>
         <input type="submit" value="Afegir a la llista" class="btn btn-primary my-2">
     </form>
-    <ModalComponent v-show="isModalVisible" @close="closeModal" />
+    <ModalComponent :header="'Hola'" v-show="isModalVisible" @close="closeModal" :model="this.$store.state.Element" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -72,7 +71,9 @@ export default {
             destinacio: null,
             usuari: null,
 
-            isModalVisible: false
+            isModalVisible: false,
+
+            results: null
         }
     },
     watch: {
@@ -85,6 +86,16 @@ export default {
             }
 
             this.$store.dispatch("getCollection", params);
+        },
+        async model() {
+            let params = {
+                collection: "Element",
+                fields: "?fields=NumMag,SerialNum",
+                filter: "&filter[Model][_eq]=" + this.model
+            }
+
+            await this.$store.dispatch("getCollection", params);
+            console.log("Results", this.$store.state.Element)
         }
     },
     beforeMount() {

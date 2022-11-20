@@ -8,7 +8,8 @@ export default createStore({
 	state: {
 		auth: false,
 		user: null, //Only if I can not save it to SessionStorage
-		Category: null
+		Category: null,
+		Element: ""
 	},
 	getters: {
 		getAuth: state => {
