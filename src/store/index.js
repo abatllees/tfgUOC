@@ -9,7 +9,15 @@ export default createStore({
 		auth: false,
 		user: null, //Only if I can not save it to SessionStorage
 		Category: null,
-		Element: ""
+		Element: "",
+		elementLliurament: [{
+			NumMag: "NumMag",
+			Subcategory: "Subcat",
+			Marca: "Marca",
+			Model: "Model",
+			SerialNum: "SerialNum",
+			DelegacioActual: "DelAct",
+		}]
 	},
 	getters: {
 		getAuth: state => {
@@ -73,6 +81,36 @@ export default createStore({
 					}
 				})
 		},
+		ADD_ELEMENTS_LLIURAMENT(state, payload) {
+			console.log(state)
+			console.log("GetList:", payload)
+			this.commit("GET_ELEMENT", payload)
+		},
+		async GET_ELEMENT(state, array) {
+			let params = {
+				collection: null,
+				fields: "?fields=*.*.*",
+				filter: null
+			}
+			await array.forEach(element => {
+				console.log("Element seleccionat:", element.SerialNum)
+				api.get("items/Element/" + element.SerialNum + params.fields)
+					.then(response => {
+						console.log(response.data.data)
+						state.elementLliurament.push({
+							NumMag: response.data.data.NumMag,
+							Subcategory: response.data.data.Model.Subcategory.SubcategoryName,
+							Marca: response.data.data.Model.Brand.BrandName,
+							Model: response.data.data.Model.ModelName,
+							SerialNum: response.data.data.SerialNum,
+							DelegacioActual: response.data.data.DelegacioActual.Name,
+						})
+						console.log("ElementLliurament", state.elementLliurament)
+
+					})
+					.catch(error => console.log(error.message))
+			});
+		},
 		async GET_COLLECTION(state, payload) {
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
@@ -101,6 +139,9 @@ export default createStore({
 		},
 		getUsers({ commit }) {
 			commit("GET_USERS")
+		},
+		addElementLliurament({ commit }, element) {
+			commit("ADD_ELEMENTS_LLIURAMENT", element)
 		}
 	},
 	plugins: [

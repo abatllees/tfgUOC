@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="searchElement()">
+    <form @submit.prevent="realitzarLliurament()">
         <h4 class="text-center">Lliurament de material</h4>
         <div class="form-group mb-2">
             <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
@@ -35,7 +35,7 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
-        <button type="button" class="btn btn-secondary my-2" @click="showModal">Cercar elements</button>
+        <button type="submit" class="btn btn-secondary my-2" @click="showModal">Cercar elements</button>
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
@@ -51,9 +51,8 @@
                     v-model="usuari">
             </div>
         </div>
-        <input type="submit" value="Afegir a la llista" class="btn btn-primary my-2">
     </form>
-    <ModalComponent :header="'Hola'" v-show="isModalVisible" @close="closeModal" :model="this.$store.state.Element" />
+    <ModalComponent v-show="isModalVisible" @close="closeModal" :model="this.$store.state.Element" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -73,12 +72,11 @@ export default {
 
             isModalVisible: false,
 
-            results: null
+            results: null,
         }
     },
     watch: {
         tipusMaterial() {
-            console.log(this.tipusMaterial)
             let params = {
                 collection: "Model",
                 fields: "?fields=*.*",
@@ -95,7 +93,6 @@ export default {
             }
 
             await this.$store.dispatch("getCollection", params);
-            console.log("Results", this.$store.state.Element)
         }
     },
     beforeMount() {
@@ -112,19 +109,19 @@ export default {
         this.tipusMaterial = this.$store.state.Subcategory
     },
     methods: {
-        addToList: function () {
-            console.log(this.tipusMaterial)
-        },
-        searchElement: function () {
+        realitzarLliurament: function () {
             console.log(this.tipusMaterial)
             console.log(this.model)
         },
         showModal() {
-            this.isModalVisible = true;
+            if (this.tipusMaterial && this.model) {
+                this.isModalVisible = true;
+
+            }
         },
         closeModal() {
             this.isModalVisible = false;
-        }
+        },
     }
 }
 </script>

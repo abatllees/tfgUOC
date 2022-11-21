@@ -4,13 +4,12 @@
             <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDescription">
                 <header class="modal-header" id="modalTitle">
                     <slot name="header">
-                        This is the default tile!
+                        Seleccionar element
                     </slot>
                     <button type="button" class="btn btn-primary" @click="close" aria-label="Close modal">
                         x
                     </button>
                 </header>
-
                 <section class="modal-body" id="modalDescription">
                     <slot name="body">
                         <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating
@@ -19,10 +18,9 @@
                         </EasyDataTable>
                     </slot>
                 </section>
-
                 <footer class="modal-footer">
                     <slot name="footer">
-                        This is the default footer!
+                        <button class="btn btn-primary" @click="addElement(this.itemsSelected)">Afegeix element</button>
                     </slot>
                 </footer>
             </div>
@@ -39,11 +37,13 @@ export default {
     data() {
         return {
             headers: [
-                { text: "Número magatzem", value: "NumMag" },
-                { text: "Número de sèrie", value: "SerialNum" },
+                { text: "Número magatzem", value: "NumMag", sortable: true },
+                { text: "Número de sèrie", value: "SerialNum", sortable: true },
+
             ],
             sortBy: "NumMag",
-            sortType: "asc"
+            sortType: "asc",
+            itemsSelected: []
         }
     },
     props: {
@@ -53,6 +53,11 @@ export default {
         close() {
             this.$emit('close');
         },
+        addElement(itemsSelected) {
+            this.$emit('getItems', itemsSelected)
+            console.log("Items selected:", itemsSelected)
+            this.$store.dispatch("addElementLliurament", itemsSelected)
+        }
     },
 };
 </script>
@@ -71,8 +76,8 @@ export default {
 
 .modal {
     position: relative;
-    width: 80%;
-    height: 50%;
+    width: 50%;
+    height: auto;
     background: #FFFFFF;
     box-shadow: 2px 2px 20px 1px;
     overflow: none;
@@ -89,7 +94,7 @@ export default {
 .modal-header {
     position: relative;
     border-bottom: 1px solid #eeeeee;
-    color: #4AAE9B;
+    color: #bb0000;
     justify-content: space-between;
 }
 
@@ -116,12 +121,6 @@ export default {
     background: transparent;
 }
 
-.btn-green {
-    color: white;
-    background: #4AAE9B;
-    border: 1px solid #4AAE9B;
-    border-radius: 2px;
-}
 
 .modal-fade-enter,
 .modal-fade-leave-to {
