@@ -46,16 +46,12 @@ export default {
             itemsSelected: []
         }
     },
-    props: {
-        model: Number
-    },
     methods: {
         close() {
             this.$emit('close');
         },
         addElement(itemsSelected) {
-            this.$emit('getItems', itemsSelected)
-            console.log("Items selected:", itemsSelected)
+            //Add element to list
             this.$store.dispatch("addElementLliurament", itemsSelected)
         }
     },

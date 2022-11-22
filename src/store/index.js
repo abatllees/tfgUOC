@@ -10,14 +10,7 @@ export default createStore({
 		user: null, //Only if I can not save it to SessionStorage
 		Category: null,
 		Element: "",
-		elementLliurament: [{
-			NumMag: "NumMag",
-			Subcategory: "Subcat",
-			Marca: "Marca",
-			Model: "Model",
-			SerialNum: "SerialNum",
-			DelegacioActual: "DelAct",
-		}]
+		llistatLliurament: []
 	},
 	getters: {
 		getAuth: state => {
@@ -82,34 +75,45 @@ export default createStore({
 				})
 		},
 		ADD_ELEMENTS_LLIURAMENT(state, payload) {
-			console.log(state)
-			console.log("GetList:", payload)
-			this.commit("GET_ELEMENT", payload)
+			console.log("GetListLliurament:", payload) //Get the list with the items to insert
+			//this.commit("GET_ELEMENT", payload)
+
+
+			payload.forEach(element => {
+				console.log("Element:", element)
+				let itemInList = this.commit("GET_ELEMENT", element)
+				console.log("ItemInList", itemInList)
+
+				/*state.llistatLliurament.push({
+					NumMag: itemInList.NumMag,
+					Subcategory: itemInList.Model.Subcategory.SubcategoryName,
+					Marca: itemInList.Model.Brand.BrandName,
+					Model: itemInList.Model.ModelName,
+					SerialNum: itemInList.SerialNum,
+					DelegacioActual: itemInList.DelegacioActual.Name,
+				})*/
+			})
 		},
-		async GET_ELEMENT(state, array) {
+		GET_ELEMENT(state, element) {
 			let params = {
 				collection: null,
 				fields: "?fields=*.*.*",
 				filter: null
 			}
-			await array.forEach(element => {
-				console.log("Element seleccionat:", element.SerialNum)
-				api.get("items/Element/" + element.SerialNum + params.fields)
-					.then(response => {
-						console.log(response.data.data)
-						state.elementLliurament.push({
-							NumMag: response.data.data.NumMag,
-							Subcategory: response.data.data.Model.Subcategory.SubcategoryName,
-							Marca: response.data.data.Model.Brand.BrandName,
-							Model: response.data.data.Model.ModelName,
-							SerialNum: response.data.data.SerialNum,
-							DelegacioActual: response.data.data.DelegacioActual.Name,
-						})
-						console.log("ElementLliurament", state.elementLliurament)
+			console.log("Eement seleccionat:", element["SerialNum"])
 
-					})
-					.catch(error => console.log(error.message))
-			});
+			return api.get("items/Element/" + element["SerialNum"] + params["fields"])
+				.then(response => response.data.data)
+				.catch(error => error.message)
+
+			/*return await api.get("items/Element/" + element.SerialNum + params.fields)
+				.then(response => response.data.data
+					//console.log(response.data.data)
+					//console.log("ElementLliurament", state.llistatLliurament)
+
+				)
+				.catch(error => error.message)*/
+			//return response.data.data
 		},
 		async GET_COLLECTION(state, payload) {
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)

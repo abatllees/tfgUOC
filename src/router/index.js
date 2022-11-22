@@ -7,6 +7,7 @@ import CollectionsView from "@/views/CollectionsView.vue"
 import SubCollectionView from "@/views/SubCollectionView.vue"
 import UsersView from "@/views/UsersView.vue"
 import LliuramentView from "@/views/LliuramentView.vue"
+import NotFound from "@/views/NotFound.vue"
 
 const routes = [
   {
@@ -44,6 +45,11 @@ const routes = [
     path: "/lliurament",
     name: "lliurament",
     component: LliuramentView
+  },
+  {
+    path: "/:pathMatch(.*)",
+    name: "404",
+    component: NotFound
   }
 ]
 

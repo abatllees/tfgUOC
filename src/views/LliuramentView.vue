@@ -6,7 +6,7 @@
     </section>
     <section class="row my-5">
         <section class="col mx-auto">
-            <EasyDataTable :headers="this.headers" :items="this.$store.state.elementLliurament" alternating
+            <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
                 buttons-pagination v-model:items-selected="itemsSelected" :sort-by="this.sortBy"
                 :sort-type="this.sortType">
             </EasyDataTable>

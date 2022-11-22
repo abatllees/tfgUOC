@@ -35,7 +35,7 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
-        <button type="submit" class="btn btn-secondary my-2" @click="showModal">Cercar elements</button>
+        <button type="submit" class="btn btn-secondary my-2">Cercar elements</button>
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
@@ -109,11 +109,7 @@ export default {
         this.tipusMaterial = this.$store.state.Subcategory
     },
     methods: {
-        realitzarLliurament: function () {
-            console.log(this.tipusMaterial)
-            console.log(this.model)
-        },
-        showModal() {
+        realitzarLliurament() {
             if (this.tipusMaterial && this.model) {
                 this.isModalVisible = true;
 
