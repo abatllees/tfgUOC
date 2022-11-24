@@ -39,20 +39,22 @@
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
-                <select class="form-control" name="destinacio" id="destinacio" v-model="destinacio">
-                    <option value="Vielha">Vielha</option>
-                    <option value="Maresme">Maresme</option>
-                    <option value="Pirineus">Pirineus</option>
+                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
+                    <option v-for="delegacio in this.$store.state.Delegacio" :key="delegacio.id" :value="delegacio.ID">
+                        {{
+                                delegacio.Name
+                        }}
+                    </option>
                 </select>
             </div>
             <div class="col-12 col-sm-6">
                 <label for="personaEntrega">Entrega:</label>
                 <input type="text" class="form-control" id="personaEntrega" disabled placeholder="Usuari"
-                    v-model="usuari">
+                    v-model="usuariEntrega">
             </div>
         </div>
     </form>
-    <ModalComponent v-show="isModalVisible" @close="closeModal" :model="this.$store.state.Element" />
+    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.$store.state.ResultatCerca" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -67,8 +69,7 @@ export default {
             model: null,
             numMag: null,
             numSerie: null,
-            destinacio: null,
-            usuari: null,
+            usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
             isModalVisible: false,
 
@@ -76,14 +77,14 @@ export default {
         }
     },
     watch: {
-        tipusMaterial() {
+        async tipusMaterial() {
             let params = {
                 collection: "Model",
                 fields: "?fields=*.*",
                 filter: "&filter[Subcategory][_eq]=" + this.tipusMaterial
             }
 
-            this.$store.dispatch("getCollection", params);
+            await this.$store.dispatch("getCollection", params);
         },
         async model() {
             let params = {
@@ -95,15 +96,17 @@ export default {
             await this.$store.dispatch("getCollection", params);
         }
     },
-    beforeMount() {
+    async beforeMount() {
+        const collectionsToGet = ["Subcategory", "Delegacio"]
 
-        let params = {
-            collection: "Subcategory",
-            fields: "?fields=*.*",
-            filter: "&filter[status][_eq]=published"
+        for await (let collection of collectionsToGet) {
+            let params = {
+                collection: collection,
+                fields: "?fields=*.*",
+                filter: "&filter[status][_eq]=published"
+            }
+            this.$store.dispatch("getCollection", params);
         }
-
-        this.$store.dispatch("getCollection", params);
     },
     mounted() {
         this.tipusMaterial = this.$store.state.Subcategory

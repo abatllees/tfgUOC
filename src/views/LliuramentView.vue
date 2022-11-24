@@ -7,7 +7,7 @@
     <section class="row my-5">
         <section class="col mx-auto">
             <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
-                buttons-pagination v-model:items-selected="itemsSelected" :sort-by="this.sortBy"
+                buttons-pagination v-model:items-selected="this.itemsSelected" :sort-by="this.sortBy"
                 :sort-type="this.sortType">
             </EasyDataTable>
             <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
@@ -31,11 +31,15 @@ export default {
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Delegació actual", value: "DelegacioActual", sortable: true },
             ],
+            itemsSelected: [],
+            sortBy: "",
+            sortType: ""
         }
     },
     methods: {
         realitzarLliurament: function () {
-            alert("Realitzar lliurament")
+            console.log("Realitzar lliurament")
+            this.$store.dispatch("handleEntrega");
         }
     }
 }
