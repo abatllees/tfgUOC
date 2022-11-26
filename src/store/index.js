@@ -87,35 +87,13 @@ export default createStore({
 					}
 				})
 		},
-		/*async*/ ADD_ELEMENTS_LLIURAMENT(state, payload) {
+		ADD_ELEMENTS_LLIURAMENT(state, payload) {
 			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
 
 
 			payload.forEach(element => {
 				console.log("ELEMENT_TO_ADD", element)
-			});/*
-			for await (let i of payload) {
-				let params = {
-					collection: null,
-					fields: "?fields=*.*.*",
-					filter: null
-				}
-				api.get("items/Element/" + i["SerialNum"] + params.fields)
-					.then(response => {
-						state.llistatLliurament.push({
-							NumMag: response.data.data.NumMag,
-							Subcategory: response.data.data.Model.Subcategory.SubcategoryName,
-							Marca: response.data.data.Model.Brand.BrandName,
-							Model: response.data.data.Model.ModelName,
-							SerialNum: response.data.data.SerialNum,
-							DelegacioActual: response.data.data.DelegacioActual.Name,
-							DelegacioActualID: response.data.data.DelegacioActual.ID,
-						})
-					})
-					.catch(error => console.log(error.message))
-
-
-			}*/
+			});
 		},
 		//Get a single item from a collection (table)
 		async GET_ELEMENT(state, element) {
