@@ -37,9 +37,10 @@ export default {
     data() {
         return {
             headers: [
-                { text: "Número magatzem", value: "NumMag", sortable: true },
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
+                { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
-
+                { text: "Delegació", value: "DelegacioActual.Name", sortable: true },
             ],
             sortBy: "NumMag",
             sortType: "asc",
@@ -52,7 +53,9 @@ export default {
         },
         addElement(itemsSelected) {
             //Add element to list
-            this.$store.dispatch("addElementLliurament", itemsSelected)
+            this.$store.state.llistatLliurament = itemsSelected
+            /* console.log("ADD_ELEMENT_BUTTON", itemsSelected)
+             this.$store.dispatch("addElementLliurament", itemsSelected)*/
         }
     },
 };

@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="realitzarLliurament()">
+    <form @submit.prevent="cercarElements()">
         <h4 class="text-center">Lliurament de material</h4>
         <div class="form-group mb-2">
             <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
@@ -89,7 +89,7 @@ export default {
         async model() {
             let params = {
                 collection: "Element",
-                fields: "?fields=NumMag,SerialNum",
+                fields: "?fields=*.*.*",
                 filter: "&filter[Model][_eq]=" + this.model
             }
 
@@ -112,10 +112,9 @@ export default {
         this.tipusMaterial = this.$store.state.Subcategory
     },
     methods: {
-        realitzarLliurament() {
+        cercarElements() {
             if (this.tipusMaterial && this.model) {
                 this.isModalVisible = true;
-
             }
         },
         closeModal() {

@@ -4,14 +4,11 @@
             <LliuramentForm></LliuramentForm>
         </div>
     </section>
-    <section class="row my-5">
-        <section class="col mx-auto">
-            <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
-                buttons-pagination v-model:items-selected="this.itemsSelected" :sort-by="this.sortBy"
-                :sort-type="this.sortType">
-            </EasyDataTable>
-            <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
-        </section>
+    <section class="w-100 my-5">
+        <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
+            buttons-pagination :sort-by="this.sortBy" :sort-type="this.sortType">
+        </EasyDataTable>
+        <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
     </section>
 </template>
 <script>
@@ -24,22 +21,22 @@ export default {
     data() {
         return {
             headers: [
-                { text: "Número magatzem", value: "NumMag", sortable: true },
-                { text: "Subcategoria", value: "Subcategory", sortable: true },
-                { text: "Marca", value: "Marca", sortable: true },
-                { text: "Model", value: "Model", sortable: true },
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
+                { text: "Subcategoria", value: "Model.Subcategory.SubcategoryName", sortable: true },
+                { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
+                { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                { text: "Delegació actual", value: "DelegacioActual", sortable: true },
+                { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
+                { text: "Delegació actual", value: "DelegacioActual.ID", sortable: true },
             ],
-            itemsSelected: [],
-            sortBy: "",
-            sortType: ""
+            sortBy: "NumMag",
+            sortType: "asc"
         }
     },
     methods: {
         realitzarLliurament: function () {
             console.log("Realitzar lliurament")
-            this.$store.dispatch("handleEntrega");
+            this.$store.dispatch("handleEntrega", this.$store.state.llistatLliurament);
         }
     }
 }

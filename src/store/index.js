@@ -10,14 +10,16 @@ export default createStore({
 	state: {
 		auth: false, //Logged?
 		user: "", //Information about the logged user
-		Category: null, //Category collection
-		Delegacio: null, //Delegacio collection
+
 		GettedElement: null,
 
 		//Lliurament de material
 		llistatLliurament: [],
 		destinacio: null,
+
 		Element: [], //It must be this name according to the collection name
+		Category: null, //Category collection
+		Delegacio: null, //Delegacio collection
 
 	},
 	getters: {
@@ -85,7 +87,13 @@ export default createStore({
 					}
 				})
 		},
-		async ADD_ELEMENTS_LLIURAMENT(state, payload) {
+		/*async*/ ADD_ELEMENTS_LLIURAMENT(state, payload) {
+			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
+
+
+			payload.forEach(element => {
+				console.log("ELEMENT_TO_ADD", element)
+			});/*
 			for await (let i of payload) {
 				let params = {
 					collection: null,
@@ -101,12 +109,13 @@ export default createStore({
 							Model: response.data.data.Model.ModelName,
 							SerialNum: response.data.data.SerialNum,
 							DelegacioActual: response.data.data.DelegacioActual.Name,
+							DelegacioActualID: response.data.data.DelegacioActual.ID,
 						})
 					})
 					.catch(error => console.log(error.message))
 
 
-			}
+			}*/
 		},
 		//Get a single item from a collection (table)
 		async GET_ELEMENT(state, element) {
@@ -126,11 +135,13 @@ export default createStore({
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
 					state[payload.collection] = response.data.data
+					console.log("GET_COLLECTION", state[payload.collection])
 				})
 				.catch(error => console.log(error.message))
 		},
-		async CREATE_MOVIMENT_LLIURAMENT(state) {
-			this.commit("SET_LLIURAMENT_LIST")
+		async CREATE_MOVIMENT_LLIURAMENT(state, payload) {
+			console.log("ITEMS SELECTED TO UPDATE:", payload)
+			this.commit("SET_UPDATE_KEYS", payload)
 
 			//Create an array with serialNum values to update them
 			let keys = []
@@ -140,22 +151,23 @@ export default createStore({
 				console.log(value.Element)
 				keys.push(value.Element)
 			}
+			console.log(state.llistatConfigurat)
+			console.log(keys)
 
 			await this.commit("UPDATE_ELEMENT", keys)
 			state.llistatLliurament = []
 		},
-		async UPDATE_ELEMENT(state, keys) {
-			console.log("KEYS:", keys)
+		async UPDATE_ELEMENT(state, element) {
+			console.log("UPDATE_PAYLOAD:", element)
 
 			await api.patch("items/Element/", {
-				keys: keys,
+				keys: element,
 				data: {
 					"DelegacioActual": state.destinacio
 				}
 			})
 				.then(response => {
 					console.log(response)
-					//this.commit("UPDATE_ELEMENT")
 					console.log("Elements updated")
 				})
 				.catch(error => console.log(error.message))
@@ -168,14 +180,14 @@ export default createStore({
 				.catch(error => console.log(error.response.data.errors))
 		},
 		//Defines the payload to the POST request to create data
-		SET_LLIURAMENT_LIST(state) {
-			console.log("Definint llista de lliurament:", state.llistatLliurament)
+		SET_UPDATE_KEYS(state, payload) {
+			console.log("Definint llista de lliurament:", payload)
 
 			let llistatConfigurat = []
-			for (let i = 0; i < state.llistatLliurament.length; i++) {
+			for (let i = 0; i < payload.length; i++) {
 				llistatConfigurat[i] = {
-					Element: state.llistatLliurament[i].SerialNum,
-					Origen: 1,  //state.llistatLliurament[i].SerialNum //We need to get the INT value
+					Element: payload[i].SerialNum,
+					Origen: payload[i].DelegacioActual.ID,  //state.llistatLliurament[i].SerialNum //We need to get the INT value of the real warehouse
 					Desti: state.destinacio
 				};
 
@@ -202,8 +214,8 @@ export default createStore({
 		addElementLliurament({ commit }, element) {
 			commit("ADD_ELEMENTS_LLIURAMENT", element)
 		},
-		handleEntrega({ commit }) {
-			commit("CREATE_MOVIMENT_LLIURAMENT")
+		handleEntrega({ commit }, llistatEntrega) {
+			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
 		}
 	},
 	plugins: [

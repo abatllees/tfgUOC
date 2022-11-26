@@ -12,6 +12,7 @@ import NavBar from "@/components/NavBar.vue"
 import router from "@/router"
 export default {
 	name: 'App',
+
 	components: {
 		NavBar
 	},
