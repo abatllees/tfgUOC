@@ -27,7 +27,6 @@ export default {
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
-                { text: "Delegació actual", value: "DelegacioActual.ID", sortable: true },
             ],
             sortBy: "NumMag",
             sortType: "asc"

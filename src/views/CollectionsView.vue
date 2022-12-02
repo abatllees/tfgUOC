@@ -2,8 +2,7 @@
     <h1 class="text-center">Categories</h1>
     <section class="row">
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="category in this.$store.state.Category" :key="category">
-            <router-link :to="{ name: 'subcollection', params: { id: category.id } }"
-                :subcategory=category.CategoryName>
+            <router-link :to="{ name: 'subcollection', params: { id: category.id } }">
                 <CardButton :msg=category.CategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
             </router-link>
         </div>
@@ -11,7 +10,6 @@
 </template>
 <script>
 import CardButton from '@/components/CardButton.vue'
-import api from "@/api"
 
 export default {
     name: 'CollectionsView',
@@ -26,13 +24,14 @@ export default {
     created() {
 
     },
-    async mounted() {
-        await api.get("items/Category" + this.filter)
-            .then(response => {
-                this.$store.state.Category = response.data.data
-                console.log(response.data.data)
-            })
-            .catch(error => console.log(error.message))
+    async beforeMount() {
+        let params = {
+            collection: "Category",
+            fields: "?fields=*.*.*",
+            filter: ""
+        }
+
+        await this.$store.dispatch("getCollection", params);
     },
     computed: {
 

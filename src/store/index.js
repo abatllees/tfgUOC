@@ -121,8 +121,7 @@ export default createStore({
 			console.log("ITEMS SELECTED TO UPDATE:", payload)
 			this.commit("SET_UPDATE_KEYS", payload)
 
-			//Create an array with serialNum values to update them
-			let keys = []
+			let keys = [] //Create an array with serialNum values to update them
 			const iterator = state.llistatConfigurat.values()
 
 			for (const value of iterator) {
@@ -132,8 +131,21 @@ export default createStore({
 			console.log(state.llistatConfigurat)
 			console.log(keys)
 
-			await this.commit("UPDATE_ELEMENT", keys)
+			//await this.commit("UPDATE_ELEMENT", keys)
+			await this.commit("CREATE_ITEM", { elements: keys, collection: "Moviment" })
 			state.llistatLliurament = []
+		},
+		async CREATE_ITEM(state, payload) {
+			console.log("CREATE", payload.collection, ":", payload.elements)
+			console.log("Llistat configurat", state.llistatConfigurat)
+
+			await api.post("items/" + payload.collection, state.llistatConfigurat)
+				.then(response => {
+					console.log(response)
+					console.log("Moviment creat")
+				})
+				.catch(error => console.log(error))
+
 		},
 		async UPDATE_ELEMENT(state, element) {
 			console.log("UPDATE_PAYLOAD:", element)
@@ -147,6 +159,7 @@ export default createStore({
 				.then(response => {
 					console.log(response)
 					console.log("Elements updated")
+					alert("Elements updated")
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -165,7 +178,7 @@ export default createStore({
 			for (let i = 0; i < payload.length; i++) {
 				llistatConfigurat[i] = {
 					Element: payload[i].SerialNum,
-					Origen: payload[i].DelegacioActual.ID,  //state.llistatLliurament[i].SerialNum //We need to get the INT value of the real warehouse
+					Origen: payload[i].DelegacioActual.ID, //We need to get the INT value of the real warehouse
 					Desti: state.destinacio
 				};
 

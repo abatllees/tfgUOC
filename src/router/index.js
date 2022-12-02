@@ -8,6 +8,7 @@ import SubCollectionView from "@/views/SubCollectionView.vue"
 import UsersView from "@/views/UsersView.vue"
 import LliuramentView from "@/views/LliuramentView.vue"
 import NotFound from "@/views/NotFound.vue"
+import LlistatElements from "@/views/LlistatElements.vue"
 
 const routes = [
   {
@@ -45,6 +46,12 @@ const routes = [
     path: "/lliurament",
     name: "lliurament",
     component: LliuramentView
+  },
+  {
+    path: "/collections/llistatElements/:id",
+    name: "LlistatElements",
+    component: LlistatElements,
+    params: true
   },
   {
     path: "/:pathMatch(.*)",

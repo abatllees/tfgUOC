@@ -54,8 +54,6 @@ export default {
         addElement(itemsSelected) {
             //Add element to list
             this.$store.state.llistatLliurament = itemsSelected
-            /* console.log("ADD_ELEMENT_BUTTON", itemsSelected)
-             this.$store.dispatch("addElementLliurament", itemsSelected)*/
         }
     },
 };
