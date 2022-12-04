@@ -66,7 +66,7 @@ export default createStore({
 		},
 		async GET_USERS(state) {
 			await api.get("/users")
-				.then(response => state.users = response.data.data)
+				.then(response => state.users = response.data)
 				.catch(error => console.log(error.message))
 		},
 		async logout(state, payload) {
@@ -113,7 +113,7 @@ export default createStore({
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
 					state[payload.collection] = response.data.data
-					console.log("GET_COLLECTION", state[payload.collection])
+					console.log("GET_COLLECTION_ITEMS", state[payload.collection])
 				})
 				.catch(error => console.log(error.message))
 		},

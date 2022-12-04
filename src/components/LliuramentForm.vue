@@ -85,15 +85,6 @@ export default {
             }
 
             await this.$store.dispatch("getCollection", params);
-        },
-        async model() {
-            let params = {
-                collection: "Element",
-                fields: "?fields=*.*.*",
-                filter: "&filter[Model][_eq]=" + this.model
-            }
-
-            await this.$store.dispatch("getCollection", params);
         }
     },
     async beforeMount() {
@@ -112,7 +103,15 @@ export default {
         this.tipusMaterial = this.$store.state.Subcategory
     },
     methods: {
-        cercarElements() {
+        async cercarElements() {
+
+            let params = {
+                collection: "Element",
+                fields: "?fields=*.*.*",
+                filter: "&filter[status][_eq]=published&filter[Model]=" + this.model
+            }
+            await this.$store.dispatch("getCollection", params);
+
             if (this.tipusMaterial && this.model) {
                 this.isModalVisible = true;
             }

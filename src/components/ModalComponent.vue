@@ -47,13 +47,16 @@ export default {
             itemsSelected: []
         }
     },
+
     methods: {
         close() {
             this.$emit('close');
         },
         addElement(itemsSelected) {
             //Add element to list
-            this.$store.state.llistatLliurament = itemsSelected
+            console.log(itemsSelected)
+            this.itemsSelected.forEach(item => this.$store.state.llistatLliurament.push(item))
+            //this.$store.state.llistatLliurament.push(itemsSelected)
         }
     },
 };

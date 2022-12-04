@@ -1,7 +1,6 @@
 <template>
     <div class="card">
-        <img v-if="avatar" class="card-img-top" :src="'https://weekob4y.directus.app/assets/'" +this.avatar
-            alt="Avatar">
+
         <div class="card-body">
             <h5 class="card-title text-center">{{ name }} {{ last_name }}</h5>
         </div>

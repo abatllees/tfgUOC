@@ -18,7 +18,7 @@ export default {
     },
     data() {
         return {
-            filter: "?filter[status][_eq]=published"
+            filter: "?filter[status][_eq]=published&filter[CategoryName][_neq]=NULL"
         }
     },
     created() {
