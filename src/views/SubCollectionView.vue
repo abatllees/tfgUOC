@@ -17,9 +17,6 @@ export default {
     components: {
         CardButton
     },
-    props: {
-        subcategory: String,
-    },
     data() {
         return {
         }

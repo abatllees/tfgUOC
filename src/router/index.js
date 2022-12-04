@@ -9,6 +9,7 @@ import UsersView from "@/views/UsersView.vue"
 import LliuramentView from "@/views/LliuramentView.vue"
 import NotFound from "@/views/NotFound.vue"
 import LlistatElements from "@/views/LlistatElements.vue"
+import MovimentsView from "@/views/MovimentsView.vue"
 
 const routes = [
   {
@@ -57,6 +58,11 @@ const routes = [
     path: "/:pathMatch(.*)",
     name: "404",
     component: NotFound
+  },
+  {
+    path: "/moviments",
+    name: "Moviments",
+    component: MovimentsView
   }
 ]
 

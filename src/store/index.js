@@ -21,6 +21,9 @@ export default createStore({
 		Category: null, //Category collection
 		Delegacio: null, //Delegacio collection
 
+
+		Moviment: []
+
 	},
 	getters: {
 		getAuth: state => {
@@ -117,6 +120,16 @@ export default createStore({
 				})
 				.catch(error => console.log(error.message))
 		},
+		async GET_HEADERS(state, payload) {
+			console.log(payload)
+			await api.get("fields/" + payload)
+				.then(response => {
+					state[payload.collection] = response.data.data
+					console.log("GET_COLLECTION_FIELDS", state[payload.collection])
+
+				})
+				.catch(error => console.log(error.message))
+		},
 		async CREATE_MOVIMENT_LLIURAMENT(state, payload) {
 			console.log("ITEMS SELECTED TO UPDATE:", payload)
 			this.commit("SET_UPDATE_KEYS", payload)
@@ -198,6 +211,9 @@ export default createStore({
 		},
 		getCollection({ commit }, payload) {
 			commit('GET_COLLECTION', payload)
+		},
+		getHeaders({ commit }, payload) {
+			commit('GET_HEADERS', payload)
 		},
 		getUsers({ commit }) {
 			commit("GET_USERS")

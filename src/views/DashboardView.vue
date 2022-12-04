@@ -13,6 +13,9 @@
     </section>
     <section class="row">
       <h5>Material en préstec pendent de retornar</h5>
+      <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
+        v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+      </EasyDataTable>
     </section>
   </main>
 </template>
@@ -24,7 +27,8 @@ import CardButton from "@/components/CardButton.vue"
 export default {
   name: 'DashboardView',
   components: {
-    CardButton
+    CardButton,
+    EasyDataTable: window['vue3-easy-data-table']
   },
   data() {
     return {
@@ -41,7 +45,12 @@ export default {
           router: "retorn",
           name: "Retorn de material"
         }
-      ]
+      ],
+      headers: [],
+      items: [],
+      itemsSelected: [],
+      sortBy: "",
+      sortType: "asc"
     }
   },
   created() {
