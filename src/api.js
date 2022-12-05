@@ -5,7 +5,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(config => {
     config.params = {
-        access_token: localStorage.getItem('access_token'),
+        access_token: sessionStorage.getItem('access_token'),
         ...config.params,
     };
     return config;

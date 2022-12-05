@@ -46,9 +46,9 @@ export default createStore({
 				.then(response => {
 					if (response.data.data.access_token) {
 
-						localStorage.setItem("access_token", response.data.data.access_token)
-						localStorage.setItem("expires", response.data.data.expires)
-						localStorage.setItem("refresh_token", response.data.data.refresh_token)
+						sessionStorage.setItem("access_token", response.data.data.access_token)
+						sessionStorage.setItem("expires", response.data.data.expires)
+						sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
 						state.auth = true
 						this.commit("GET_USER")
 						router.push("/")
@@ -58,11 +58,10 @@ export default createStore({
 		},
 		//Get the current logged in user
 		async GET_USER(state) {
-			let URL = "users/me"
-			await api.get(URL)
+			await api.get("users/me")
 				.then(response => {
 					state.user = response.data.data
-					localStorage.setItem("user", JSON.stringify(state.user))
+					sessionStorage.setItem("user", JSON.stringify(state.user))
 
 				})
 				.catch(error => console.log(error.message))
@@ -78,7 +77,7 @@ export default createStore({
 			})
 				.then(response => {
 					console.log(response)
-					localStorage.clear()
+					sessionStorage.clear()
 					state.auth = false
 					state.user = null
 					router.push("/login")
@@ -179,7 +178,7 @@ export default createStore({
 		async REFRESH_TOKEN() {
 			await api.post("auth/refresh")
 				.then(response => {
-					localStorage.setItem("refresh_token", response.data.data.refresh_token)
+					sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
 				})
 				.catch(error => console.log(error.response.data.errors))
 		},
@@ -227,7 +226,7 @@ export default createStore({
 	},
 	plugins: [
 		new VuexPersistence({
-			storage: window.localStorage,
+			storage: window.sessionStorage,
 			reducer: (state) => ({
 				auth: state.auth,
 				user: state.user

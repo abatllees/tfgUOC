@@ -54,7 +54,7 @@ export default {
     }
   },
   created() {
-    if (!localStorage.getItem('access_token')) {
+    if (!sessionStorage.getItem('access_token')) {
       router.push("/login")
     }
   }

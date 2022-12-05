@@ -1,5 +1,11 @@
 <template>
-    <h1 class="text-center">{{ msg }}</h1>
+    <h1 class="text-center">Consulta de material</h1>
+    <section class="row justify-content-end">
+        <div class="col col-md-3 mb-2">
+            <label for="site-search">Comença a cercar:</label>
+            <input type="search" id="site-search" name="q" class="form-control" v-model="this.query">
+        </div>
+    </section>
     <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating buttons-pagination
         :sort-by="this.sortBy" :sort-type="this.sortType">
     </EasyDataTable>
@@ -27,6 +33,13 @@ export default {
             ],
             sortBy: "NumMag",
             sortType: "asc",
+            query: ""
+        }
+    },
+    watch: {
+        query() {
+            console.log("changed")
+            this.$store.state.Element = this.filterItems(this.$store.state.Element, this.query)
         }
     },
     async beforeMount() {
@@ -40,6 +53,9 @@ export default {
         await this.$store.dispatch("getHeaders", params.collection);
     },
     methods: {
+        filterItems: function (arr, query) {
+            return arr.filter(el => el.NumMag.includes(query));
+        }
     }
 }
 </script>

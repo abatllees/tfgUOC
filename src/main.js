@@ -6,6 +6,8 @@ import store from './store'
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import "vue3-easy-data-table/dist/style.css"
 
+import { LoadingPlugin } from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/css/index.css';
 
 /* import the fontawesome core */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -23,6 +25,6 @@ library.add(faPlaneArrival)
 
 
 createApp(App)
-    .use(store).use(router)
+    .use(store).use(router).use(LoadingPlugin)
     .component('font-awesome-icon', FontAwesomeIcon).component('EasyDataTable', Vue3EasyDataTable)
     .mount('#app')

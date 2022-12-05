@@ -2,6 +2,10 @@
     <h1 class="text-center">Moviments</h1>
     <EasyDataTable :headers="this.headers" :items="this.$store.state.Moviment" alternating buttons-pagination
         :sort-by="this.sortBy" :sort-type="this.sortType">
+        <template v-slot:loading>
+            <img src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
+                style="width: 100px; height: 80px;" />
+        </template>
     </EasyDataTable>
 </template>
 <script>
@@ -28,7 +32,6 @@ export default {
     },
 
     async beforeMount() {
-
         let params = {
             collection: "Moviment",
             //fields: "?fields=*.*.*",
@@ -36,6 +39,8 @@ export default {
             filter: "&filter[status][_eq]=published"
         }
         await this.$store.dispatch("getCollection", params);
+
+
         //this.headers = await this.$store.dispatch("getHeaders", params.collection);
     },
 }

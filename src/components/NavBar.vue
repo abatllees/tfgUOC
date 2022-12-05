@@ -86,7 +86,7 @@ export default {
 	},
 	methods: {
 		logout: function () {
-			let refresh_token = localStorage.refresh_token;
+			let refresh_token = sessionStorage.refresh_token;
 			this.$store.commit("logout", refresh_token);
 		},
 	}
