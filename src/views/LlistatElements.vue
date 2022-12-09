@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-center">Consulta de material</h1>
+    <h1 class="text-center">{{ msg }}</h1>
     <section class="row justify-content-end">
         <div class="col col-md-3 mb-2">
             <label for="site-search">Comença a cercar:</label>
@@ -47,8 +47,16 @@ export default {
         let params = {
             collection: "Element",
             fields: "?fields=*.*.*",
-            filter: "&filter[status][_eq]=published&filter[Model][Subcategory][_eq]=" + this.$route.params.id
+            filter: "&filter[status][_eq]=published"
         }
+        if (this.$route.params.id) {
+            params.filter = params.filter + "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
+        }
+        if (this.$route.params.category) {
+            params.filter = "&filter[Model][Subcategory][Category][_eq]=" + this.$route.params.category
+        }
+
+
 
         await this.$store.dispatch("getCollection", params);
         await this.$store.dispatch("getHeaders", params.collection);

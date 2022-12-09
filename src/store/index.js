@@ -116,7 +116,7 @@ export default createStore({
 			await api.get("items/" + element.collection + "/" + element.item + params.fields)
 				.then(response => {
 					console.log(response),
-					state.GettedElement = response.data.data
+						state.GettedElement = response.data.data
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -219,7 +219,7 @@ export default createStore({
 			await commit('HANDLE_LOGIN', credentials)
 		},
 		getCollection({ commit }, payload) {
-			return commit('GET_COLLECTION', payload)
+			commit('GET_COLLECTION', payload)
 		},
 		getHeaders({ commit }, payload) {
 			commit('GET_HEADERS', payload)

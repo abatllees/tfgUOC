@@ -3,11 +3,21 @@
         <h1 class="text-center w-100">{{ msg }}</h1>
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.$store.state.Subcategory"
             :key="subcategory">
-            <router-link :to="{ name: 'LlistatElements', params: { id: subcategory.id } }">
+            <router-link
+                :to="{ name: 'LlistatElements', params: { id: subcategory.id }, props: { msg: subcategory.SubcategoryName } }">
                 <CardButton :msg=subcategory.SubcategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
             </router-link>
         </div>
     </section>
+    <router-link :to="{
+        name: 'LlistatElements',
+        params: {
+            category: this.$route.params.id
+        },
+        props: {
+            msg: 'Hola'
+        }
+    }" class="btn btn-secondary">Mostra tots els elements</router-link>
 </template>
 <script>
 import CardButton from '@/components/CardButton.vue';

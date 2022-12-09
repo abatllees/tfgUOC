@@ -50,10 +50,11 @@ const routes = [
     component: LliuramentView
   },
   {
-    path: "/collections/llistatElements/:id",
+    path: "/collections/llistatElements/:id?:category?",
     name: "LlistatElements",
     component: LlistatElements,
-    params: true
+    params: true,
+    props: true
   },
   {
     path: "/:pathMatch(.*)",
