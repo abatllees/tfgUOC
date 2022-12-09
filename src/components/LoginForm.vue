@@ -11,6 +11,7 @@
         <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
     </form>
     <img src="@/assets/logoCCMA.png" alt="Logotip CCCMA" class="mx-auto d-block py-5">
+    {{ LoginResponse }}
 </template>
 <script>
 export default {
@@ -21,19 +22,20 @@ export default {
     data() {
         return {
             email: null,
-            password: null
+            password: null,
+            LoginResponse: "Null"
         }
     },
     computed: {
 
     },
     methods: {
-        handleLogin: function () {
+        async handleLogin() {
             let payload = {
                 email: this.email,
                 password: this.password
             }
-            this.$store.dispatch("handleLogin", payload)
+            this.LoginResponse = await this.$store.dispatch("handleLogin", payload)
         }
     }
 }

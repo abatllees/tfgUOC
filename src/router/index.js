@@ -10,6 +10,7 @@ import LliuramentView from "@/views/LliuramentView.vue"
 import NotFound from "@/views/NotFound.vue"
 import LlistatElements from "@/views/LlistatElements.vue"
 import MovimentsView from "@/views/MovimentsView.vue"
+import DelegacioView from "@/views/DelegacioView.vue"
 
 const routes = [
   {
@@ -63,6 +64,12 @@ const routes = [
     path: "/moviments",
     name: "Moviments",
     component: MovimentsView
+  },
+  {
+    path: "/DelegacioView/:id",
+    name: "DelegacioView",
+    component: DelegacioView,
+    params: true
   }
 ]
 

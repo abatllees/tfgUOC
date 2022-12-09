@@ -22,7 +22,9 @@ export default createStore({
 		Delegacio: null, //Delegacio collection
 
 
-		Moviment: []
+		Moviment: [],
+		//Color for the table
+		themeColor: "#bb0000"
 
 	},
 	getters: {
@@ -37,24 +39,26 @@ export default createStore({
 		},
 	},
 	mutations: {
-		HANDLE_LOGIN(state, payload) {
-			return api.post("auth/login", {
+		async HANDLE_LOGIN(state, payload) {
+			return await api.post("auth/login", {
 				email: payload.email,
 				password: payload.password
 			})
-
 				.then(response => {
-					if (response.data.data.access_token) {
 
-						sessionStorage.setItem("access_token", response.data.data.access_token)
-						sessionStorage.setItem("expires", response.data.data.expires)
-						sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
-						state.auth = true
-						this.commit("GET_USER")
-						router.push("/")
-					}
+					sessionStorage.setItem("access_token", response.data.data.access_token)
+					sessionStorage.setItem("expires", response.data.data.expires)
+					sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
+					state.auth = true
+
+					this.commit("GET_USER")
+					router.push("/")
 				})
-				.catch(e => console.log(e.response.data))
+				.catch(e => {
+					console.log(e.response.data.errors)
+					return
+
+				})
 		},
 		//Get the current logged in user
 		async GET_USER(state) {
@@ -66,9 +70,11 @@ export default createStore({
 				})
 				.catch(error => console.log(error.message))
 		},
-		async GET_USERS(state) {
-			await api.get("/users")
-				.then(response => state.users = response.data)
+		async GET_USERS(state, payload) {
+			await api.get("/users" + payload.sort)
+				.then(response => {
+					state.users = response.data.data
+				})
 				.catch(error => console.log(error.message))
 		},
 		async logout(state, payload) {
@@ -100,14 +106,18 @@ export default createStore({
 		//Get a single item from a collection (table)
 		async GET_ELEMENT(state, element) {
 			let params = {
-				collection: null,
+				element: element,
 				fields: "?fields=*.*.*",
-				filter: null
+				filter: ""
 			}
-			console.log("Eement a obtenir:", element)
+			console.log("Eement a obtenir:", element.item)
+			console.log("De la col·lecció:", element.collection)
 
-			await api.get("items/Element/" + element["SerialNum"] + params.fields)
-				.then(response => state.GettedElement = response.data.data)
+			await api.get("items/" + element.collection + "/" + element.item + params.fields)
+				.then(response => {
+					console.log(response),
+					state.GettedElement = response.data.data
+				})
 				.catch(error => console.log(error.message))
 		},
 		//Get all the items from a Directus collection (table)
@@ -205,23 +215,26 @@ export default createStore({
 		getUser({ commit }, token) {
 			commit('GET_USER', token)
 		},
-		handleLogin({ commit }, credentials) {
-			commit('HANDLE_LOGIN', credentials)
+		async handleLogin({ commit }, credentials) {
+			await commit('HANDLE_LOGIN', credentials)
 		},
 		getCollection({ commit }, payload) {
-			commit('GET_COLLECTION', payload)
+			return commit('GET_COLLECTION', payload)
 		},
 		getHeaders({ commit }, payload) {
 			commit('GET_HEADERS', payload)
 		},
-		getUsers({ commit }) {
-			commit("GET_USERS")
+		getUsers({ commit }, payload) {
+			commit("GET_USERS", payload)
 		},
 		addElementLliurament({ commit }, element) {
 			commit("ADD_ELEMENTS_LLIURAMENT", element)
 		},
 		handleEntrega({ commit }, llistatEntrega) {
 			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
+		},
+		getElement({ commit }, payload) {
+			commit("GET_ELEMENT", payload)
 		}
 	},
 	plugins: [

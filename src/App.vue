@@ -1,6 +1,6 @@
 <template>
 	<NavBar v-if="this.$store.state.auth" />
-	<main class="container my-5">
+	<main class="container my-5 overflow-hidden">
 		<router-view />
 	</main>
 </template>

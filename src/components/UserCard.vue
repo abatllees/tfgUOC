@@ -1,14 +1,14 @@
 <template>
     <div class="card">
-
+        <div class="card-img-top w-100 my-2"></div>
         <div class="card-body">
             <h5 class="card-title text-center">{{ name }} {{ last_name }}</h5>
+            <a v-if="email" :href="'mailto:${email}'" class="btn btn-secondary w-100">Contacta</a>
         </div>
     </div>
 </template>
 <script>
-//<a v-if="user.email" : href="'mailto:${user.email}'">{{ user.email }}</a>
-import api from "@/api"
+//import api from "@/api"
 export default {
     name: "UserCard",
     components: {
@@ -24,11 +24,26 @@ export default {
         return {
         }
     },
-    async beforeCreate() {
-        await api.get("/assets/" + this.avatar)
+    beforeCreate() {
+        /*await api.get("/assets/" + this.avatar)
             .then(response => {
                 console.log(response)
-            })
+            })*/
     }
 }
 </script>
+
+<style scoped>
+.card {
+    background-color: #bb0000;
+    color: white;
+    border-radius: 0;
+    border-color: initial;
+}
+
+.card-img-top {
+    background-color: #dddddd;
+    height: 200px;
+    border-radius: 0;
+}
+</style>

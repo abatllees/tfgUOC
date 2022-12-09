@@ -18,17 +18,13 @@
 							Delegacions
 						</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">Lleida</a></li>
-							<li><a class="dropdown-item" href="#">Girona</a></li>
-							<li><a class="dropdown-item" href="#">Tarragona</a></li>
-							<li><a class="dropdown-item" href="#">Pirineus</a></li>
-							<li><a class="dropdown-item" href="#">Catalunya nord</a></li>
-							<li><a class="dropdown-item" href="#">Catalunya central</a></li>
-							<li>
-								<hr class="dropdown-divider">
-							</li>
-							<li><a class="dropdown-item" href="#">Bilbao</a></li>
-							<li><a class="dropdown-item" href="#">Madrid</a></li>
+							<li v-for="delegacio in this.$store.state.Delegacio" v-bind:key="delegacio"><router-link
+									:to="{
+										name: 'DelegacioView',
+										params: {
+											id: delegacio.ID
+										}
+									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item">
@@ -55,7 +51,8 @@ export default {
 	name: 'NavBar',
 	data() {
 		return {
-			fullname: null
+			fullname: null,
+			delegacions: this.$store.state.Delegacio
 		}
 	},
 	components: {
@@ -66,6 +63,14 @@ export default {
 			return this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
 		}
 		return null
+	},
+	created() {
+		let params = {
+			collection: "Delegacio",
+			fields: "?fields=Name, ID",
+			filter: "&sort=Name"
+		}
+		this.$store.dispatch("getCollection", params)
 	},
 	watch: {
 		getName() {

@@ -3,11 +3,12 @@
     <section class="row justify-content-end">
         <div class="col col-md-3 mb-2">
             <label for="site-search">Comença a cercar:</label>
-            <input type="search" id="site-search" name="q" class="form-control" v-model="this.query">
+            <input type="text" id="site-search" name="q" class="form-control" v-model="this.searchValue">
         </div>
     </section>
     <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating buttons-pagination
-        :sort-by="this.sortBy" :sort-type="this.sortType">
+        :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType"
+        :theme-color="this.$store.state.themeColor">
     </EasyDataTable>
 </template>
 <script>
@@ -33,14 +34,14 @@ export default {
             ],
             sortBy: "NumMag",
             sortType: "asc",
-            query: ""
+            searchValue: ""
         }
     },
     watch: {
-        query() {
-            console.log("changed")
-            this.$store.state.Element = this.filterItems(this.$store.state.Element, this.query)
-        }
+        /* query() {
+             console.log("changed")
+             this.$store.state.Element = this.filterItems(this.$store.state.Element, this.query)
+         }*/
     },
     async beforeMount() {
         let params = {
