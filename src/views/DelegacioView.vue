@@ -1,9 +1,8 @@
 <template>
-    <h1 class="text-center">{{ this.$store.state.GettedElement?.Name }}</h1>
+    <h1 class="text-center">{{ this.delegacio.Name }}</h1>
     <section class="row justify-content-end">
         <div class="col-12 col-md-6 col-lg-2">
-            <ContactCard v-if="this.$store.state.GettedElement?.ResponsableDelegacio"
-                :contactPerson="this.$store.state.GettedElement.ResponsableDelegacio"></ContactCard>
+            <ContactCard v-if="this.delegacio" :contactPerson="this.delegacio.ResponsableDelegacio"></ContactCard>
         </div>
     </section>
     <h5>Material a la delegació</h5>
@@ -22,7 +21,6 @@ export default {
     },
     data() {
         return {
-            IDdelegacio: this.$route.params.id,
             headers: [
                 { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Tipus de material", value: "Model.Subcategory.SubcategoryName", sortable: true },
@@ -34,30 +32,31 @@ export default {
             items: [],
             itemsSelected: [],
             sortBy: "",
-            sortType: "asc"
+            sortType: "asc",
+            delegacio: null
         }
     },
     async created() {
-        this.getDelegacio()
-        let params = {
-            collection: "Element",
-            fields: "?fields=*.*.*",
-            filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id
-        }
-        this.items = await this.$store.dispatch("getCollection", params)
+        this.delegacio = await this.getDelegacio()
+        //this.items = await this.getElements()
     },
     methods: {
-        getDelegacio: async function () {
-            await this.$store.dispatch("getElement", { collection: "Delegacio", item: this.$route.params.id })
+        getDelegacio: function () {
+            let params = {
+                collection: "Delegacio",
+                item: this.$route.params.id,
+                fields: "?fields=Name,ResponsableDelegacio.first_name,ResponsableDelegacio.last_name,ResponsableDelegacio.email",
+                filter: ""
+            }
+            return this.$store.dispatch("getElement", params)
         },
-        getElements: function () {
-
-        }
-    },
-    watch: {
-        '$route.params.id'() {
-            this.getElements()
-            this.getDelegacio()
+        getElements: async function () {
+            let params = {
+                collection: "Element",
+                fields: "?fields=SerialNum",
+                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id
+            }
+            await this.$store.dispatch("getCollection", params)
         }
     }
 }

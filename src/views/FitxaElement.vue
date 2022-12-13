@@ -80,7 +80,13 @@ export default {
         }
     },
     async beforeCreate() {
-        this.element = await this.$store.dispatch("getElement", this.$route.params.SerialNum)
+        let params = {
+            collection: "Element",
+            item: this.$route.params.SerialNum,
+            fields: "?fields=*.*.*",
+            filter: ""
+        }
+        this.element = await this.$store.dispatch("getElement", params)
         this.historialMoviments.items = await this.getItems("Moviment")
     },
     methods: {

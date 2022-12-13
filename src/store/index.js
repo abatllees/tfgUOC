@@ -94,7 +94,7 @@ export default createStore({
 						state.GettedElement = response.data.data
 				})
 				.catch(error => console.log(error.message))
-		},*/
+		},
 		//Get all the items from a Directus collection (table)
 		/*async GET_COLLECTION(state, payload) {
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
@@ -229,15 +229,10 @@ export default createStore({
 		handleEntrega({ commit }, llistatEntrega) {
 			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
 		},
-		getElement({ commit }, SerialNum) {
-			let params = {
-				element: null,
-				fields: "?fields=*.*.*",
-				filter: ""
-			}
-			console.log("Eement a obtenir:", SerialNum)
+		getElement({ commit }, payload) {
+			console.log("Eement a obtenir:", payload)
 			return new Promise((resolve, reject) => {
-				api.get("items/Element/" + SerialNum + params.fields)
+				api.get("items/" + payload.collection + "/" + payload.item + payload.fields)
 					.then(response => {
 						console.log(response.data.data)
 						resolve(response.data.data)
