@@ -16,6 +16,7 @@
       <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
         v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
       </EasyDataTable>
+      <router-link to="prestecs" class="btn btn-primary mt-2">Mostra tots els préstecs</router-link>
     </section>
   </main>
 </template>
@@ -45,7 +46,14 @@ export default {
           name: "Retorn de material"
         }
       ],
-      headers: [],
+      headers: [
+        { text: "Data d'entrega", value: "NumMag", sortable: true },
+        { text: "Delegació", value: "Model.Subcategory.SubcategoryName", sortable: true },
+        { text: "Codi magatzem", value: "Model.ModelName", sortable: true },
+        { text: "Número de sèrie", value: "SerialNum", sortable: true },
+        { text: "Equip", value: "DataEntrada", sortable: true },
+        { text: "Entregat per", value: "user_created.first_name", sortable: true },
+      ],
       items: [],
       itemsSelected: [],
       sortBy: "",

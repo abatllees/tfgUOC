@@ -2,7 +2,7 @@
     <div class="card p-2">
         <div class="float-left">
             <p><span class="fw-bold">Persona de contacte</span><br>
-                {{ (contactPerson?.first_name + " " + contactPerson?.last_name) }}</p>
+                {{ (contactPerson.first_name + " " + contactPerson.last_name) }}</p>
             <p><span class="fw-bold">Informació de contacte</span><br>
                 <a :href="'mailto:${contactPerson.email}'">{{ contactPerson.email }}</a>
             </p>
