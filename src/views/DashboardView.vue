@@ -9,7 +9,7 @@
 			</div>
 		</section>
 		<section class="row my-2">
-			<div class="col-6 col-sm-4 col-md-2" v-for="grouped in groupedElements" :key="grouped">
+			<div class="col-6 col-sm-4 col-md-2 my-1" v-for="grouped in groupedElements" :key="grouped">
 				<CardCount :count="grouped.count.SerialNum" :model="grouped.Model"></CardCount>
 			</div>
 		</section>
