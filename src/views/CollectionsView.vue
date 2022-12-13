@@ -31,9 +31,6 @@ export default {
             categories: []
         }
     },
-    created() {
-
-    },
     async mounted() {
         this.categories = await this.$store.dispatch("getCollection", this.params)
     }

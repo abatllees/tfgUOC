@@ -1,64 +1,77 @@
 <template>
-  <main>
-    <h1 class="text-center">Tauler principal</h1>
-    <section class="row">
-      <div class="col-6 col-sm-4 col-md-2" v-for="option in options" :key="option">
-        <router-link :to="{ path: option.router, params: { id: '2' } }">
-          <CardButton :msg="option.name" :icon="option.icon"></CardButton>
-        </router-link>
-      </div>
-    </section>
-    <section class="row">
-
-    </section>
-    <section class="row">
-      <h5>Material en préstec pendent de retornar</h5>
-      <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
-        v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
-      </EasyDataTable>
-      <router-link to="prestecs" class="btn btn-primary mt-2">Mostra tots els préstecs</router-link>
-    </section>
-  </main>
+	<main>
+		<h1 class="text-center">Tauler principal</h1>
+		<section class="row">
+			<div class="col-6 col-sm-4 col-md-2" v-for="option in options" :key="option">
+				<router-link :to="{ path: option.router, params: { id: '2' } }">
+					<CardButton :msg="option.name" :icon="option.icon"></CardButton>
+				</router-link>
+			</div>
+		</section>
+		<section class="row my-2">
+			<div class="col-6 col-sm-4 col-md-2" v-for="grouped in groupedElements" :key="grouped">
+				<CardCount :count="grouped.count.SerialNum" :model="grouped.Model"></CardCount>
+			</div>
+		</section>
+		<section class="row">
+			<h5>Material en préstec pendent de retornar</h5>
+			<EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
+				v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+			</EasyDataTable>
+			<router-link to="prestecs" class="btn btn-primary mt-2">Mostra tots els préstecs</router-link>
+		</section>
+	</main>
 </template>
 
 <script>
 import CardButton from "@/components/CardButton.vue"
+import CardCount from "@/components/CardCount.vue"
 
 export default {
-  name: 'DashboardView',
-  components: {
-    CardButton,
-    EasyDataTable: window['vue3-easy-data-table']
-  },
-  data() {
-    return {
-      options: [
-        {
-          id: 0,
-          icon: "fa-solid fa-plane-departure",
-          router: "lliurament",
-          name: "Lliurament de material"
-        },
-        {
-          id: 2,
-          icon: "fa-solid fa-plane-arrival",
-          router: "retorn",
-          name: "Retorn de material"
-        }
-      ],
-      headers: [
-        { text: "Data d'entrega", value: "NumMag", sortable: true },
-        { text: "Delegació", value: "Model.Subcategory.SubcategoryName", sortable: true },
-        { text: "Codi magatzem", value: "Model.ModelName", sortable: true },
-        { text: "Número de sèrie", value: "SerialNum", sortable: true },
-        { text: "Equip", value: "DataEntrada", sortable: true },
-        { text: "Entregat per", value: "user_created.first_name", sortable: true },
-      ],
-      items: [],
-      itemsSelected: [],
-      sortBy: "",
-      sortType: "asc"
-    }
-  },
+	name: 'DashboardView',
+	components: {
+		CardButton,
+		CardCount,
+		EasyDataTable: window['vue3-easy-data-table']
+	},
+	data() {
+		return {
+			options: [
+				{
+					id: 0,
+					icon: "fa-solid fa-plane-departure",
+					router: "lliurament",
+					name: "Lliurament de material"
+				},
+				{
+					id: 2,
+					icon: "fa-solid fa-plane-arrival",
+					router: "retorn",
+					name: "Retorn de material"
+				}
+			],
+			groupedElements: [],
+			headers: [
+				{ text: "Data d'entrega", value: "NumMag", sortable: true },
+				{ text: "Delegació", value: "Model.Subcategory.SubcategoryName", sortable: true },
+				{ text: "Codi magatzem", value: "Model.ModelName", sortable: true },
+				{ text: "Número de sèrie", value: "SerialNum", sortable: true },
+				{ text: "Equip", value: "DataEntrada", sortable: true },
+				{ text: "Entregat per", value: "user_created.first_name", sortable: true },
+			],
+			items: [],
+			itemsSelected: [],
+			sortBy: "",
+			sortType: "asc"
+		}
+	},
+	async created() {
+		let params = {
+			collection: "Element",
+			fields: "",
+			filter: "?aggregate[count]=SerialNum&groupBy[]=Model"
+		}
+		this.groupedElements = await this.$store.dispatch("getCollection", params)
+	}
 }
 </script>
