@@ -6,10 +6,12 @@ import api from "@/api"
 
 //The directus API defines tables as collections
 
+
+/* eslint-disable */
+
 export default createStore({
 	state: {
-		auth: false, //Logged?
-		user: "", //Information about the logged user
+		user: null, //Information about the logged user
 
 		GettedElement: null,
 
@@ -23,7 +25,7 @@ export default createStore({
 
 
 		Moviment: [],
-		//Color for the table
+		//Color for the tables
 		themeColor: "#bb0000"
 
 	},
@@ -39,36 +41,9 @@ export default createStore({
 		},
 	},
 	mutations: {
-		async HANDLE_LOGIN(state, payload) {
-			return await api.post("auth/login", {
-				email: payload.email,
-				password: payload.password
-			})
-				.then(response => {
-
-					sessionStorage.setItem("access_token", response.data.data.access_token)
-					sessionStorage.setItem("expires", response.data.data.expires)
-					sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
-					state.auth = true
-
-					this.commit("GET_USER")
-					router.push("/")
-				})
-				.catch(e => {
-					console.log(e.response.data.errors)
-					return
-
-				})
-		},
 		//Get the current logged in user
-		async GET_USER(state) {
-			await api.get("users/me")
-				.then(response => {
-					state.user = response.data.data
-					sessionStorage.setItem("user", JSON.stringify(state.user))
-
-				})
-				.catch(error => console.log(error.message))
+		SET_LOGGED_USER(state, response) {
+			state.user = response
 		},
 		async GET_USERS(state, payload) {
 			await api.get("/users" + payload.sort)
@@ -125,7 +100,8 @@ export default createStore({
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
 					state[payload.collection] = response.data.data
-					console.log("GET_COLLECTION_ITEMS", state[payload.collection])
+					console.log("GET_COLLECTION_ITEMS", payload.collection, state[payload.collection])
+					return response.data.data
 				})
 				.catch(error => console.log(error.message))
 		},
@@ -212,20 +188,43 @@ export default createStore({
 		},
 	},
 	actions: {
-		getUser({ commit }, token) {
-			commit('GET_USER', token)
-		},
-		async handleLogin({ commit }, credentials) {
-			await commit('HANDLE_LOGIN', credentials)
+		getUser({ commit }) {
+			return new Promise((resolve, reject) => {
+				api.get("users/me")
+					.then(response => {
+						commit('SET_LOGGED_USER', response.data.data)
+						resolve(response.data.data)
+						sessionStorage.setItem("user", JSON.stringify(response.data.data))
+					})
+					.catch(error => reject(error.message))
+			})
+
 		},
 		getCollection({ commit }, payload) {
-			commit('GET_COLLECTION', payload)
+			return new Promise((resolve, reject) => {
+
+				//commit('GET_COLLECTION', payload)
+
+				api.get("items/" + payload.collection + payload.fields + payload.filter)
+					.then(response => {
+						console.log(response.data.data)
+						resolve(response.data.data)
+					})
+					.catch(error => reject(error))
+			})
 		},
 		getHeaders({ commit }, payload) {
 			commit('GET_HEADERS', payload)
 		},
-		getUsers({ commit }, payload) {
-			commit("GET_USERS", payload)
+		getUsers({ commit }, sortingOrder) {
+			return new Promise((resolve, reject) => {
+				api.get("users/" + sortingOrder)
+					.then(response => {
+						console.log(response.data.data)
+						resolve(response.data.data)
+					})
+					.catch(error => reject(error))
+			})
 		},
 		addElementLliurament({ commit }, element) {
 			commit("ADD_ELEMENTS_LLIURAMENT", element)

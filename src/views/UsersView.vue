@@ -1,8 +1,8 @@
 <template>
     <h1 class="text-center">Llistat d'usuaris</h1>
     <section class="row row-cols-2 row-cols-lg-6">
-        <UserCard class="col" v-for="user in this.$store.state.users" :key="user" :name="user.first_name"
-            :last_name="user.last_name" :email="user.email"></UserCard>
+        <UserCard class="col" v-for="user in this.users" :key="user" :name="user.first_name" :last_name="user.last_name"
+            :email="user.email" :avatar="user.avatar"></UserCard>
     </section>
 </template>
 
@@ -16,13 +16,11 @@ export default {
     data() {
         return {
 
+            users: []
         }
     },
-    created() {
-        let params = {
-            sort: "?sort=first_name"
-        }
-        this.$store.dispatch("getUsers", params);
+    async created() {
+        this.users = await this.$store.dispatch("getUsers", "?sort=first_name")
     }
 }
 </script>

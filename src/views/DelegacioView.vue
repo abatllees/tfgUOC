@@ -1,7 +1,7 @@
 <template>
     <h1 class="text-center">{{ this.$store.state.GettedElement?.Name }}</h1>
     <section class="row justify-content-end">
-        <div class="col-12 col-md-6 col-lg-3">
+        <div class="col-12 col-md-6 col-lg-2">
             <ContactCard v-if="this.$store.state.GettedElement?.ResponsableDelegacio"
                 :contactPerson="this.$store.state.GettedElement.ResponsableDelegacio"></ContactCard>
         </div>

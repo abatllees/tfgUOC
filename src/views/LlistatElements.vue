@@ -6,7 +6,7 @@
             <input type="text" id="site-search" name="q" class="form-control" v-model="this.searchValue">
         </div>
     </section>
-    <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating buttons-pagination
+    <EasyDataTable :headers="this.headers" :items="this.llistatElement" alternating buttons-pagination
         :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType"
         :theme-color="this.$store.state.themeColor">
     </EasyDataTable>
@@ -34,14 +34,9 @@ export default {
             ],
             sortBy: "NumMag",
             sortType: "asc",
-            searchValue: ""
+            searchValue: "",
+            llistatElement: []
         }
-    },
-    watch: {
-        /* query() {
-             console.log("changed")
-             this.$store.state.Element = this.filterItems(this.$store.state.Element, this.query)
-         }*/
     },
     async beforeMount() {
         let params = {
@@ -55,11 +50,7 @@ export default {
         if (this.$route.params.category) {
             params.filter = "&filter[Model][Subcategory][Category][_eq]=" + this.$route.params.category
         }
-
-
-
-        await this.$store.dispatch("getCollection", params);
-        await this.$store.dispatch("getHeaders", params.collection);
+        this.llistatElement = await this.$store.dispatch("getCollection", params)
     },
     methods: {
         filterItems: function (arr, query) {

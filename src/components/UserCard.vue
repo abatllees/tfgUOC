@@ -1,14 +1,15 @@
 <template>
     <div class="card">
-        <div class="card-img-top w-100 my-2"></div>
-        <div class="card-body">
+        <img class="card-img-top w-100 my-2" :src="'https://weekob4y.directus.app/assets/' + this.imageURL"
+            alt="Fotografia de perfil">
+        <div class=" card-body">
             <h5 class="card-title text-center">{{ name }} {{ last_name }}</h5>
-            <a v-if="email" :href="'mailto:${email}'" class="btn btn-secondary w-100">Contacta</a>
+            <a v-if="email" :href="'mailto:' + email" class="btn btn-secondary w-100">Contacta</a>
         </div>
     </div>
 </template>
 <script>
-//import api from "@/api"
+import api from "@/api"
 export default {
     name: "UserCard",
     components: {
@@ -22,13 +23,21 @@ export default {
     },
     data() {
         return {
+            imageURL: null,
         }
     },
-    beforeCreate() {
-        /*await api.get("/assets/" + this.avatar)
-            .then(response => {
-                console.log(response)
-            })*/
+    async beforeMount() {
+        if (this.avatar) {
+            console.log("I HAVE A FOTO", this.name + this.last_name, this.avatar)
+            return this.imageURL = await new Promise((resolve, reject) => {
+                api.get("assets/" + this.avatar + "?access_token=" + sessionStorage.getItem('access_token'))
+                    .then(response => {
+                        resolve(response.config.url)
+                    })
+                    .catch(error => reject(error.message))
+            })
+        }
+
     }
 }
 </script>

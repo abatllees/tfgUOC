@@ -1,8 +1,7 @@
 <template>
     <section class="row">
         <h1 class="text-center w-100">{{ msg }}</h1>
-        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.$store.state.Subcategory"
-            :key="subcategory">
+        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.subcategory" :key="subcategory">
             <router-link
                 :to="{ name: 'LlistatElements', params: { id: subcategory.id }, props: { msg: subcategory.SubcategoryName } }">
                 <CardButton :msg=subcategory.SubcategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
@@ -29,6 +28,7 @@ export default {
     },
     data() {
         return {
+            subcategory: []
         }
     },
     async mounted() {
@@ -38,7 +38,7 @@ export default {
             filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id
         }
 
-        await this.$store.dispatch("getCollection", params);
+        this.subcategory = await this.$store.dispatch("getCollection", params);
     },
     methods: {
     }

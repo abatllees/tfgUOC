@@ -1,29 +1,29 @@
 <template>
-	<NavBar v-if="this.$store.state.auth" />
-	<main class="container my-5 overflow-hidden">
+	<NavBar v-if="this.$store.state.user" />
+	<main class=" container my-5 overflow-hidden">
 		<router-view />
 	</main>
 </template>
 
 <script>
-/* eslint-disable */
+import router from "@/router"
 
 import NavBar from "@/components/NavBar.vue"
-import router from "@/router"
 export default {
 	name: 'App',
-
+	data() {
+		return {
+			user: sessionStorage.getItem('user'),
+		}
+	},
 	components: {
 		NavBar
 	},
 	created() {
-
-		console.log("Logged in:", sessionStorage.getItem('user'))
-
-		if (!sessionStorage.getItem('user')) {
+		if (!sessionStorage.getItem('access_token')) {
 			router.push("/login")
 		}
-	},
+	}
 }
 </script>
 

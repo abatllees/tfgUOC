@@ -21,9 +21,8 @@
 </template>
 
 <script>
-import router from "@/router"
-
 import CardButton from "@/components/CardButton.vue"
+
 export default {
   name: 'DashboardView',
   components: {
@@ -53,10 +52,5 @@ export default {
       sortType: "asc"
     }
   },
-  created() {
-    if (!sessionStorage.getItem('access_token')) {
-      router.push("/login")
-    }
-  }
 }
 </script>

@@ -18,13 +18,12 @@
 							Delegacions
 						</a>
 						<ul class="dropdown-menu">
-							<li v-for="delegacio in this.$store.state.Delegacio" v-bind:key="delegacio"><router-link
-									:to="{
-										name: 'DelegacioView',
-										params: {
-											id: delegacio.ID
-										}
-									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
+							<li v-for="delegacio in this.delegacions" v-bind:key="delegacio"><router-link :to="{
+								name: 'DelegacioView',
+								params: {
+									id: delegacio.ID
+								}
+							}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item">
@@ -45,14 +44,12 @@
 </template>
   
 <script>
-import { mapActions, mapGetters } from 'vuex'
-
 export default {
 	name: 'NavBar',
 	data() {
 		return {
 			fullname: null,
-			delegacions: this.$store.state.Delegacio
+			delegacions: []
 		}
 	},
 	components: {
@@ -60,33 +57,20 @@ export default {
 	},
 	beforeMount() {
 		if (this.$store.state.user) {
-			return this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
+			this.fullname = this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
 		}
-		return null
 	},
-	created() {
+	async created() {
 		let params = {
 			collection: "Delegacio",
 			fields: "?fields=Name, ID",
 			filter: "&sort=Name"
 		}
-		this.$store.dispatch("getCollection", params)
-	},
-	watch: {
-		getName() {
-			this.fullname = this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
-		}
+		this.delegacions = await this.$store.dispatch("getCollection", params)
 	},
 	computed: {
-		...mapActions(['getUser']),
-		...mapGetters(['getUser']),
-
 		getName: function () {
-			console.log('Updated!')
-			if (this.$store.state.user) {
-				return this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
-			}
-			return null
+			return this.$store.getters.getUser()
 		}
 	},
 	methods: {
