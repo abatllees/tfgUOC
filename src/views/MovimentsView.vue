@@ -1,8 +1,8 @@
 <template>
     <h1 class="text-center">Moviments</h1>
-    <EasyDataTable :headers="this.headers" :items="this.$store.state.Moviment" alternating buttons-pagination
-        :sort-by="this.sortBy" :sort-type="this.sortType">
-        <template v-slot:loading>
+    <EasyDataTable :headers="this.headers" :items="this.moviments" alternating buttons-pagination :sort-by="this.sortBy"
+        :sort-type="this.sortType">
+        <template #loading>
             <img src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
                 style="width: 100px; height: 80px;" />
         </template>
@@ -26,6 +26,7 @@ export default {
                 { text: "Origen", value: "Origen.Name", sortable: true },
                 { text: "Destí", value: "Desti.Name", sortable: true },
             ],
+            moviments: [],
             sortBy: "",
             sortType: "asc"
         }
@@ -34,11 +35,10 @@ export default {
     async beforeMount() {
         let params = {
             collection: "Moviment",
-            //fields: "?fields=*.*.*",
             fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
             filter: "&filter[status][_eq]=published"
         }
-        await this.$store.dispatch("getCollection", params);
+        this.moviments = await this.$store.dispatch("getCollection", params);
 
 
         //this.headers = await this.$store.dispatch("getHeaders", params.collection);

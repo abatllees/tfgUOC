@@ -79,7 +79,7 @@ export default createStore({
 			});
 		},
 		//Get a single item from a collection (table)
-		async GET_ELEMENT(state, element) {
+		/*async GET_ELEMENT(state, element) {
 			let params = {
 				element: element,
 				fields: "?fields=*.*.*",
@@ -94,9 +94,9 @@ export default createStore({
 						state.GettedElement = response.data.data
 				})
 				.catch(error => console.log(error.message))
-		},
+		},*/
 		//Get all the items from a Directus collection (table)
-		async GET_COLLECTION(state, payload) {
+		/*async GET_COLLECTION(state, payload) {
 			await api.get("items/" + payload.collection + payload.fields + payload.filter)
 				.then(response => {
 					state[payload.collection] = response.data.data
@@ -104,7 +104,7 @@ export default createStore({
 					return response.data.data
 				})
 				.catch(error => console.log(error.message))
-		},
+		},*/
 		async GET_HEADERS(state, payload) {
 			console.log(payload)
 			await api.get("fields/" + payload)
@@ -202,9 +202,6 @@ export default createStore({
 		},
 		getCollection({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-
-				//commit('GET_COLLECTION', payload)
-
 				api.get("items/" + payload.collection + payload.fields + payload.filter)
 					.then(response => {
 						console.log(response.data.data)
@@ -232,8 +229,21 @@ export default createStore({
 		handleEntrega({ commit }, llistatEntrega) {
 			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
 		},
-		getElement({ commit }, payload) {
-			commit("GET_ELEMENT", payload)
+		getElement({ commit }, SerialNum) {
+			let params = {
+				element: null,
+				fields: "?fields=*.*.*",
+				filter: ""
+			}
+			console.log("Eement a obtenir:", SerialNum)
+			return new Promise((resolve, reject) => {
+				api.get("items/Element/" + SerialNum + params.fields)
+					.then(response => {
+						console.log(response.data.data)
+						resolve(response.data.data)
+					})
+					.catch(error => reject(error))
+			})
 		}
 	},
 	plugins: [

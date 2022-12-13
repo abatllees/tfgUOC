@@ -8,11 +8,10 @@
     </section>
     <EasyDataTable :headers="this.headers" :items="this.llistatElement" alternating buttons-pagination
         :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType"
-        :theme-color="this.$store.state.themeColor">
+        :theme-color="this.$store.state.themeColor" @click-row="showRow">
     </EasyDataTable>
 </template>
 <script>
-
 export default {
     name: "LlistatElements",
     components: {
@@ -53,8 +52,9 @@ export default {
         this.llistatElement = await this.$store.dispatch("getCollection", params)
     },
     methods: {
-        filterItems: function (arr, query) {
-            return arr.filter(el => el.NumMag.includes(query));
+        showRow: function (element) {
+            console.log(element.SerialNum)
+            this.$router.push({ name: 'Fitxa', params: { SerialNum: element.SerialNum } })
         }
     }
 }

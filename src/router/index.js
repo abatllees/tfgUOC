@@ -11,6 +11,7 @@ import NotFound from "@/views/NotFound.vue"
 import LlistatElements from "@/views/LlistatElements.vue"
 import MovimentsView from "@/views/MovimentsView.vue"
 import DelegacioView from "@/views/DelegacioView.vue"
+import Fitxa from "@/views/FitxaElement.vue"
 
 const routes = [
   {
@@ -70,6 +71,12 @@ const routes = [
     path: "/DelegacioView/:id",
     name: "DelegacioView",
     component: DelegacioView,
+    params: true
+  },
+  {
+    path: "/fitxaElement/:SerialNum",
+    name: "Fitxa",
+    component: Fitxa,
     params: true
   }
 ]

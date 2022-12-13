@@ -7,8 +7,8 @@
         </div>
     </section>
     <h5>Material a la delegació</h5>
-    <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating buttons-pagination
-        v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+    <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
+        :items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
     </EasyDataTable>
     <button class="btn btn-secondary mt-3 float-right">Imprimeix</button>
 </template>
@@ -31,27 +31,27 @@ export default {
                 { text: "Data d'entrada", value: "DataEntrada", sortable: true },
                 { text: "Entrat per", value: "user_created.first_name", sortable: true },
             ],
-            items: this.$store.state.Element,
+            items: [],
             itemsSelected: [],
             sortBy: "",
             sortType: "asc"
         }
     },
-    created() {
+    async created() {
         this.getDelegacio()
-        this.getElements()
+        let params = {
+            collection: "Element",
+            fields: "?fields=*.*.*",
+            filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id
+        }
+        this.items = await this.$store.dispatch("getCollection", params)
     },
     methods: {
         getDelegacio: async function () {
             await this.$store.dispatch("getElement", { collection: "Delegacio", item: this.$route.params.id })
         },
-        getElements: async function () {
-            let params = {
-                collection: "Element",
-                fields: "?fields=*.*.*",
-                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id
-            }
-            await this.$store.dispatch("getCollection", params)
+        getElements: function () {
+
         }
     },
     watch: {
