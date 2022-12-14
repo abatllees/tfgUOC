@@ -27,10 +27,10 @@ export default {
         collection: "Model",
         item: this.model,
         fields: "?fields=ModelName",
-        filter: ""
+        filter: "",
+        sort: null
       }
       return await this.$store.dispatch("getElement", params)
-      //return this.$store.dispatch("getElement", params)
     }
   },
 }
@@ -41,9 +41,9 @@ export default {
   border-radius: 0px;
   border: 5px solid #bb0000;
   padding: 8px 16px 8px 16px;
-}g
+}
 
-h1 {
+g h1 {
   color: #bb0000;
   font-size: 5em;
   font-weight: 600;

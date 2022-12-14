@@ -35,7 +35,8 @@ export default {
         let params = {
             collection: "Subcategory",
             fields: "?fields=*.*.*",
-            filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id
+            filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
+            sort: ""
         }
 
         this.subcategory = await this.$store.dispatch("getCollection", params);

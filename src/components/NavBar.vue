@@ -18,12 +18,13 @@
 							Delegacions
 						</a>
 						<ul class="dropdown-menu">
-							<li v-for="delegacio in this.delegacions" v-bind:key="delegacio"><router-link :to="{
-								name: 'DelegacioView',
-								params: {
-									id: delegacio.ID
-								}
-							}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
+							<li v-for="delegacio in this.$store.state.Delegacions" v-bind:key="delegacio"><router-link
+									:to="{
+										name: 'DelegacioView',
+										params: {
+											id: delegacio.ID
+										}
+									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item">
@@ -44,12 +45,14 @@
 </template>
   
 <script>
+import api from "@/api.js"
+
 export default {
 	name: 'NavBar',
 	data() {
 		return {
 			fullname: null,
-			delegacions: []
+			delegacions: this.$store.getters.getDelegacions
 		}
 	},
 	components: {
@@ -59,25 +62,26 @@ export default {
 		if (this.$store.state.user) {
 			this.fullname = this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
 		}
-	},
-	async created() {
-		let params = {
-			collection: "Delegacio",
-			fields: "?fields=Name, ID",
-			filter: "&sort=Name"
-		}
-		this.delegacions = await this.$store.dispatch("getCollection", params)
-	},
-	computed: {
-		getName: function () {
-			return this.$store.getters.getUser()
-		}
+		this.delegacions = this.$store.getters.getDelegacions
 	},
 	methods: {
-		logout: function () {
-			let refresh_token = sessionStorage.refresh_token;
-			this.$store.commit("logout", refresh_token);
+		logout: async function () {
+			return new Promise((resolve, reject) => {
+				api.post("auth/logout", {
+					refresh_token: sessionStorage.getItem("access_token")
+				})
+					.then(response => {
+						console.log(response)
+						sessionStorage.clear()
+						this.$store.state.auth = false
+						this.$store.state.user = null
+						this.$router.push("/login")
+					})
+					.catch(error => reject(error.message))
+			})
 		},
+
+
 	}
 }
 </script>

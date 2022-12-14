@@ -1,5 +1,6 @@
 // importa tipografía desde google fonts
 @import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
 
 
 // asigna la tipografía por defecto
@@ -11,8 +12,10 @@ $red: #bb0000;
 $black: #000000;
 
 
-@import url("https://fonts.googleapis.com/css?family=Roboto");
-@import url("https://fonts.googleapis.com/css?family=Montserrat");
+.btn,
+.form-control {
+    border-radius: 0px;
+}
 
 /*# sourceMappingURL=custom.css.map */
 h1,

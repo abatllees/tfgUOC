@@ -8,15 +8,16 @@
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
                 <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="subcategory" required>
-                    <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
-                        {{ subcategory }}
+                    <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
+                        :value="subcategory.id">
+                        {{ subcategory.SubcategoryName }}
                     </option>
                 </select>
             </div>
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model" required>
-                    <option v-for="model in this.model" :key="model.id" :value="model.id">{{
+                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
                             model.ModelName
                     }}
                     </option>
@@ -38,7 +39,8 @@
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
                 <select class="form-control" name="destinacio" id="destinacio" v-model="delegacions">
-                    <option v-for="delegacio in this.delegacions" :key="delegacio.id" :value="delegacio.ID">
+                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
+                        :value="delegacio.ID">
                         {{
                                 delegacio.Name
                         }}
@@ -63,12 +65,11 @@ export default {
     },
     data() {
         return {
-            subcategory: [],
-            model: [],
+            subcategory: null,
+            model: null,
             numMag: null,
             numSerie: null,
 
-            delegacions: null,
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
             isModalVisible: false,
@@ -76,23 +77,26 @@ export default {
             results: [],
         }
     },
-    async beforeCreate() {
+    async created() {
         let params = {
-            collection: "Subcategory",
-            fields: "?fields=SubcategoryName,id",
-            //filter: "&filter[status][_eq]=published&filter[Model]=" + this.model
-            filter: "&filter[status][_eq]=published&sort[]=SubcategoryName"
+            collection: "Model",
+            fields: "?fields=ModelName,id,Subcategory",
+            filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.subcategory.id,
+            sort: "&sort[]=ModelName"
         }
+        this.$store.state.Model = await this.$store.dispatch("getCollection", params);
 
-        this.subcategory = await this.$store.dispatch("getCollection", params);
-
-        params = {
-            collection: "Delegacio",
-            fields: "?fields=Name, ID",
-            filter: "&sort=Name"
+    },
+    watch: {
+        async subcategory() {
+            let params = {
+                collection: "Model",
+                fields: "?fields=*.*.*",
+                filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.subcategory,
+                sort: "&sort[]=ModelName"
+            }
+            this.$store.state.Model = await this.$store.dispatch("getCollection", params);
         }
-        this.delegacions = await this.$store.dispatch("getCollection", params)
-
     },
     methods: {
         /*async cercarElements() {

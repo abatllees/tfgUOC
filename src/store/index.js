@@ -1,11 +1,8 @@
 import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
-import router from '../router'
-
 import api from "@/api"
 
 //The directus API defines tables as collections
-
 
 /* eslint-disable */
 
@@ -21,7 +18,8 @@ export default createStore({
 
 		Element: [], //It must be this name according to the collection name
 		Category: null, //Category collection
-		Delegacio: null, //Delegacio collection
+		Subcategory: null, //Category collection
+		Delegacions: null, //Delegacio collection
 
 
 		Moviment: [],
@@ -36,14 +34,23 @@ export default createStore({
 		getUser: state => {
 			return state.user
 		},
-		getCategories: state => {
+		getCategory: state => {
 			return state.Category
 		},
+		getSubcategory: state => {
+			return state.Subcategory
+		},
+		getDelegacions: state => {
+			return state.Delegacions
+		},
+		getSingleDelegacio: (state, DelegacioID) => {
+			return state.Delegacions.filter(Delegacio => Delegacio.ID = DelegacioID)
+		}
 	},
 	mutations: {
 		//Get the current logged in user
-		SET_LOGGED_USER(state, response) {
-			state.user = response
+		SET_LOGGED_USER(state, payload) {
+			state.user = payload
 		},
 		async GET_USERS(state, payload) {
 			await api.get("/users" + payload.sort)
@@ -51,24 +58,6 @@ export default createStore({
 					state.users = response.data.data
 				})
 				.catch(error => console.log(error.message))
-		},
-		async logout(state, payload) {
-			await api.post("auth/logout", {
-				refresh_token: payload
-			})
-				.then(response => {
-					console.log(response)
-					sessionStorage.clear()
-					state.auth = false
-					state.user = null
-					router.push("/login")
-				})
-				.catch(error => {
-					if (error.response.data.errors[0].extensions.code == "TOKEN_EXPIRED") {
-						console.log(error.response.data.errors[0].extensions.code)
-						this.commit("REFRESH_TOKEN")
-					}
-				})
 		},
 		ADD_ELEMENTS_LLIURAMENT(state, payload) {
 			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
@@ -202,9 +191,8 @@ export default createStore({
 		},
 		getCollection({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("items/" + payload.collection + payload.fields + payload.filter)
+				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
 					.then(response => {
-						console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
@@ -230,7 +218,7 @@ export default createStore({
 			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
 		},
 		getElement({ commit }, payload) {
-			console.log("Eement a obtenir:", payload)
+			console.log("Element a obtenir:", payload)
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + "/" + payload.item + payload.fields)
 					.then(response => {

@@ -33,30 +33,37 @@ export default {
             items: [],
             sortBy: "",
             sortType: "asc",
-            delegacio: null
+            delegacio: []
         }
     },
-    async created() {
+    async beforeMount() {
         this.delegacio = await this.getDelegacio()
         this.items = await this.getElements()
     },
+    watch: {
+        async '$route.params.id'() {
+            this.delegacio = await this.getDelegacio()
+            this.items = await this.getElements()
+        }
+    },
     methods: {
-        getDelegacio: function () {
+        getDelegacio: async function () {
             let params = {
                 collection: "Delegacio",
                 item: this.$route.params.id,
                 fields: "?fields=Name,ResponsableDelegacio.first_name,ResponsableDelegacio.last_name,ResponsableDelegacio.email",
-                filter: ""
+                filter: "",
+                sort: ""
             }
-            return this.$store.dispatch("getElement", params)
+            return await this.$store.dispatch("getElement", params)
         },
-        getElements: function () {
+        getElements: async function () {
             let params = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
                 filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published"
             }
-            return this.$store.dispatch("getCollection", params)
+            return await this.$store.dispatch("getCollection", params)
         }
     }
 }

@@ -1,6 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
-@import url("https://fonts.googleapis.com/css?family=Roboto");
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
+.btn,
+.form-control {
+  border-radius: 0px;
+}
+
 /*# sourceMappingURL=custom.css.map */
 h1,
 h2,

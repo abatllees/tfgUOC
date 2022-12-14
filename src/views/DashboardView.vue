@@ -68,8 +68,9 @@ export default {
 	async created() {
 		let params = {
 			collection: "Element",
-			fields: "",
-			filter: "?aggregate[count]=SerialNum&groupBy[]=Model"
+			fields: "", //When agreggate this not applies
+			filter: "?aggregate[count]=SerialNum&groupBy[]=Model",
+			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
 	}

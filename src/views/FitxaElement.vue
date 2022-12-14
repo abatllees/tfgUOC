@@ -8,7 +8,8 @@
             <p>Número de sèrie: {{ element.SerialNum }}</p>
             <p>Número de magatzem: {{ element.NumMag }}</p>
             <p>Responsable: {{ }}</p>
-            <p>Estat: {{ element.status }}</p>
+            <p>Estat: <span class="dot"></span>
+                {{ element.status }}</p>
         </div>
         <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
@@ -94,7 +95,8 @@ export default {
         params = {
             collection: "Element",
             fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-            filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum
+            filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
+            sort: ""
         }
         return await this.$store.dispatch("getCollection", params)
     },
@@ -103,7 +105,8 @@ export default {
             let params = {
                 collection: collection,
                 fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum
+                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
+                sort: ""
             }
             return await this.$store.dispatch("getCollection", params)
             //console.log(this.historialMoviments.items)
@@ -111,3 +114,12 @@ export default {
     }
 }
 </script>
+<style scoped>
+.dot {
+    height: 15px;
+    width: 15px;
+    background-color: #027505;
+    border-radius: 50%;
+    display: inline-block;
+}
+</style>

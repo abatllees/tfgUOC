@@ -8,7 +8,7 @@
     </section>
     <EasyDataTable :headers="this.headers" :items="this.llistatElement" alternating buttons-pagination
         :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType"
-        :theme-color="this.$store.state.themeColor" @click-row="showRow">
+        :theme-color="this.$store.state.themeColor" @click-row="showDetail">
     </EasyDataTable>
 </template>
 <script>
@@ -41,7 +41,8 @@ export default {
         let params = {
             collection: "Element",
             fields: "?fields=*.*.*",
-            filter: "&filter[status][_eq]=published"
+            filter: "&filter[status][_eq]=published",
+            sort: ""
         }
         if (this.$route.params.id) {
             params.filter = params.filter + "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
@@ -52,7 +53,7 @@ export default {
         this.llistatElement = await this.$store.dispatch("getCollection", params)
     },
     methods: {
-        showRow: function (element) {
+        showDetail: function (element) {
             console.log(element.SerialNum)
             this.$router.push({ name: 'Fitxa', params: { SerialNum: element.SerialNum } })
         }

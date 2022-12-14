@@ -26,7 +26,8 @@ export default {
             params: {
                 collection: "Category",
                 fields: "?fields=*.*.*",
-                filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL&sort[]=CategoryName"
+                filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
+                sort: "&sort[]=CategoryName"
             },
             categories: []
         }
