@@ -12,9 +12,8 @@
                 </header>
                 <section class="modal-body" id="modalDescription">
                     <slot name="body">
-                        <EasyDataTable :headers="this.headers" :items="this.$store.state.Element" alternating
-                            buttons-pagination v-model:items-selected="itemsSelected" :sort-by="this.sortBy"
-                            :sort-type="this.sortType">
+                        <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
+                            v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
                         </EasyDataTable>
                     </slot>
                 </section>
@@ -29,8 +28,10 @@
 </template>
 <script>
 export default {
-
     name: 'ModalComponent',
+    props: {
+        items: Object
+    },
     components: {
         EasyDataTable: window['vue3-easy-data-table'],
     },
@@ -44,7 +45,7 @@ export default {
             ],
             sortBy: "NumMag",
             sortType: "asc",
-            itemsSelected: []
+            itemsSelected: [],
         }
     },
 

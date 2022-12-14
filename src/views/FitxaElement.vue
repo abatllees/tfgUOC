@@ -10,6 +10,8 @@
             <p>Responsable: {{ }}</p>
             <p>Estat: <span class="dot"></span>
                 {{ element.status }}</p>
+            <p>Observacions:<br>
+                {{ element.Observacions }}</p>
         </div>
         <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
@@ -71,10 +73,10 @@ export default {
             },
             accessoris: {
                 headers: [
-                    { text: "Data d'assignació", value: "date_created", sortable: true },
-                    { text: "Model", value: "Origen.Name", sortable: true },
-                    { text: "Número de sèrie", value: "Desti.Name", sortable: true },
-                    { text: "Assignat per", value: "user_created.first_name", sortable: true },
+                    { text: "Data d'assignació", value: "date_updated", sortable: true },
+                    { text: "Model", value: "Model.ModelName", sortable: true },
+                    { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                    { text: "Assignat per", value: "user_updated.first_name", sortable: true },
                 ],
                 items: [],
                 sortBy: "",
@@ -90,26 +92,26 @@ export default {
             filter: ""
         }
         this.element = await this.$store.dispatch("getElement", params)
-        this.historialMoviments.items = await this.getItems("Moviment")
-
-        params = {
-            collection: "Element",
+        let payload = {
+            collection: "Moviment",
             fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
             filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
             sort: ""
         }
-        return await this.$store.dispatch("getCollection", params)
+        this.historialMoviments.items = await this.getItems(payload)
+
+        payload = {
+            collection: "Element",
+            fields: "?fields=Model.*,SerialNum,user_updated.*,date_updated",
+            filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
+            sort: ""
+        }
+        this.accessoris.items = await this.getItems(payload)
+
     },
     methods: {
-        getItems: async function (collection) {
-            let params = {
-                collection: collection,
-                fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
-                sort: ""
-            }
-            return await this.$store.dispatch("getCollection", params)
-            //console.log(this.historialMoviments.items)
+        getItems: function (payload) {
+            return this.$store.dispatch("getCollection", payload)
         }
     }
 }

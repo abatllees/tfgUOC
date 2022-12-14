@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
-                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="subcategory" required>
+                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial" required>
                     <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
                         :value="subcategory.id">
                         {{ subcategory.SubcategoryName }}
@@ -38,12 +38,10 @@
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
-                <select class="form-control" name="destinacio" id="destinacio" v-model="delegacions">
+                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
                     <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
                         :value="delegacio.ID">
-                        {{
-                                delegacio.Name
-                        }}
+                        {{ delegacio.Name }}
                     </option>
                 </select>
             </div>
@@ -54,7 +52,7 @@
             </div>
         </div>
     </form>
-    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.results" />
+    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.results" :items="this.results" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -65,16 +63,18 @@ export default {
     },
     data() {
         return {
+            tipusMaterial: null,
             subcategory: null,
             model: null,
             numMag: null,
             numSerie: null,
 
+            delegacioDesti: null,
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
             isModalVisible: false,
 
-            results: [],
+            results: null,
         }
     },
     async created() {
@@ -88,33 +88,35 @@ export default {
 
     },
     watch: {
-        async subcategory() {
+        async tipusMaterial() {
             let params = {
                 collection: "Model",
                 fields: "?fields=*.*.*",
-                filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.subcategory,
+                filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.tipusMaterial,
                 sort: "&sort[]=ModelName"
             }
             this.$store.state.Model = await this.$store.dispatch("getCollection", params);
-        }
-    },
-    methods: {
-        /*async cercarElements() {
-
+        },
+        async model() {
+            console.log("I'VE FOUND SOMETHING")
             let params = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
-                filter: "&filter[status][_eq]=published&filter[Model]=" + this.model
+                filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model,
+                sort: ""
             }
-            await this.$store.dispatch("getCollection", params);
-
+            this.results = await this.$store.dispatch("getCollection", params);
+        }
+    },
+    methods: {
+        async cercarElements() {
             if (this.tipusMaterial && this.model) {
                 this.isModalVisible = true;
             }
         },
         closeModal() {
             this.isModalVisible = false;
-        },*/
+        },
     },
 }
 </script>

@@ -61,39 +61,10 @@ export default createStore({
 		},
 		ADD_ELEMENTS_LLIURAMENT(state, payload) {
 			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
-
-
 			payload.forEach(element => {
 				console.log("ELEMENT_TO_ADD", element)
 			});
 		},
-		//Get a single item from a collection (table)
-		/*async GET_ELEMENT(state, element) {
-			let params = {
-				element: element,
-				fields: "?fields=*.*.*",
-				filter: ""
-			}
-			console.log("Eement a obtenir:", element.item)
-			console.log("De la col·lecció:", element.collection)
-
-			await api.get("items/" + element.collection + "/" + element.item + params.fields)
-				.then(response => {
-					console.log(response),
-						state.GettedElement = response.data.data
-				})
-				.catch(error => console.log(error.message))
-		},
-		//Get all the items from a Directus collection (table)
-		/*async GET_COLLECTION(state, payload) {
-			await api.get("items/" + payload.collection + payload.fields + payload.filter)
-				.then(response => {
-					state[payload.collection] = response.data.data
-					console.log("GET_COLLECTION_ITEMS", payload.collection, state[payload.collection])
-					return response.data.data
-				})
-				.catch(error => console.log(error.message))
-		},*/
 		async GET_HEADERS(state, payload) {
 			console.log(payload)
 			await api.get("fields/" + payload)
@@ -193,6 +164,7 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
 					.then(response => {
+						console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
@@ -214,15 +186,13 @@ export default createStore({
 		addElementLliurament({ commit }, element) {
 			commit("ADD_ELEMENTS_LLIURAMENT", element)
 		},
-		handleEntrega({ commit }, llistatEntrega) {
+		realitzarLliurament({ commit }, llistatEntrega) {
 			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
 		},
 		getElement({ commit }, payload) {
-			console.log("Element a obtenir:", payload)
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + "/" + payload.item + payload.fields)
 					.then(response => {
-						console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))

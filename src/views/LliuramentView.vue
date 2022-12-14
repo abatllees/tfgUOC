@@ -35,7 +35,7 @@ export default {
     methods: {
         realitzarLliurament: function () {
             console.log("Realitzar lliurament")
-            this.$store.dispatch("handleEntrega", this.$store.state.llistatLliurament);
+            this.$store.dispatch("realitzarLliurament", this.$store.state.llistatLliurament);
         }
     }
 }
