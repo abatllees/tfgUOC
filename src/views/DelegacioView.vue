@@ -7,8 +7,8 @@
         </div>
     </section>
     <h5>Material a la delegació</h5>
-    <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
-        :items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+    <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination :sort-by="this.sortBy"
+        :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
     </EasyDataTable>
     <button class="btn btn-secondary mt-3 float-right">Imprimeix</button>
 </template>
@@ -31,7 +31,6 @@ export default {
                 { text: "Entrat per", value: "user_created.first_name", sortable: true },
             ],
             items: [],
-            itemsSelected: [],
             sortBy: "",
             sortType: "asc",
             delegacio: null
@@ -39,7 +38,7 @@ export default {
     },
     async created() {
         this.delegacio = await this.getDelegacio()
-        //this.items = await this.getElements()
+        this.items = await this.getElements()
     },
     methods: {
         getDelegacio: function () {
@@ -51,13 +50,13 @@ export default {
             }
             return this.$store.dispatch("getElement", params)
         },
-        getElements: async function () {
+        getElements: function () {
             let params = {
                 collection: "Element",
-                fields: "?fields=SerialNum",
-                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id
+                fields: "?fields=*.*.*",
+                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published"
             }
-            await this.$store.dispatch("getCollection", params)
+            return this.$store.dispatch("getCollection", params)
         }
     }
 }

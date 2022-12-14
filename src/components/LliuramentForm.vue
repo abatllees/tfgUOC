@@ -7,18 +7,16 @@
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
-                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial" required>
-                    <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
-                        :value="subcategory.id">{{
-                                subcategory.SubcategoryName
-                        }}
+                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="subcategory" required>
+                    <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
+                        {{ subcategory }}
                     </option>
                 </select>
             </div>
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model" required>
-                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
+                    <option v-for="model in this.model" :key="model.id" :value="model.id">{{
                             model.ModelName
                     }}
                     </option>
@@ -39,8 +37,8 @@
         <div class="row">
             <div class="col-12 col-sm-6">
                 <label for="destinacio">Destinació:</label>
-                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
-                    <option v-for="delegacio in this.$store.state.Delegacio" :key="delegacio.id" :value="delegacio.ID">
+                <select class="form-control" name="destinacio" id="destinacio" v-model="delegacions">
+                    <option v-for="delegacio in this.delegacions" :key="delegacio.id" :value="delegacio.ID">
                         {{
                                 delegacio.Name
                         }}
@@ -54,7 +52,7 @@
             </div>
         </div>
     </form>
-    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.$store.state.ResultatCerca" />
+    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.results" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -65,45 +63,39 @@ export default {
     },
     data() {
         return {
-            tipusMaterial: null,
-            model: null,
+            subcategory: [],
+            model: [],
             numMag: null,
             numSerie: null,
+
+            delegacions: null,
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
             isModalVisible: false,
 
-            results: null,
+            results: [],
         }
     },
-    watch: {
-        async tipusMaterial() {
-            let params = {
-                collection: "Model",
-                fields: "?fields=*.*",
-                filter: "&filter[Subcategory][_eq]=" + this.tipusMaterial
-            }
+    async beforeCreate() {
+        let params = {
+            collection: "Subcategory",
+            fields: "?fields=SubcategoryName,id",
+            //filter: "&filter[status][_eq]=published&filter[Model]=" + this.model
+            filter: "&filter[status][_eq]=published&sort[]=SubcategoryName"
+        }
 
-            await this.$store.dispatch("getCollection", params);
-        }
-    },
-    async beforeMount() {
-        const collectionsToGet = ["Subcategory", "Delegacio"]
+        this.subcategory = await this.$store.dispatch("getCollection", params);
 
-        for await (let collection of collectionsToGet) {
-            let params = {
-                collection: collection,
-                fields: "?fields=*.*",
-                filter: "&filter[status][_eq]=published"
-            }
-            this.$store.dispatch("getCollection", params);
+        params = {
+            collection: "Delegacio",
+            fields: "?fields=Name, ID",
+            filter: "&sort=Name"
         }
-    },
-    mounted() {
-        this.tipusMaterial = this.$store.state.Subcategory
+        this.delegacions = await this.$store.dispatch("getCollection", params)
+
     },
     methods: {
-        async cercarElements() {
+        /*async cercarElements() {
 
             let params = {
                 collection: "Element",
@@ -118,8 +110,8 @@ export default {
         },
         closeModal() {
             this.isModalVisible = false;
-        },
-    }
+        },*/
+    },
 }
 </script>
 

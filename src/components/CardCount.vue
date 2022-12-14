@@ -41,7 +41,7 @@ export default {
   border-radius: 0px;
   border: 5px solid #bb0000;
   padding: 8px 16px 8px 16px;
-}
+}g
 
 h1 {
   color: #bb0000;

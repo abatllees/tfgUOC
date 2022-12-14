@@ -28,6 +28,7 @@
                 buttons-pagination :sort-by="this.incidencies.sortBy" :sort-type="this.incidencies.sortType"
                 :theme-color="this.$store.state.themeColor">
             </EasyDataTable>
+            <button class="btn btn-primary mt-1">Crear incidència</button>
         </div>
         <div class="col-12 col-lg">
             <h6>Equips assignats</h6>
@@ -35,6 +36,7 @@
                 buttons-pagination :sort-by="this.accessoris.sortBy" :sort-type="this.accessoris.sortType"
                 :theme-color="this.$store.state.themeColor">
             </EasyDataTable>
+            <button class="btn btn-primary mt-1">Gestionar accessoris</button>
         </div>
     </section>
 </template>
@@ -88,6 +90,13 @@ export default {
         }
         this.element = await this.$store.dispatch("getElement", params)
         this.historialMoviments.items = await this.getItems("Moviment")
+
+        params = {
+            collection: "Element",
+            fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
+            filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum
+        }
+        return await this.$store.dispatch("getCollection", params)
     },
     methods: {
         getItems: async function (collection) {
