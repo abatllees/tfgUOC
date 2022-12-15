@@ -1,10 +1,11 @@
 <template>
     <section class="row">
-        <h1 class="text-center w-100">{{ msg }}</h1>
+        <h1 class="text-center w-100"> {{ category?.CategoryName }}</h1>
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.subcategory" :key="subcategory">
-            <router-link
-                :to="{ name: 'LlistatElements', params: { id: subcategory.id }, props: { msg: subcategory.SubcategoryName } }">
-                <CardButton :msg=subcategory.SubcategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
+            <router-link :to="{
+                name: 'LlistatElements', params: { id: subcategory.id }
+            }">
+                <CardButton :title=subcategory.SubcategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
             </router-link>
         </div>
     </section>
@@ -13,9 +14,6 @@
         params: {
             category: this.$route.params.id
         },
-        props: {
-            msg: 'Hola'
-        }
     }" class="btn btn-secondary">Mostra tots els elements</router-link>
 </template>
 <script>
@@ -28,18 +26,29 @@ export default {
     },
     data() {
         return {
+            category: null,
             subcategory: []
         }
     },
-    async mounted() {
+    async beforeMount() {
         let params = {
             collection: "Subcategory",
-            fields: "?fields=*.*.*",
+            fields: "?fields=SubcategoryName,id",
+            filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
+            sort: "&sort[]=SubcategoryName"
+        }
+
+        this.subcategory = await this.$store.dispatch("getCollection", params);
+
+        params = {
+            collection: "Category",
+            item: this.$route.params.id,
+            fields: "?fields=CategoryName",
             filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
             sort: ""
         }
 
-        this.subcategory = await this.$store.dispatch("getCollection", params);
+        this.category = await this.$store.dispatch("getElement", params);
     },
     methods: {
     }

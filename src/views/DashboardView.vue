@@ -4,7 +4,7 @@
 		<section class="row">
 			<div class="col-6 col-sm-4 col-md-2" v-for="option in options" :key="option">
 				<router-link :to="{ path: option.router, params: { id: '2' } }">
-					<CardButton :msg="option.name" :icon="option.icon"></CardButton>
+					<CardButton :title="option.name" :icon="option.icon"></CardButton>
 				</router-link>
 			</div>
 		</section>
@@ -65,7 +65,7 @@ export default {
 			sortType: "asc"
 		}
 	},
-	async created() {
+	async beforeCreate() {
 		let params = {
 			collection: "Element",
 			fields: "", //When agreggate this not applies

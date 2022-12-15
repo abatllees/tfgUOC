@@ -36,16 +36,7 @@
         </div>
         <button type="submit" class="btn btn-secondary my-2">Cercar elements</button>
         <div class="row">
-            <div class="col-12 col-sm-6">
-                <label for="destinacio">Destinació:</label>
-                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
-                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
-                        :value="delegacio.ID">
-                        {{ delegacio.Name }}
-                    </option>
-                </select>
-            </div>
-            <div class="col-12 col-sm-6">
+            <div class="col-12 col-sm">
                 <label for="personaEntrega">Entrega:</label>
                 <input type="text" class="form-control" id="personaEntrega" disabled placeholder="Usuari"
                     v-model="usuariEntrega">
@@ -69,7 +60,6 @@ export default {
             numMag: null,
             numSerie: null,
 
-            delegacioDesti: null,
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
             isModalVisible: false,
@@ -77,14 +67,14 @@ export default {
             results: null,
         }
     },
-    async created() {
-        let params = {
+    async beforeCreate() {
+        /*let params = {
             collection: "Model",
             fields: "?fields=ModelName,id,Subcategory",
             filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.subcategory.id,
             sort: "&sort[]=ModelName"
         }
-        this.$store.state.Model = await this.$store.dispatch("getCollection", params);
+        this.$store.state.Model = await this.$store.dispatch("getCollection", params);*/
 
     },
     watch: {
@@ -98,7 +88,6 @@ export default {
             this.$store.state.Model = await this.$store.dispatch("getCollection", params);
         },
         async model() {
-            console.log("I'VE FOUND SOMETHING")
             let params = {
                 collection: "Element",
                 fields: "?fields=*.*.*",

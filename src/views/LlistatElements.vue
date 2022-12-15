@@ -1,5 +1,6 @@
 <template>
-    <h1 class="text-center">{{ msg }}</h1>
+    <h1 class="text-center">{{ title?.CategoryName }}</h1>
+    <h1 class="text-center">{{ title?.SubcategoryName }}</h1>
     <section class="row justify-content-end">
         <div class="col col-md-3 mb-2">
             <label for="site-search">Comença a cercar:</label>
@@ -18,8 +19,8 @@ export default {
 
     },
     props: {
-        msg: String
-
+        category: String,
+        id: Number
     },
     data() {
         return {
@@ -34,7 +35,9 @@ export default {
             sortBy: "NumMag",
             sortType: "asc",
             searchValue: "",
-            llistatElement: []
+            llistatElement: [],
+
+            title: "Títol"
         }
     },
     async beforeMount() {
@@ -46,16 +49,30 @@ export default {
         }
         if (this.$route.params.id) {
             params.filter = params.filter + "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
+            this.title = await this.getTitle("Subcategory", this.$route.params.id)
         }
         if (this.$route.params.category) {
             params.filter = "&filter[Model][Subcategory][Category][_eq]=" + this.$route.params.category
+            this.title = await this.getTitle("Category", this.$route.params.category)
+
         }
+        console.log("TITLE", this.title)
         this.llistatElement = await this.$store.dispatch("getCollection", params)
     },
     methods: {
         showDetail: function (element) {
             console.log(element.SerialNum)
             this.$router.push({ name: 'Fitxa', params: { SerialNum: element.SerialNum } })
+        },
+        getTitle: async function (collection, key) {
+            let params = {
+                collection: collection,
+                item: key,
+                fields: "?fields=*",
+                filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
+                sort: ""
+            }
+            return await this.$store.dispatch("getElement", params);
         }
     }
 }

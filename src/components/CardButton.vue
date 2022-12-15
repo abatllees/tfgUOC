@@ -1,7 +1,7 @@
 <template>
   <div class="card text-white text-center h-100">
     <font-awesome-icon :icon="icon" size="4x" class="py-2" />
-    <h5> {{ msg }}</h5>
+    <h5> {{ title }}</h5>
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 export default {
   name: 'CardButton',
   props: {
-    msg: String,
+    title: String,
     icon: String
   }
 }

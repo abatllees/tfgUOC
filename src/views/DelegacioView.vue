@@ -61,7 +61,8 @@ export default {
             let params = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
-                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published"
+                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published",
+                sort: ""
             }
             return await this.$store.dispatch("getCollection", params)
         }

@@ -28,9 +28,6 @@ export default createStore({
 
 	},
 	getters: {
-		getAuth: state => {
-			return state.auth
-		},
 		getUser: state => {
 			return state.user
 		},
@@ -153,12 +150,11 @@ export default createStore({
 				api.get("users/me")
 					.then(response => {
 						commit('SET_LOGGED_USER', response.data.data)
-						resolve(response.data.data)
 						sessionStorage.setItem("user", JSON.stringify(response.data.data))
+						resolve(response.data.data)
 					})
 					.catch(error => reject(error.message))
 			})
-
 		},
 		getCollection({ commit }, payload) {
 			return new Promise((resolve, reject) => {
@@ -203,8 +199,9 @@ export default createStore({
 		new VuexPersistence({
 			storage: window.sessionStorage,
 			reducer: (state) => ({
-				auth: state.auth,
-				user: state.user
+				user: state.user,
+				Subcategory: state.Subcategory,
+				Delegacions: state.Delegacions
 			})
 		}).plugin
 	]

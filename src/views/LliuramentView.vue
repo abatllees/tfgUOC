@@ -8,6 +8,12 @@
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
             buttons-pagination :sort-by="this.sortBy" :sort-type="this.sortType">
         </EasyDataTable>
+        <label for="destinacio">Destinació:</label>
+        <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
+            <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id" :value="delegacio.ID">
+                {{ delegacio.Name }}
+            </option>
+        </select>
         <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
     </section>
 </template>

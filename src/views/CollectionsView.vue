@@ -8,7 +8,7 @@
                     id: category.id
                 }
             }">
-                <CardButton :msg=category.CategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
+                <CardButton :title=category.CategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
             </router-link>
         </div>
     </section>
@@ -25,7 +25,7 @@ export default {
         return {
             params: {
                 collection: "Category",
-                fields: "?fields=*.*.*",
+                fields: "?fields=CategoryName,id",
                 filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
                 sort: "&sort[]=CategoryName"
             },

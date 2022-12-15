@@ -51,18 +51,12 @@ export default {
 	name: 'NavBar',
 	data() {
 		return {
-			fullname: null,
+			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 			delegacions: this.$store.getters.getDelegacions
 		}
 	},
 	components: {
 
-	},
-	beforeMount() {
-		if (this.$store.state.user) {
-			this.fullname = this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name
-		}
-		this.delegacions = this.$store.getters.getDelegacions
 	},
 	methods: {
 		logout: async function () {
