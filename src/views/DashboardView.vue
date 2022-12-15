@@ -73,6 +73,31 @@ export default {
 			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
+
+		//Set Categories, Subcategories, Model and Delegacions
+		params = {
+			collection: "Category",
+			fields: "?fields=*.*.*",
+			filter: "?filter[status][_eq]=published",
+			sort: "&sort[]=CategoryName"
+		}
+		this.$store.state.Categories = await this.$store.dispatch("getCollection", params)
+
+		params = {
+			collection: "Subcategory",
+			fields: "?fields=*.*.*",
+			filter: "?filter[status][_eq]=published",
+			sort: "&sort[]=SubcategoryName"
+		}
+		this.$store.state.Subcategory = await this.$store.dispatch("getCollection", params)
+
+		params = {
+			collection: "Delegacio",
+			fields: "?fields=*.*.*",
+			filter: "&filter[status][_eq]=published",
+			sort: "&sort[]=Name"
+		}
+		this.$store.state.Delegacions = await this.$store.dispatch("getCollection", params)
 	}
 }
 </script>

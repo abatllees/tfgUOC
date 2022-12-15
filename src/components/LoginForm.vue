@@ -8,6 +8,9 @@
             <label for="passwordLogin">Contrasenya</label>
             <input type="password" class="form-control" id="passwordLogin" v-model="this.password">
         </div>
+        <div class="alert alert-danger" v-if="this.error">
+            {{ error[0].message }}
+        </div>
         <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
     </form>
     <img src="@/assets/logoCCMA.png" alt="Logotip CCCMA" class="mx-auto d-block py-5">
@@ -25,29 +28,27 @@ export default {
         return {
             email: "",
             password: "",
+            error: null
         }
     },
-    computed: {
-
-    },
     methods: {
-        async HANDLE_LOGIN() {
-            await api.post("auth/login", {
-                email: this.email,
-                password: this.password
-            })
-                .then(response => {
-
-                    sessionStorage.setItem("access_token", response.data.data.access_token)
-                    sessionStorage.setItem("expires", response.data.data.expires)
-                    sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
-
-                    this.$store.dispatch("getUser")
-                    router.push("/")
+        HANDLE_LOGIN() {
+            return new Promise((resolve, reject) => {
+                api.post("auth/login", {
+                    email: this.email,
+                    password: this.password
                 })
-                .catch(e =>
-                    console.log(e.response.data.errors)
-                )
+                    .then(response => {
+                        resolve(response.data.data)
+                        sessionStorage.setItem("access_token", response.data.data.access_token)
+                        sessionStorage.setItem("expires", response.data.data.expires)
+                        sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
+
+                        this.$store.dispatch("getUser")
+                        router.push("/")
+                    })
+                    .catch(error => reject(this.error = error.response.data.errors))
+            })
         },
     }
 }

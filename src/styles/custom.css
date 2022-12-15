@@ -1,8 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
+
 .btn,
 .form-control {
   border-radius: 0px;
+  border-color: 5px solid #000000;
 }
 
 /*# sourceMappingURL=custom.css.map */
@@ -45,4 +47,6 @@ p {
 
 small {
   font-size: 13px;
-}/*# sourceMappingURL=custom.css.map */
+}
+
+/*# sourceMappingURL=custom.css.map */

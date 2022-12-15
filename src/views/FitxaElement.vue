@@ -102,7 +102,7 @@ export default {
 
         payload = {
             collection: "Element",
-            fields: "?fields=Model.*,SerialNum,user_updated.*,date_updated",
+            fields: "?fields=Model.*,SerialNum,user_created.*,date_created",
             filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
             sort: ""
         }
