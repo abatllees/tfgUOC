@@ -73,10 +73,9 @@ export default {
             },
             accessoris: {
                 headers: [
-                    { text: "Data d'assignació", value: "date_updated", sortable: true },
+                    { text: "Model", value: "Model.Subcategory.SubcategoryName", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                    { text: "Assignat per", value: "user_updated.first_name", sortable: true },
                 ],
                 items: [],
                 sortBy: "",
@@ -102,7 +101,7 @@ export default {
 
         payload = {
             collection: "Element",
-            fields: "?fields=Model.*,SerialNum,user_created.*,date_created",
+            fields: "?fields=*.*.*",
             filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
             sort: ""
         }

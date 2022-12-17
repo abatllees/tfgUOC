@@ -50,11 +50,8 @@ export default createStore({
 			state.user = payload
 		},
 		async GET_USERS(state, payload) {
-			await api.get("/users" + payload.sort)
-				.then(response => {
-					state.users = response.data.data
-				})
-				.catch(error => console.log(error.message))
+
+
 		},
 		ADD_ELEMENTS_LLIURAMENT(state, payload) {
 			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
@@ -73,7 +70,6 @@ export default createStore({
 				.catch(error => console.log(error.message))
 		},
 		async CREATE_MOVIMENT_LLIURAMENT(state, payload) {
-			console.log("ITEMS SELECTED TO UPDATE:", payload)
 			this.commit("SET_UPDATE_KEYS", payload)
 
 			let keys = [] //Create an array with serialNum values to update them
@@ -83,16 +79,13 @@ export default createStore({
 				console.log(value.Element)
 				keys.push(value.Element)
 			}
-			console.log(state.llistatConfigurat)
-			console.log(keys)
+			console.log("keys", keys)
 
-			//await this.commit("UPDATE_ELEMENT", keys)
 			await this.commit("CREATE_ITEM", { elements: keys, collection: "Moviment" })
 			state.llistatLliurament = []
 		},
 		async CREATE_ITEM(state, payload) {
-			console.log("CREATE", payload.collection, ":", payload.elements)
-			console.log("Llistat configurat", state.llistatConfigurat)
+			console.log("CREATE", payload.collection, ":", state.llistatConfigurat)
 
 			await api.post("items/" + payload.collection, state.llistatConfigurat)
 				.then(response => {
@@ -118,29 +111,22 @@ export default createStore({
 				})
 				.catch(error => console.log(error.message))
 		},
-		async REFRESH_TOKEN() {
-			await api.post("auth/refresh")
-				.then(response => {
-					sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
-				})
-				.catch(error => console.log(error.response.data.errors))
-		},
 		//Defines the payload to the POST request to create data
 		SET_UPDATE_KEYS(state, payload) {
-			console.log("Definint llista de lliurament:", payload)
 
+			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
 			let llistatConfigurat = []
 			for (let i = 0; i < payload.length; i++) {
 				llistatConfigurat[i] = {
 					Element: payload[i].SerialNum,
-					Origen: payload[i].DelegacioActual.ID, //We need to get the INT value of the real warehouse
+					Origen: payload[i].DelegacioActual.ID, //We need to get the INT value of the warehouse
 					Desti: state.destinacio
 				};
 
 			}
-			console.log("-------------")
+			/*console.log("-------------")
 			console.log(llistatConfigurat)
-			console.log("-------------")
+			console.log("-------------")*/
 			state.llistatConfigurat = llistatConfigurat
 		},
 	},
@@ -169,9 +155,9 @@ export default createStore({
 		getHeaders({ commit }, payload) {
 			commit('GET_HEADERS', payload)
 		},
-		getUsers({ commit }, sortingOrder) {
+		getUsers({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("users/" + sortingOrder)
+				api.get("users/" + payload.fields + payload.filter)
 					.then(response => {
 						console.log(response.data.data)
 						resolve(response.data.data)

@@ -4,6 +4,11 @@
             <LliuramentForm></LliuramentForm>
         </div>
     </section>
+    <section class="w-100 my-2" v-if="false">
+        <div class="alert alert-success">
+            {{ resultatMoviment }}
+        </div>
+    </section>
     <section class="w-100 my-5">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
             buttons-pagination :sort-by="this.sortBy" :sort-type="this.sortType">
@@ -35,7 +40,9 @@ export default {
                 { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
             ],
             sortBy: "NumMag",
-            sortType: "asc"
+            sortType: "asc",
+
+            resultatMoviment: null
         }
     },
     methods: {

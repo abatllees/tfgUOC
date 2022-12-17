@@ -69,7 +69,7 @@ export default {
 		let params = {
 			collection: "Element",
 			fields: "", //When agreggate this not applies
-			filter: "?aggregate[count]=SerialNum&groupBy[]=Model",
+			filter: "?filter=status[_eq]=published&aggregate[count]=SerialNum&groupBy[]=Model",
 			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)

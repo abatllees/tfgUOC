@@ -15,12 +15,17 @@ export default {
     },
     data() {
         return {
-
             users: []
         }
     },
     async created() {
-        this.users = await this.$store.dispatch("getUsers", "?sort=first_name")
+        let params = {
+            collection: "users",
+            fields: "?fields=*.*.*",
+            filter: "&filter[status][_eq]=active",
+            sort: "?sort=first_name"
+        }
+        this.users = await this.$store.dispatch("getUsers", params)
     }
 }
 </script>

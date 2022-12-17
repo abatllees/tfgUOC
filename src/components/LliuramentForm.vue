@@ -8,8 +8,7 @@
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
                 <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial" required>
-                    <option v-for="subcategory in this.$store.state.Subcategory" :key="subcategory.id"
-                        :value="subcategory.id">
+                    <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
                         {{ subcategory.SubcategoryName }}
                     </option>
                 </select>
@@ -43,7 +42,7 @@
             </div>
         </div>
     </form>
-    <ModalComponent v-if="isModalVisible" @close="closeModal" :model="this.results" :items="this.results" />
+    <ModalComponent v-if="isModalVisible" @close="closeModal" :items="this.results" />
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
@@ -55,7 +54,7 @@ export default {
     data() {
         return {
             tipusMaterial: null,
-            subcategory: null,
+            subcategory: this.$store.state.Subcategory,
             model: null,
             numMag: null,
             numSerie: null,
@@ -66,16 +65,6 @@ export default {
 
             results: null,
         }
-    },
-    async beforeCreate() {
-        /*let params = {
-            collection: "Model",
-            fields: "?fields=ModelName,id,Subcategory",
-            filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.subcategory.id,
-            sort: "&sort[]=ModelName"
-        }
-        this.$store.state.Model = await this.$store.dispatch("getCollection", params);*/
-
     },
     watch: {
         async tipusMaterial() {
@@ -90,7 +79,7 @@ export default {
         async model() {
             let params = {
                 collection: "Element",
-                fields: "?fields=*.*.*",
+                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.Name,DelegacioActual.ID",
                 filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model,
                 sort: ""
             }
