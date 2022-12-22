@@ -1,5 +1,19 @@
 <template>
     <h1 class="text-center">Moviments</h1>
+    <form class="my-3">
+        <div class="row">
+            <div class="form-group col-md-3 mb-2">
+                <label for="delegacio">Selecciona una delegació</label>
+                <select class="form-control" id="delegacio" name="delegacio" v-model="FiltreDelegacio">
+                    <option value="">--TOTES LES DELEGACIONS--</option>
+                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio" :value="delegacio.ID">{{
+                            delegacio.Name
+                    }}
+                    </option>
+                </select>
+            </div>
+        </div>
+    </form>
     <EasyDataTable :headers="this.headers" :items="this.moviments" alternating buttons-pagination :sort-by="this.sortBy"
         :sort-type="this.sortType">
         <template #loading>
@@ -28,21 +42,40 @@ export default {
             ],
             moviments: [],
             sortBy: "",
-            sortType: "asc"
+            sortType: "asc",
+
+            FiltreDelegacio: "",
+
+
+            params: {
+                collection: "Moviment",
+                fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
+                filter: "&filter[status][_eq]=published",
+                sort: ""
+            },
         }
     },
+    watch: {
+        async FiltreDelegacio() {
+            //Si el desplegable és un número filtra per la ID de la delegació
+            if (typeof (this.FiltreDelegacio) == "number") {
+                this.params.filter = "&filter[_or][1][Origen][_eq]=" + this.FiltreDelegacio + "&filter[_or][2][Desti][_eq]=" + this.FiltreDelegacio
 
-    async beforeMount() {
-        let params = {
-            collection: "Moviment",
-            fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
-            filter: "&filter[status][_eq]=published",
-            sort: ""
+            } else {
+                //Mostra tots els moviments
+                this.params.filter = "&filter[status][_eq]=published"
+            }
+
+            this.moviments = await this.getMoviments()
+        },
+    },
+    methods: {
+        async getMoviments() {
+            return await this.$store.dispatch("getCollection", this.params);
         }
-        this.moviments = await this.$store.dispatch("getCollection", params);
-
-
-        //this.headers = await this.$store.dispatch("getHeaders", params.collection);
+    },
+    async beforeMount() {
+        this.moviments = await this.getMoviments()
     },
 }
 </script>
