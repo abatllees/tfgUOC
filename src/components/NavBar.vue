@@ -12,6 +12,9 @@
 					<li class="nav-item">
 						<router-link to="users" class="nav-link">Persones</router-link>
 					</li>
+					<li class="nav-item">
+						<router-link to="users" class="nav-link">Test Persones</router-link>
+					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
 							aria-expanded="false">
