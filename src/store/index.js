@@ -81,16 +81,16 @@ export default createStore({
 			}
 			console.log("keys", keys)
 
-			await this.commit("CREATE_ITEM", { elements: keys, collection: "Moviment" })
+			await this.commit("CREATE_ITEM", "Moviment")
 			state.llistatLliurament = []
 		},
-		async CREATE_ITEM(state, payload) {
-			console.log("CREATE", payload.collection, ":", state.llistatConfigurat)
+		async CREATE_ITEM(state, collection) {
+			console.log("CREATE", collection, ":", state.llistatConfigurat)
 
-			await api.post("items/" + payload.collection, state.llistatConfigurat)
+			await api.post("items/" + collection, state.llistatConfigurat)
 				.then(response => {
 					console.log(response)
-					console.log("Moviment creat")
+					console.log("Nou registre afegit a " + collection)
 				})
 				.catch(error => console.log(error))
 
@@ -157,7 +157,7 @@ export default createStore({
 		},
 		getUsers({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("users/" + payload.fields + payload.filter)
+				api.get("users/" + payload.fields + payload.filter + payload.sort)
 					.then(response => {
 						console.log(response.data.data)
 						resolve(response.data.data)
@@ -178,6 +178,16 @@ export default createStore({
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
+			})
+		},
+		createItem({ commit }, payload) {
+			console.log("CREATE", payload.collection, ":", payload.values)
+			return new Promise((resolve, reject) => {
+				api.post("items/" + payload.collection, payload.values)
+					.then(response => {
+						resolve(response.data.data)
+					})
+					.catch(error => error.response.data.errors.forEach(error => alert(error.message)))
 			})
 		}
 	},

@@ -20,10 +20,10 @@ export default {
     },
     async created() {
         let params = {
-            collection: "users",
+            collection: "",
             fields: "?fields=*.*.*",
             filter: "&filter[status][_eq]=active",
-            sort: "?sort=first_name"
+            sort: "&sort=first_name"
         }
         this.users = await this.$store.dispatch("getUsers", params)
     }

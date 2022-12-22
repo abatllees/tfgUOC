@@ -42,14 +42,28 @@
             </div>
         </div>
     </form>
-    <ModalComponent v-if="isModalVisible" @close="closeModal" :items="this.results" />
+    <ModalComponent v-if="isModalVisible" @close="closeModal">
+        <template v-slot:header>
+            <h6>Resultats de la cerca</h6>
+        </template>
+        <template v-slot:body>
+            <EasyDataTable :headers="this.headers" :items="this.results" alternating buttons-pagination
+                v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+            </EasyDataTable>
+        </template>
+        <template v-slot:footer>
+            <button class="btn btn-primary" @click="addElement(this.itemsSelected)">Afegeix element</button>
+        </template>
+    </ModalComponent>
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
 export default {
     name: 'LliuramentForm',
     components: {
-        ModalComponent
+        ModalComponent,
+        EasyDataTable: window['vue3-easy-data-table'],
+
     },
     data() {
         return {
@@ -64,6 +78,18 @@ export default {
             isModalVisible: false,
 
             results: null,
+
+            //MODAL START
+            headers: [
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
+                { text: "Model", value: "Model.ModelName", sortable: true },
+                { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                { text: "Delegació", value: "DelegacioActual.Name", sortable: true },
+            ],
+            sortBy: "NumMag",
+            sortType: "asc",
+            itemsSelected: [],
+            //MODAL END
         }
     },
     watch: {
@@ -95,6 +121,11 @@ export default {
         closeModal() {
             this.isModalVisible = false;
         },
+        addElement(itemsSelected) {
+            //Add element to list
+            console.log(itemsSelected)
+            this.itemsSelected.forEach(item => this.$store.state.llistatLliurament.push(item))
+        }
     },
 }
 </script>
@@ -104,10 +135,5 @@ form {
     border: 2px solid #bb0000;
     border-right: 70px solid #bb0000;
     padding: 10px;
-}
-
-hr {
-    height: 5px;
-    background-color: black;
 }
 </style>

@@ -4,7 +4,7 @@
             <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDescription">
                 <header class="modal-header" id="modalTitle">
                     <slot name="header">
-                        Seleccionar element
+
                     </slot>
                     <button type="button" class="btn btn-primary" @click="close" aria-label="Close modal">
                         x
@@ -12,14 +12,12 @@
                 </header>
                 <section class="modal-body" id="modalDescription">
                     <slot name="body">
-                        <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
-                            v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
-                        </EasyDataTable>
+                        <p> Body</p>
                     </slot>
                 </section>
                 <footer class="modal-footer">
                     <slot name="footer">
-                        <button class="btn btn-primary" @click="addElement(this.itemsSelected)">Afegeix element</button>
+                        <p>Footer</p>
                     </slot>
                 </footer>
             </div>
@@ -33,19 +31,10 @@ export default {
         items: Object
     },
     components: {
-        EasyDataTable: window['vue3-easy-data-table'],
     },
     data() {
         return {
-            headers: [
-                { text: "Núm. Mag", value: "NumMag", sortable: true },
-                { text: "Model", value: "Model.ModelName", sortable: true },
-                { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                { text: "Delegació", value: "DelegacioActual.Name", sortable: true },
-            ],
-            sortBy: "NumMag",
-            sortType: "asc",
-            itemsSelected: [],
+
         }
     },
 
@@ -53,11 +42,7 @@ export default {
         close() {
             this.$emit('close');
         },
-        addElement(itemsSelected) {
-            //Add element to list
-            console.log(itemsSelected)
-            this.itemsSelected.forEach(item => this.$store.state.llistatLliurament.push(item))
-        }
+
     },
 };
 </script>
