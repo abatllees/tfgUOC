@@ -1,17 +1,39 @@
 <template>
     <section class="row">
-        <div class="col-12 col-sm-6 col-lg-9">
+        <div class="col-12 col-sm col-lg-9">
             <h1>{{ element.Model.Subcategory.SubcategoryName }} {{ element.Model.Brand.BrandName }} {{
                     element.Model.ModelName
             }}
             </h1>
-            <p>Número de sèrie: {{ element.SerialNum }}</p>
-            <p>Número de magatzem: {{ element.NumMag }}</p>
-            <p>Responsable: {{ }}</p>
-            <p>Estat: <span class="dot"></span>
-                {{ element.status }}</p>
-            <p>Observacions:<br>
-                {{ element.Observacions }}</p>
+            <form @submit.prevent="UpdateElement()">
+                <div class="row">
+                    <div class="col">
+                        <label for="NumMag">Número de magatzem:</label>
+                        <input type="text" name="NumMag" id="NumMag" class="form-control" :value=element.NumMag
+                            disabled>
+                    </div>
+                    <div class="col">
+                        <label for="SerialNum">Número de sèrie:</label>
+                        <input type="text" name="SerialNum" id="SerialNum" class="form-control" :value=element.SerialNum
+                            disabled>
+                    </div>
+                </div>
+                <label for="responsable">Responsable:</label>
+                <input type="text" name="responsable" id="responsable" class="form-control" disabled>
+                <label for="status">Estat:</label>
+                <select name="status" id="status" class="form-control" disabled v-model="status">
+                    <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
+                        :key="state">
+                        {{ state.text }}
+                    </option>
+                </select>
+                <label for="observations">Observacions:</label>
+                <textarea class="form-control" name="observations" id="observations" v-model="element.Observacions"
+                    disabled></textarea>
+                <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
+            </form>
+            <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
+
         </div>
         <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
@@ -50,6 +72,12 @@ export default {
     data() {
         return {
             element: null,
+            statusValues: null,
+
+            status: "",
+
+            editMode: false,
+
             historialMoviments: {
                 headers: [
                     { text: "Data", value: "date_created", sortable: true },
@@ -86,6 +114,15 @@ export default {
         }
     },
     async beforeCreate() {
+        //Obté els possibles valors del desplegable
+        let payload = {
+            collection: "Element",
+            field: "status"
+        }
+        this.statusValues = await this.$store.dispatch("getFields", payload)
+        console.log(this.statusValues)
+
+        //Obtenir els valors de l'element
         let params = {
             collection: "Element",
             item: this.$route.params.SerialNum,
@@ -93,7 +130,9 @@ export default {
             filter: ""
         }
         this.element = await this.$store.dispatch("getElement", params)
-        let payload = {
+
+        //Obtenir els moviments de l'element
+        payload = {
             collection: "Moviment",
             fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
             filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
@@ -102,18 +141,43 @@ export default {
         this.historialMoviments.items = await this.getItems(payload)
         this.historialMoviments.loading = !this.historialMoviments.loading
 
+        //Obtenir els accessoris
         payload = {
             collection: "Element",
             fields: "?fields=*.*.*",
             filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
             sort: ""
         }
-        this.accessoris.items = await this.getItems(payload)
-
     },
     methods: {
         getItems: function (payload) {
             return this.$store.dispatch("getCollection", payload)
+        },
+        EditElement: function () { //Desactiva tots els elements del formulari per poder-los modificar
+            document.getElementById("NumMag").disabled = false;
+            //document.getElementById("SerialNum").disabled = false;
+            //document.getElementById("responsable").disabled = false;
+            document.getElementById("status").disabled = false;
+            document.getElementById("observations").disabled = false;
+
+            this.editMode = true
+        },
+        UpdateElement: function () {
+            document.getElementById("NumMag").disabled = true;
+            //document.getElementById("SerialNum").disabled = true;
+            //document.getElementById("responsable").disabled = true;
+            document.getElementById("status").disabled = true;
+            document.getElementById("observations").disabled = true;
+
+            this.editMode = false
+
+            let payload = {
+                SerialNum: this.$route.params.SerialNum,
+                NumMag: this.NumMag,
+                status: this.state
+            }
+            this.$store.dispatch("updateItem", payload)
+
         }
     }
 }

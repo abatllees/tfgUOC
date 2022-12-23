@@ -15,11 +15,7 @@
         </div>
     </form>
     <EasyDataTable :headers="this.headers" :items="this.moviments" alternating buttons-pagination :sort-by="this.sortBy"
-        :sort-type="this.sortType">
-        <template #loading>
-            <img src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
-                style="width: 100px; height: 80px;" />
-        </template>
+        :sort-type="this.sortType" :loading="this.loading" :theme-color="this.$store.state.themeColor">
     </EasyDataTable>
 </template>
 <script>
@@ -46,7 +42,7 @@ export default {
 
             FiltreDelegacio: "",
 
-
+            loading: true,
             params: {
                 collection: "Moviment",
                 fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
@@ -58,6 +54,7 @@ export default {
     watch: {
         async FiltreDelegacio() {
             //Si el desplegable és un número filtra per la ID de la delegació
+            this.loading = true
             if (typeof (this.FiltreDelegacio) == "number") {
                 this.params.filter = "&filter[_or][1][Origen][_eq]=" + this.FiltreDelegacio + "&filter[_or][2][Desti][_eq]=" + this.FiltreDelegacio
 
@@ -67,6 +64,8 @@ export default {
             }
 
             this.moviments = await this.getMoviments()
+
+            this.loading = false
         },
     },
     methods: {
@@ -76,6 +75,7 @@ export default {
     },
     async beforeMount() {
         this.moviments = await this.getMoviments()
+        this.loading = false
     },
 }
 </script>

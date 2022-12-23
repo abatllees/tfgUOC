@@ -11,7 +11,7 @@
     </section>
     <section class="w-100 my-5">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
-            :sort-by="this.sortBy" :sort-type="this.sortType">
+            :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
         </EasyDataTable>
         <label for="destinacio">Destinació:</label>
         <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
@@ -37,7 +37,6 @@ export default {
                 { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
             ],
             sortBy: "NumMag",
             sortType: "asc",
@@ -46,9 +45,10 @@ export default {
         }
     },
     methods: {
-        realitzarLliurament: function () {
+        realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
-            this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
+            this.resultatMoviment = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
+            alert("Res", this.resultatMoviment)
         }
     }
 }

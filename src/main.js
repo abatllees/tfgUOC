@@ -16,12 +16,13 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 /* import specific icons */
-import { faPlaneArrival, faPlaneDeparture, faUserSecret } from '@fortawesome/free-solid-svg-icons'
+import { faFolderOpen, faPlaneArrival, faPlaneDeparture, faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
 /* add icons to the library */
 library.add(faUserSecret)
 library.add(faPlaneDeparture)
 library.add(faPlaneArrival)
+library.add(faFolderOpen)
 
 
 createApp(App)

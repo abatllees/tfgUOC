@@ -85,7 +85,6 @@ export default {
                 { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                { text: "Delegació", value: "DelegacioActual.Name", sortable: true },
             ],
             sortBy: "NumMag",
             sortType: "asc",
@@ -106,8 +105,8 @@ export default {
         async model() {
             let params = {
                 collection: "Element",
-                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.Name,DelegacioActual.ID",
-                filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model,
+                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID",
+                filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model + "&filter[DelegacioActual][_eq]=22",
                 sort: ""
             }
             this.results = await this.$store.dispatch("getCollection", params);

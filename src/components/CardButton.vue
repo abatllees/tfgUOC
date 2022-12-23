@@ -2,6 +2,7 @@
   <div class="card text-white text-center h-100">
     <font-awesome-icon :icon="icon" size="4x" class="py-2" />
     <h5> {{ title }}</h5>
+    <p class="text-right">{{ owner?.first_name }} {{ owner?.last_name }}</p>
   </div>
 </template>
 
@@ -11,7 +12,8 @@ export default {
   name: 'CardButton',
   props: {
     title: String,
-    icon: String
+    icon: String,
+    owner: String
   }
 }
 </script>

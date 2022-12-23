@@ -8,15 +8,16 @@
             </button>
         </div>
     </section>
-    <section class="row">
-        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="category in this.categories" :key="category">
+    <section class="row row-cols-5">
+        <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
             <router-link :to="{
                 name: 'subcollection',
                 params: {
                     id: category.id
                 }
             }">
-                <CardButton :title=category.CategoryName :icon="'fa-solid fa-user-secret'"></CardButton>
+                <CardButton :title=category.CategoryName :owner="category.CategoryOwner"
+                    :icon="'fa-solid fa-folder-open'"></CardButton>
             </router-link>
         </div>
     </section>
@@ -64,7 +65,7 @@ export default {
         return {
             params: {
                 collection: "Category",
-                fields: "?fields=CategoryName,id",
+                fields: "?fields=CategoryName,id,CategoryOwner.first_name,CategoryOwner.last_name",
                 filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
                 sort: "&sort[]=CategoryName"
             },

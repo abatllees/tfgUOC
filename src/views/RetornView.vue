@@ -18,7 +18,6 @@
     </section>
     <button class="btn btn-primary my-2" @click="realitzarRetorn(this.LlistatRetorn.itemsSelected)">Retornar material
         seleccionat</button>
-    {{ LlistatRetorn.itemsSelected }}
 </template>
 
 <script>
@@ -50,7 +49,7 @@ export default {
     async beforeMount() {
         let payload = {
             collection: "Element",
-            fields: "?fields=*.*.*",
+            fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID,DelegacioActual.Name",
             filter: "&filter[status][_eq]=published&filter[DelegacioActual][_neq]=22",
             sort: ""
         }

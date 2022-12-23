@@ -87,29 +87,16 @@ export default createStore({
 		async CREATE_ITEM(state, collection) {
 			console.log("CREATE", collection, ":", state.llistatConfigurat)
 
-			await api.post("items/" + collection, state.llistatConfigurat)
-				.then(response => {
-					console.log(response)
-					console.log("Nou registre afegit a " + collection)
-				})
-				.catch(error => console.log(error))
-
-		},
-		async UPDATE_ELEMENT(state, element) {
-			console.log("UPDATE_PAYLOAD:", element)
-
-			await api.patch("items/Element/", {
-				keys: element,
-				data: {
-					"DelegacioActual": state.destinacio
-				}
+			return new Promise((resolve, reject) => {
+				api.post("items/" + collection, state.llistatConfigurat)
+					.then(response => {
+						console.log(response)
+						console.log("Nou registre afegit a " + collection)
+						resolve(response)
+					})
+					.catch(error => reject(error.message))
 			})
-				.then(response => {
-					console.log(response)
-					console.log("Elements updated")
-					alert("Elements updated")
-				})
-				.catch(error => console.log(error.message))
+
 		},
 		//Defines the payload to the POST request to create data
 		SET_UPDATE_KEYS(state, payload) {
@@ -150,8 +137,15 @@ export default createStore({
 					.catch(error => reject(error))
 			})
 		},
-		getHeaders({ commit }, payload) {
-			commit('GET_HEADERS', payload)
+		getFields({ commit }, payload) {
+			return new Promise((resolve, reject) => {
+				api.get("fields/" + payload.collection + "/" + payload.field)
+					.then(response => {
+						//console.log(response.data.data)
+						resolve(response.data.data)
+					})
+					.catch(error => reject(error))
+			})
 		},
 		getUsers({ commit }, payload) {
 			return new Promise((resolve, reject) => {
@@ -187,6 +181,9 @@ export default createStore({
 					})
 					.catch(error => error.response.data.errors.forEach(error => alert(error.message)))
 			})
+		},
+		updateItem({ commit }, payload) {
+
 		}
 	},
 	plugins: [
