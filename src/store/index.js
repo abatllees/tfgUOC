@@ -179,11 +179,26 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => error.response.data.errors.forEach(error => alert(error.message)))
+					.catch(error => reject(error.message))
 			})
 		},
 		updateItem({ commit }, payload) {
-
+			console.log("Update item:", payload)
+			const newValues = {
+				"NumMag": payload.NumMag,
+				"status": payload.status,
+				"Observacions": payload.Observacions
+			}
+			return new Promise((resolve, reject) => {
+				api.patch("items/" + payload.collection + "/" + payload.SerialNum, newValues)
+					.then(response => {
+						resolve(response.data.data)
+					})
+					.catch(error => {
+						reject(error)
+						//console.log(error.response.data.errors)
+					})
+			})
 		}
 	},
 	plugins: [

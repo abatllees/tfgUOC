@@ -25,6 +25,7 @@ export default {
     data() {
         return {
             headers: [
+                { text: "Estat", value: "status", sortable: true },
                 { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Subcategoria", value: "Model.Subcategory.SubcategoryName", sortable: true },
                 { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
@@ -72,7 +73,7 @@ export default {
                 collection: collection,
                 item: key,
                 fields: "?fields=*",
-                filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
+                filter: "&filter[Category][_eq]=" + this.$route.params.id,
                 sort: ""
             }
             return await this.$store.dispatch("getElement", params);

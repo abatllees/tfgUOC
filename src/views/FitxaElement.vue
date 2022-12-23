@@ -9,8 +9,7 @@
                 <div class="row">
                     <div class="col">
                         <label for="NumMag">Número de magatzem:</label>
-                        <input type="text" name="NumMag" id="NumMag" class="form-control" :value=element.NumMag
-                            disabled>
+                        <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="NumMag" disabled>
                     </div>
                     <div class="col">
                         <label for="SerialNum">Número de sèrie:</label>
@@ -33,7 +32,7 @@
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
-
+            {{ response }}
         </div>
         <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
@@ -74,9 +73,13 @@ export default {
             element: null,
             statusValues: null,
 
+            NumMag: "",
             status: "",
+            observacions: "",
 
             editMode: false,
+
+            response: "Resposta",
 
             historialMoviments: {
                 headers: [
@@ -114,13 +117,7 @@ export default {
         }
     },
     async beforeCreate() {
-        //Obté els possibles valors del desplegable
-        let payload = {
-            collection: "Element",
-            field: "status"
-        }
-        this.statusValues = await this.$store.dispatch("getFields", payload)
-        console.log(this.statusValues)
+
 
         //Obtenir els valors de l'element
         let params = {
@@ -130,6 +127,15 @@ export default {
             filter: ""
         }
         this.element = await this.$store.dispatch("getElement", params)
+
+        //Obté els possibles valors del desplegable
+        let payload = {
+            collection: "Element",
+            field: "status"
+        }
+        this.statusValues = await this.$store.dispatch("getFields", payload)
+        console.log(this.statusValues)
+
 
         //Obtenir els moviments de l'element
         payload = {
@@ -148,6 +154,10 @@ export default {
             filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
             sort: ""
         }
+
+        this.status = this.element.status
+        this.NumMag = this.element.NumMag
+        this.observacions = this.element.Observacions
     },
     methods: {
         getItems: function (payload) {
@@ -162,7 +172,7 @@ export default {
 
             this.editMode = true
         },
-        UpdateElement: function () {
+        UpdateElement: async function () {
             document.getElementById("NumMag").disabled = true;
             //document.getElementById("SerialNum").disabled = true;
             //document.getElementById("responsable").disabled = true;
@@ -172,12 +182,13 @@ export default {
             this.editMode = false
 
             let payload = {
+                collection: "Element",
                 SerialNum: this.$route.params.SerialNum,
                 NumMag: this.NumMag,
-                status: this.state
+                status: this.status,
+                observacions: this.observacions
             }
-            this.$store.dispatch("updateItem", payload)
-
+            this.response = await this.$store.dispatch("updateItem", payload)
         }
     }
 }
