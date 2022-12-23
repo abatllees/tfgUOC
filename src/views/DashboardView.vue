@@ -4,7 +4,7 @@
 		<section class="row">
 			<div class="col-6 col-sm-4 col-lg-2" v-for="option in options" :key="option">
 				<router-link :to="{ path: option.router, params: { id: '2' } }">
-					<CardButton :title="option.name" :icon="option.icon"></CardButton>
+					<CardButton :title="option.name" :icon="option.icon" :bg-color="'#bb0000'"></CardButton>
 				</router-link>
 			</div>
 		</section>

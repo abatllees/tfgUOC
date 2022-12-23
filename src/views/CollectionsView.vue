@@ -1,13 +1,5 @@
 <template>
     <h1 class="text-center">Categories</h1>
-    <section class="row">
-        <div class="col-12 col-sm-4 col-md-3  my-1">
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalCreateCategory"
-                @click="listusers()">
-                Crear categoria
-            </button>
-        </div>
-    </section>
     <section class="row row-cols-5">
         <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
             <router-link :to="{
@@ -17,8 +9,13 @@
                 }
             }">
                 <CardButton :title=category.CategoryName :owner="category.CategoryOwner"
-                    :icon="'fa-solid fa-folder-open'"></CardButton>
+                    :icon="'fa-solid fa-folder-tree'" :bg-color="'#bb0000'"></CardButton>
             </router-link>
+        </div>
+        <div class="col-6 col-sm col-md-2 my-3">
+            <CardButton :title="'Afegir categoria'" :owner="{}" :icon="'fa-solid fa-plus'" :bg-color="'#36333E'"
+                data-toggle="modal" data-target="#ModalCreateCategory" @click="listusers()">
+            </CardButton>
         </div>
     </section>
     <ModalComponent id="ModalCreateCategory">
@@ -70,7 +67,6 @@ export default {
                 sort: "&sort[]=CategoryName"
             },
             categories: [],
-            //isModalVisible: false,
 
             users: null,
 

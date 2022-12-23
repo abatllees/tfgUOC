@@ -196,7 +196,7 @@ export default createStore({
 					})
 					.catch(error => {
 						reject(error)
-						//console.log(error.response.data.errors)
+						console.log(error.response.data.errors)
 					})
 			})
 		}
