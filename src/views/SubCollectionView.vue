@@ -57,6 +57,7 @@ export default {
             subcategory: [],
             //CREAR CATEGORIA
             NomCategoria: null,
+            CategoriaPare: this.$route.params.id,
             //CREAR CATEGORIA
         }
     },
@@ -86,7 +87,7 @@ export default {
                 collection: "Subcategory",
                 values: {
                     "SubcategoryName": this.NomCategoria,
-                    //"CategoryOwner": this.ResponsableCategoria
+                    "Category": this.CategoriaPare
                 }
             }
 
