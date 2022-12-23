@@ -8,7 +8,7 @@
         </div>
     </section>
     <EasyDataTable :headers="this.headers" :items="this.llistatElement" alternating buttons-pagination
-        :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType"
+        :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
         :theme-color="this.$store.state.themeColor" @click-row="showDetail">
     </EasyDataTable>
 </template>
@@ -37,7 +37,9 @@ export default {
             searchValue: "",
             llistatElement: [],
 
-            title: "Títol"
+            title: "Títol",
+
+            loading: true,
         }
     },
     async beforeMount() {
@@ -58,6 +60,7 @@ export default {
         }
         console.log("TITLE", this.title)
         this.llistatElement = await this.$store.dispatch("getCollection", params)
+        this.loading = false
     },
     methods: {
         showDetail: function (element) {

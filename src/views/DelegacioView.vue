@@ -8,7 +8,7 @@
     </section>
     <h5>Material a la delegació</h5>
     <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination :sort-by="this.sortBy"
-        :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
+        :sort-type="this.sortType" :theme-color="this.$store.state.themeColor" :loading="this.loading">
     </EasyDataTable>
     <button class="btn btn-secondary mt-3 float-right">Imprimeix</button>
 </template>
@@ -33,17 +33,21 @@ export default {
             items: [],
             sortBy: "",
             sortType: "asc",
-            delegacio: []
+            delegacio: [],
+            loading: true
         }
     },
     async beforeMount() {
         this.delegacio = await this.getDelegacio()
         this.items = await this.getElements()
+        this.loading = !this.loading
     },
     watch: {
         async '$route.params.id'() {
             this.delegacio = await this.getDelegacio()
+            this.loading = true
             this.items = await this.getElements()
+            this.loading = false
         }
     },
     methods: {

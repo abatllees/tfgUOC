@@ -22,7 +22,8 @@
             <h6>Historial de moviments</h6>
             <EasyDataTable :headers="this.historialMoviments.headers" :items="this.historialMoviments.items" alternating
                 buttons-pagination :sort-by="this.historialMoviments.sortBy"
-                :sort-type="this.historialMoviments.sortType" :theme-color="this.$store.state.themeColor">
+                :sort-type="this.historialMoviments.sortType" :theme-color="this.$store.state.themeColor"
+                :loading="this.historialMoviments.loading">
             </EasyDataTable>
         </div>
         <div class="col-12 col-lg">
@@ -58,7 +59,8 @@ export default {
                 ],
                 items: [],
                 sortBy: "",
-                sortType: "asc"
+                sortType: "asc",
+                loading: true
             },
             incidencies: {
                 headers: [
@@ -98,6 +100,7 @@ export default {
             sort: ""
         }
         this.historialMoviments.items = await this.getItems(payload)
+        this.historialMoviments.loading = !this.historialMoviments.loading
 
         payload = {
             collection: "Element",
