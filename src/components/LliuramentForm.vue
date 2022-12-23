@@ -114,18 +114,10 @@ export default {
         }
     },
     methods: {
-        async cercarElements() {
-            if (this.tipusMaterial && this.model) {
-                this.isModalVisible = true;
-            }
-        },
-        closeModal() {
-            this.isModalVisible = false;
-        },
         addElement(itemsSelected) {
             //Add element to list
             console.log(itemsSelected)
-            this.itemsSelected.forEach(item => this.$store.state.llistatLliurament.push(item))
+            this.itemsSelected.forEach(item => this.$store.state.llistatMoviment.push(item))
             this.itemsSelected = []
         }
     },

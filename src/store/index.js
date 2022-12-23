@@ -13,7 +13,7 @@ export default createStore({
 		GettedElement: null,
 
 		//Lliurament de material
-		llistatLliurament: [],
+		llistatMoviment: [],
 		destinacio: null,
 
 		Element: [], //It must be this name according to the collection name
@@ -53,8 +53,8 @@ export default createStore({
 
 
 		},
-		ADD_ELEMENTS_LLIURAMENT(state, payload) {
-			console.log("PAYLOAD_ADDELEMENTSLLIURAMENT:", payload)
+		ADD_ELEMENTS_MOVIMENT(state, payload) {
+			console.log("PAYLOAD ADDELEMENTS MOVIMENT:", payload)
 			payload.forEach(element => {
 				console.log("ELEMENT_TO_ADD", element)
 			});
@@ -69,7 +69,7 @@ export default createStore({
 				})
 				.catch(error => console.log(error.message))
 		},
-		async CREATE_MOVIMENT_LLIURAMENT(state, payload) {
+		async CREATE_MOVIMENT(state, payload) {
 			this.commit("SET_UPDATE_KEYS", payload)
 
 			let keys = [] //Create an array with serialNum values to update them
@@ -82,7 +82,7 @@ export default createStore({
 			console.log("keys", keys)
 
 			await this.commit("CREATE_ITEM", "Moviment")
-			state.llistatLliurament = []
+			state.llistatMoviment = []
 		},
 		async CREATE_ITEM(state, collection) {
 			console.log("CREATE", collection, ":", state.llistatConfigurat)
@@ -120,14 +120,12 @@ export default createStore({
 				llistatConfigurat[i] = {
 					Element: payload[i].SerialNum,
 					Origen: payload[i].DelegacioActual.ID, //We need to get the INT value of the warehouse
-					Desti: state.destinacio
+					Desti: state.destinacio //Define the destination of the element
 				};
 
 			}
-			/*console.log("-------------")
-			console.log(llistatConfigurat)
-			console.log("-------------")*/
 			state.llistatConfigurat = llistatConfigurat
+			console.log("Llistat configurat moviment: ", llistatConfigurat)
 		},
 	},
 	actions: {
@@ -166,10 +164,10 @@ export default createStore({
 			})
 		},
 		addElementLliurament({ commit }, element) {
-			commit("ADD_ELEMENTS_LLIURAMENT", element)
+			commit("ADD_ELEMENTS_MOVIMENT", element)
 		},
-		realitzarLliurament({ commit }, llistatEntrega) {
-			commit("CREATE_MOVIMENT_LLIURAMENT", llistatEntrega)
+		realitzarMoviment({ commit }, llistatEntrega) {
+			commit("CREATE_MOVIMENT", llistatEntrega)
 		},
 		getElement({ commit }, payload) {
 			return new Promise((resolve, reject) => {

@@ -10,8 +10,8 @@
         </div>
     </section>
     <section class="w-100 my-5">
-        <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatLliurament" alternating
-            buttons-pagination :sort-by="this.sortBy" :sort-type="this.sortType">
+        <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
+            :sort-by="this.sortBy" :sort-type="this.sortType">
         </EasyDataTable>
         <label for="destinacio">Destinació:</label>
         <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
@@ -48,7 +48,7 @@ export default {
     methods: {
         realitzarLliurament: function () {
             console.log("Realitzar lliurament")
-            this.$store.dispatch("realitzarLliurament", this.$store.state.llistatLliurament);
+            this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
         }
     }
 }

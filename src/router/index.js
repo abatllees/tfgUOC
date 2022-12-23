@@ -12,6 +12,7 @@ import LlistatElements from "@/views/LlistatElements.vue"
 import MovimentsView from "@/views/MovimentsView.vue"
 import DelegacioView from "@/views/DelegacioView.vue"
 import Fitxa from "@/views/FitxaElement.vue"
+import RetornView from "@/views/RetornView.vue"
 
 const routes = [
   {
@@ -49,6 +50,11 @@ const routes = [
     path: "/lliurament",
     name: "lliurament",
     component: LliuramentView
+  },
+  {
+    path: "/retorn",
+    name: "Retorn",
+    component: RetornView
   },
   {
     path: "/collections/llistatElements/:id?:category?",
