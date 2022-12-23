@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
-                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial" required>
+                <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial">
                     <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
                         {{ subcategory.SubcategoryName }}
                     </option>
@@ -15,7 +15,7 @@
             </div>
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
-                <select class="form-control" name="model" id="model" v-model="model" required>
+                <select class="form-control" name="model" id="model" v-model="model">
                     <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
                             model.ModelName
                     }}
@@ -33,7 +33,8 @@
                 <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
-        <button type="submit" class="btn btn-secondary my-2">Cercar elements</button>
+        <button type="submit" class="btn btn-secondary my-2" data-toggle="modal"
+            data-target="#ModalAddElementLliuramentList">Cercar elements</button>
         <div class="row">
             <div class="col-12 col-sm">
                 <label for="personaEntrega">Entrega:</label>
@@ -42,7 +43,7 @@
             </div>
         </div>
     </form>
-    <ModalComponent v-if="isModalVisible" @close="closeModal">
+    <ModalComponent id="ModalAddElementLliuramentList">
         <template v-slot:header>
             <h6>Resultats de la cerca</h6>
         </template>
@@ -77,7 +78,7 @@ export default {
 
             isModalVisible: false,
 
-            results: null,
+            results: [],
 
             //MODAL START
             headers: [

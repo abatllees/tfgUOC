@@ -2,7 +2,7 @@
     <h1 class="text-center">Categories</h1>
     <section class="row">
         <div class="col-12 col-sm-4 col-md-3  my-1">
-            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalCreateCategory"
                 @click="listusers()">
                 Crear categoria
             </button>
@@ -20,7 +20,7 @@
             </router-link>
         </div>
     </section>
-    <ModalComponent id="exampleModal">
+    <ModalComponent id="ModalCreateCategory">
         <template v-slot:header>
             <h6>Crear categoria</h6>
         </template>
