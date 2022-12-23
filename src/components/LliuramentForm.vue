@@ -125,6 +125,7 @@ export default {
             //Add element to list
             console.log(itemsSelected)
             this.itemsSelected.forEach(item => this.$store.state.llistatLliurament.push(item))
+            this.itemsSelected = []
         }
     },
 }

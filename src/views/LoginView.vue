@@ -1,6 +1,6 @@
 <template>
     <section class="row">
-        <div class="col col-sm-9 col-md-4 mx-auto">
+        <div class="col col-sm-9 col-lg-4 mx-auto">
             <LoginForm></LoginForm>
         </div>
     </section>

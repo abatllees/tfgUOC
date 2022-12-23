@@ -1,12 +1,13 @@
 <template>
-    <transition name="modal-fade">
-        <div class="modal-backdrop">
-            <div class="modal" role="dialog" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
                 <header class="modal-header" id="modalTitle">
                     <slot name="header">
 
                     </slot>
-                    <button type="button" class="btn btn-primary" @click="close" aria-label="Close modal">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close modal">
                         x
                     </button>
                 </header>
@@ -22,7 +23,7 @@
                 </footer>
             </div>
         </div>
-    </transition>
+    </div>
 </template>
 <script>
 export default {
@@ -47,7 +48,7 @@ export default {
 };
 </script>
 <style scoped>
-.modal-backdrop {
+/*.modal-backdrop {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -115,5 +116,5 @@ export default {
 .modal-fade-enter-active,
 .modal-fade-leave-active {
     transition: opacity .5s ease;
-}
+}*/
 </style>

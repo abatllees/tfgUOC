@@ -1,6 +1,6 @@
 <template>
     <section class="row">
-        <div class="col-12 col-sm-8 col-md-5 mx-auto">
+        <div class="col-12 col-sm-8 col-lg-5 mx-auto">
             <LliuramentForm></LliuramentForm>
         </div>
     </section>

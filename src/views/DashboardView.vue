@@ -2,14 +2,14 @@
 	<main>
 		<h1 class="text-center">Tauler principal</h1>
 		<section class="row">
-			<div class="col-6 col-sm-4 col-md-2" v-for="option in options" :key="option">
+			<div class="col-6 col-sm-4 col-lg-2" v-for="option in options" :key="option">
 				<router-link :to="{ path: option.router, params: { id: '2' } }">
 					<CardButton :title="option.name" :icon="option.icon"></CardButton>
 				</router-link>
 			</div>
 		</section>
 		<section class="row my-2">
-			<div class="col-6 col-sm-4 col-md-2 my-1" v-for="grouped in groupedElements" :key="grouped">
+			<div class="col-6 col-sm-4 col-lg-2 my-1" v-for="grouped in groupedElements" :key="grouped">
 				<CardCount :count="grouped.count.SerialNum" :model="grouped.Model"></CardCount>
 			</div>
 		</section>

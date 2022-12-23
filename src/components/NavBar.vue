@@ -1,5 +1,5 @@
 <template>
-	<nav class="navbar navbar-expand-lg bg-primary text-white">
+	<nav class="navbar navbar-expand-md bg-primary text-white">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"

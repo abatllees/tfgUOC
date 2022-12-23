@@ -2,7 +2,10 @@
     <h1 class="text-center">Categories</h1>
     <section class="row">
         <div class="col-12 col-sm-4 col-md-3  my-1">
-            <button @click="OpenModal" class="btn btn-secondary">Crear categoria</button>
+            <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal"
+                @click="listusers()">
+                Crear categoria
+            </button>
         </div>
     </section>
     <section class="row">
@@ -17,7 +20,7 @@
             </router-link>
         </div>
     </section>
-    <ModalComponent v-if="isModalVisible" @close="closeModal">
+    <ModalComponent id="exampleModal">
         <template v-slot:header>
             <h6>Crear categoria</h6>
         </template>
@@ -66,7 +69,7 @@ export default {
                 sort: "&sort[]=CategoryName"
             },
             categories: [],
-            isModalVisible: false,
+            //isModalVisible: false,
 
             users: null,
 
@@ -81,22 +84,14 @@ export default {
         this.categories = await this.$store.dispatch("getCollection", this.params)
     },
     methods: {
-        async OpenModal() {
-            this.isModalVisible = true;
-            this.users = await this.listusers()
-
-        },
-        closeModal() {
-            this.isModalVisible = false;
-        },
-        listusers() {
+        async listusers() {
             let params = {
                 collection: "",
                 fields: "?fields=first_name,last_name,id",
                 filter: "&filter[status][_eq]=active",
                 sort: "&sort=first_name"
             }
-            return this.$store.dispatch("getUsers", params)
+            this.users = await this.$store.dispatch("getUsers", params)
         },
         async crearCategoria() {
             let payload = {
