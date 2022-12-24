@@ -18,7 +18,7 @@
             </CardButton>
         </div>
     </section>
-    <button @click="exportToPDF">Export to PDF</button>
+    <button @click="generatePDF">Export to PDF</button>
 
 
     <ModalComponent id="ModalCreateCategory">
@@ -53,7 +53,6 @@
 <script>
 import CardButton from '@/components/CardButton.vue'
 import ModalComponent from "@/components/ModalComponent.vue"
-import html2pdf from "html2pdf.js";
 
 export default {
     name: 'CollectionsView',
@@ -110,15 +109,20 @@ export default {
                 alert(response)
             }
         },
-        exportToPDF() {
-            var opt = {
-                margin: 2,
-                filename: 'export.pdf',
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf(document.getElementById('toPDF'), opt);
-        },
+        generatePDF() {
+
+            const payload = {
+                idItem: "toPDF",
+                options: {
+                    margin: 2,
+                    filename: 'export.pdf',
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+                }
+            }
+            this.$store.dispatch("exportToPDF", payload)
+
+        }
     }
 }
 </script>

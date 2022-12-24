@@ -48,7 +48,6 @@ export default {
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
             this.resultatMoviment = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
-            alert("Res", this.resultatMoviment)
         }
     }
 }

@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import api from "@/api"
 
-//The directus API defines tables as collections
+import html2pdf from "html2pdf.js";
 
 /* eslint-disable */
 
@@ -12,18 +12,21 @@ export default createStore({
 
 		GettedElement: null,
 
-		//Lliurament de material
-		llistatMoviment: [],
-		destinacio: null,
+		//Moviment
+		llistatMoviment: [], //Elements a la taula de LliuramentView
+		llistatConfiguratMoviment: [], //La mateixa llista però configurada per a la càrrega de dades a la API
+		destinacio: null, //Destinació del moviment
 
-		Element: [], //It must be this name according to the collection name
+
+		/*START COLLECTIONS*/
+		Element: [], //Element collection
 		Category: null, //Category collection
 		Subcategory: null, //Category collection
 		Delegacions: null, //Delegacio collection
+		/*END COLLECTIONS*/
 
 
-		Moviment: [],
-		//Color for the tables
+		//Styling elements
 		themeColor: "#bb0000"
 
 	},
@@ -42,80 +45,35 @@ export default createStore({
 		},
 		getSingleDelegacio: (state, DelegacioID) => {
 			return state.Delegacions.filter(Delegacio => Delegacio.ID = DelegacioID)
+		},
+		getLlistatConfiguratMoviment: state => {
+			return state.llistatConfiguratMoviment
 		}
+
 	},
 	mutations: {
-		//Get the current logged in user
 		SET_LOGGED_USER(state, payload) {
 			state.user = payload
-		},
-		async GET_USERS(state, payload) {
-
-
-		},
-		ADD_ELEMENTS_MOVIMENT(state, payload) {
-			console.log("PAYLOAD ADDELEMENTS MOVIMENT:", payload)
-			payload.forEach(element => {
-				console.log("ELEMENT_TO_ADD", element)
-			});
-		},
-		async GET_HEADERS(state, payload) {
-			console.log(payload)
-			await api.get("fields/" + payload)
-				.then(response => {
-					state[payload.collection] = response.data.data
-					console.log("GET_COLLECTION_FIELDS", state[payload.collection])
-
-				})
-				.catch(error => console.log(error.message))
-		},
-		async CREATE_MOVIMENT(state, payload) {
-			this.commit("SET_UPDATE_KEYS", payload)
-
-			let keys = [] //Create an array with serialNum values to update them
-			const iterator = state.llistatConfigurat.values()
-
-			for (const value of iterator) {
-				console.log(value.Element)
-				keys.push(value.Element)
-			}
-			console.log("keys", keys)
-
-			await this.commit("CREATE_ITEM", "Moviment")
-			state.llistatMoviment = []
-		},
-		async CREATE_ITEM(state, collection) {
-			console.log("CREATE", collection, ":", state.llistatConfigurat)
-
-			return new Promise((resolve, reject) => {
-				api.post("items/" + collection, state.llistatConfigurat)
-					.then(response => {
-						console.log(response)
-						console.log("Nou registre afegit a " + collection)
-						resolve(response)
-					})
-					.catch(error => reject(error.message))
-			})
-
 		},
 		//Defines the payload to the POST request to create data
 		SET_UPDATE_KEYS(state, payload) {
 
 			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
-			let llistatConfigurat = []
+			let updateKeysMoviment = []
 			for (let i = 0; i < payload.length; i++) {
-				llistatConfigurat[i] = {
+				updateKeysMoviment[i] = {
 					Element: payload[i].SerialNum,
-					Origen: payload[i].DelegacioActual.ID, //We need to get the INT value of the warehouse
-					Desti: state.destinacio //Define the destination of the element
+					Origen: payload[i].DelegacioActual.ID,
+					Desti: state.destinacio
 				};
 
 			}
-			state.llistatConfigurat = llistatConfigurat
-			console.log("Llistat configurat moviment: ", llistatConfigurat)
+			state.llistatConfiguratMoviment = updateKeysMoviment
+			console.log("Llistat configurat moviment: ", state.llistatConfiguratMoviment)
 		},
 	},
 	actions: {
+		//Obté l'usuari logat i el desa a l'state
 		getUser({ commit }) {
 			return new Promise((resolve, reject) => {
 				api.get("users/me")
@@ -127,11 +85,11 @@ export default createStore({
 					.catch(error => reject(error.message))
 			})
 		},
-		getCollection({ commit }, payload) {
+		//Obté el llistat d'usuaris
+		getUsers({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
+				api.get("users/" + payload.fields + payload.filter + payload.sort)
 					.then(response => {
-						console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
@@ -141,28 +99,22 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.get("fields/" + payload.collection + "/" + payload.field)
 					.then(response => {
-						//console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
 			})
 		},
-		getUsers({ commit }, payload) {
+		//Obté els elements dins d'una col·lecció
+		getCollection({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("users/" + payload.fields + payload.filter + payload.sort)
+				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
 					.then(response => {
-						console.log(response.data.data)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
 			})
 		},
-		addElementLliurament({ commit }, element) {
-			commit("ADD_ELEMENTS_MOVIMENT", element)
-		},
-		realitzarMoviment({ commit }, llistatEntrega) {
-			commit("CREATE_MOVIMENT", llistatEntrega)
-		},
+		//Obté només un element d'una col·lecció
 		getElement({ commit }, payload) {
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + "/" + payload.item + payload.fields)
@@ -172,16 +124,7 @@ export default createStore({
 					.catch(error => reject(error))
 			})
 		},
-		createItem({ commit }, payload) {
-			console.log("CREATE", payload.collection, ":", payload.values)
-			return new Promise((resolve, reject) => {
-				api.post("items/" + payload.collection, payload.values)
-					.then(response => {
-						resolve(response.data.data)
-					})
-					.catch(error => reject(error.message))
-			})
-		},
+		//Actualitza un únic element
 		updateItem({ commit }, payload) {
 			console.log("Update item:", payload)
 			const newValues = {
@@ -199,7 +142,47 @@ export default createStore({
 						console.log(error.response.data.errors)
 					})
 			})
-		}
+		},
+		realitzarMoviment({ commit, getters, state }, payload) {
+			commit("SET_UPDATE_KEYS", payload)
+
+			let keys = [] //Create an array with serialNum values to update them
+
+			const iterator = getters.getLlistatConfiguratMoviment
+			for (const value of iterator) {
+				keys.push(value.Element)
+			}
+			console.log("keys", keys)
+
+			//Crear multiples elements a la categoria moviment
+			console.log("CREATE", "Moviment", ":", state.llistatConfiguratMoviment)
+
+			return new Promise((resolve, reject) => {
+				api.post("items/" + "Moviment", state.llistatConfiguratMoviment)
+					.then(response => {
+						console.log("Nou registre afegit a " + "Moviment")
+						resolve(response)
+					})
+					.catch(error => reject(error.message))
+					.finally(
+						state.llistatMoviment = []
+					)
+			})
+		},
+		//Crea un element a una col·lecció indicada per l'usuari
+		createItem({ commit }, payload) {
+			console.log("CREATE", payload.collection, ":", payload.values)
+			return new Promise((resolve, reject) => {
+				api.post("items/" + payload.collection, payload.values)
+					.then(response => {
+						resolve(response.data.data)
+					})
+					.catch(error => reject(error.message))
+			})
+		},
+		exportToPDF({ commit }, payload) {
+			html2pdf(document.getElementById(payload.idItem), payload.options);
+		},
 	},
 	plugins: [
 		new VuexPersistence({
