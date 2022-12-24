@@ -1,6 +1,6 @@
 <template>
     <h1 class="text-center">Categories</h1>
-    <section class="row row-cols-5">
+    <section class="row row-cols-5" id="toPDF">
         <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
             <router-link :to="{
                 name: 'subcollection',
@@ -18,6 +18,9 @@
             </CardButton>
         </div>
     </section>
+    <button @click="exportToPDF">Export to PDF</button>
+
+
     <ModalComponent id="ModalCreateCategory">
         <template v-slot:header>
             <h6>Crear categoria</h6>
@@ -50,12 +53,14 @@
 <script>
 import CardButton from '@/components/CardButton.vue'
 import ModalComponent from "@/components/ModalComponent.vue"
+import html2pdf from "html2pdf.js";
 
 export default {
     name: 'CollectionsView',
     components: {
         CardButton,
         ModalComponent
+
 
     },
     data() {
@@ -104,7 +109,16 @@ export default {
                 console.log("RESPONSE", response)
                 alert(response)
             }
-        }
+        },
+        exportToPDF() {
+            var opt = {
+                margin: 2,
+                filename: 'export.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf(document.getElementById('toPDF'), opt);
+        },
     }
 }
 </script>
