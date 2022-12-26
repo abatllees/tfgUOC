@@ -179,13 +179,51 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => resolve(error))
+					.catch(error => resolve(error.response))
 			})
 		},
 		//Exporta a PDF un element HTML amb identificat amb un ID
 		exportToPDF({ commit }, payload) {
 			html2pdf(document.getElementById(payload.idItem), payload.options);
 		},
+		handlingError({ commit }, response) {
+			let responseMessage = {
+				"alertType": "",
+				"message": []
+			}
+			//Comprova el codi d'error per prendre una acció o una altra
+			switch (response.status) {
+
+				case 403: {
+					responseMessage.alertType = "alert-danger"
+					//Genera un string amb tots els errors que retorna la API
+					for (let error = 0; error < response.data.errors.length; error++) {
+						responseMessage.message.push(response.data.errors[error].message)
+					}
+					break;
+				}
+				case 400: {
+					responseMessage.alertType = "alert-danger"
+					//Genera un string amb tots els errors que retorna la API
+					for (let error = 0; error < response.data.errors.length; error++) {
+						responseMessage.message.push(response.data.errors[error].message)
+					}
+					break;
+				}
+
+				case 200: {
+					responseMessage.alertType = "alert-success"
+					responseMessage.message = "Element actualtizat amb èxit"
+					break;
+				}
+
+				default:
+					responseMessage.alertType = "alert-info"
+					responseMessage.message = "No s'ha obtingut cap codi d'error"
+					break;
+			}
+			return responseMessage
+		}
 	},
 	plugins: [
 		new VuexPersistence({

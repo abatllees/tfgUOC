@@ -192,9 +192,20 @@ export default {
             this.response = await this.$store.dispatch("updateItem", payload)
 
             this.responseMessage = ""
+
+
             //Comprova el codi d'error per prendre una acció o una altra
             switch (this.response.status) {
+
                 case 403: {
+                    this.alertType = "alert-danger"
+                    //Genera un string amb tots els errors que retorna la API
+                    for (let error = 0; error < this.response.data.errors.length; error++) {
+                        this.responseMessage += this.response.data.errors[error].message;
+                    }
+                    break;
+                }
+                case 400: {
                     this.alertType = "alert-danger"
                     //Genera un string amb tots els errors que retorna la API
                     for (let error = 0; error < this.response.data.errors.length; error++) {

@@ -3,11 +3,11 @@
     <section class="row row-cols-5" id="toPDF">
         <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
             <router-link :to="{
-                name: 'subcollection',
-                params: {
-                    id: category.id
-                }
-            }">
+    name: 'subcollection',
+    params: {
+        id: category.id
+    }
+}">
                 <CardButton :title=category.CategoryName :owner="category.CategoryOwner"
                     :icon="'fa-solid fa-folder-tree'" :bg-color="'#bb0000'"></CardButton>
             </router-link>
@@ -37,12 +37,16 @@
                     <select class="form-control" name="CategoryOwner" id="CategoryOwner" v-model="ResponsableCategoria"
                         required>
                         <option v-for="usuari in this.users" :key="usuari.id" :value="usuari.id">{{
-                                usuari.first_name + " " + usuari.last_name
-                        }}
+        usuari.first_name + " " + usuari.last_name
+}}
                         </option>
                     </select>
                 </div>
                 <small>Si ets un usuari restringit, només pots crear categories de la teva propietat</small>
+                <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
+                    <p v-for="error in respCreateCat.message" :key="error"> {{ error }}
+                    </p>
+                </div>
             </div>
         </template>
         <template v-slot:footer>
@@ -71,6 +75,8 @@ export default {
                 sort: "&sort[]=CategoryName"
             },
             categories: [],
+
+            respCreateCat: null,
 
             users: null,
 
@@ -104,10 +110,12 @@ export default {
             }
 
             const response = await this.$store.dispatch("createItem", payload)
-            if (response) {
-                console.log("RESPONSE", response)
-                alert(response)
-            }
+
+            this.respCreateCat = await this.$store.dispatch("handlingError", response)
+
+            /*console.log("RESPONSE", response)
+            console.log("HANDLING ERROR", handlingError)*/
+
         },
         generatePDF() {
 
