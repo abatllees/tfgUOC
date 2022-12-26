@@ -44,7 +44,7 @@
                 </div>
                 <small>Si ets un usuari restringit, només pots crear categories de la teva propietat</small>
                 <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
-                    <p v-for="error in respCreateCat.message" :key="error"> {{ error }}
+                    <p v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}
                     </p>
                 </div>
             </div>
@@ -110,11 +110,7 @@ export default {
             }
 
             const response = await this.$store.dispatch("createItem", payload)
-
             this.respCreateCat = await this.$store.dispatch("handlingError", response)
-
-            /*console.log("RESPONSE", response)
-            console.log("HANDLING ERROR", handlingError)*/
 
         },
         generatePDF() {

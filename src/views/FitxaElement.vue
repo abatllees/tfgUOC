@@ -31,8 +31,10 @@
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
-            <div class="alert" v-if="response" v-bind:class="alertType">
-                {{ responseMessage }}
+
+            <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
+                <p v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}
+                </p>
             </div>
         </div>
         <div class="col-12 col-lg">
@@ -81,9 +83,7 @@ export default {
             editMode: false,
 
             response: null,
-            responseMessage: "",
-
-            alertType: "",
+            respEditElement: null,
 
             historialMoviments: {
                 headers: [
@@ -189,40 +189,9 @@ export default {
                 status: this.status,
                 observacions: this.observacions
             }
-            this.response = await this.$store.dispatch("updateItem", payload)
+            const response = await this.$store.dispatch("updateItem", payload)
 
-            this.responseMessage = ""
-
-
-            //Comprova el codi d'error per prendre una acció o una altra
-            switch (this.response.status) {
-
-                case 403: {
-                    this.alertType = "alert-danger"
-                    //Genera un string amb tots els errors que retorna la API
-                    for (let error = 0; error < this.response.data.errors.length; error++) {
-                        this.responseMessage += this.response.data.errors[error].message;
-                    }
-                    break;
-                }
-                case 400: {
-                    this.alertType = "alert-danger"
-                    //Genera un string amb tots els errors que retorna la API
-                    for (let error = 0; error < this.response.data.errors.length; error++) {
-                        this.responseMessage += this.response.data.errors[error].message;
-                    }
-                    break;
-                }
-
-                case 200: {
-                    this.alertType = "alert-success"
-                    this.responseMessage = "Element actualtizat amb èxit"
-                    break;
-                }
-
-                default:
-                    break;
-            }
+            this.respEditElement = await this.$store.dispatch("handlingError", response)
         },
     }
 }

@@ -213,13 +213,13 @@ export default createStore({
 
 				case 200: {
 					responseMessage.alertType = "alert-success"
-					responseMessage.message = "Element actualtizat amb èxit"
+					responseMessage.message.push("No s'ha obtingut cap codi d'error")
 					break;
 				}
 
 				default:
-					responseMessage.alertType = "alert-info"
-					responseMessage.message = "No s'ha obtingut cap codi d'error"
+					responseMessage.alertType = "alert-success"
+					responseMessage.message.push("No s'ha obtingut cap codi d'error")
 					break;
 			}
 			return responseMessage
