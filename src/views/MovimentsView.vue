@@ -46,7 +46,7 @@ export default {
             params: {
                 collection: "Moviment",
                 fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
-                filter: "&filter[status][_eq]=published",
+                filter: "&filter[status][_eq]=published&limit=-1",
                 sort: ""
             },
         }

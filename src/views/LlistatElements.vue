@@ -32,6 +32,7 @@ export default {
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
+                { text: "Observacions", value: "Observacions", sortable: true },
             ],
             sortBy: "NumMag",
             sortType: "asc",
@@ -47,7 +48,7 @@ export default {
         let params = {
             collection: "Element",
             fields: "?fields=*.*.*",
-            filter: "&filter[status][_eq]=published",
+            filter: "",
             sort: ""
         }
         if (this.$route.params.id) {

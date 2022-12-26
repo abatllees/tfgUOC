@@ -53,11 +53,12 @@ export default {
 			],
 			groupedElements: [],
 			headers: [
-				{ text: "Data d'entrega", value: "NumMag", sortable: true },
-				{ text: "Delegació", value: "Model.Subcategory.SubcategoryName", sortable: true },
-				{ text: "Codi magatzem", value: "Model.ModelName", sortable: true },
-				{ text: "Número de sèrie", value: "SerialNum", sortable: true },
-				{ text: "Equip", value: "DataEntrada", sortable: true },
+				{ text: "Data d'entrega", value: "date_created", sortable: true },
+				{ text: "Data de retorn", value: "DataRetorn", sortable: true },
+				{ text: "Delegació", value: "Desti.Name", sortable: true },
+				{ text: "Codi magatzem", value: "Element.NumMag", sortable: true },
+				{ text: "Subcategoria", value: "Element.Model.Subcategory.SubcategoryName", sortable: true },
+				{ text: "Número de sèrie", value: "Element.SerialNum", sortable: true },
 				{ text: "Entregat per", value: "user_created.first_name", sortable: true },
 			],
 			items: [],
@@ -75,6 +76,16 @@ export default {
 			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
+
+		//Mostra el material pendent de retorn
+		params = {
+			collection: "Moviment",
+			fields: "?fields=date_created,DataRetorn,Desti.Name,Element.NumMag,Element.Model.Subcategory.SubcategoryName,Element.SerialNum,user_created.first_name",
+			filter: "&filter[MovimentVigent][_eq]=true",
+			sort: "" //"&sort[]=date_created"
+		}
+		this.items = await this.$store.dispatch("getCollection", params)
+		this.loading = false
 
 		//Set Categories, Subcategories, Model and Delegacions
 		params = {

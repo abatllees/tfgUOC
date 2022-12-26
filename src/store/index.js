@@ -135,14 +135,16 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.patch("items/" + payload.collection + "/" + payload.SerialNum, newValues)
 					.then(response => {
-						resolve(response.data.data)
+						console.log(response)
+						resolve(response)
 					})
 					.catch(error => {
-						reject(error)
-						console.log(error.response.data.errors)
+						console.log(error.response)
+						resolve(error.response)
 					})
 			})
 		},
+		//Realitza un moviment, tant un enviament com un retorn de material
 		realitzarMoviment({ commit, getters, state }, payload) {
 			commit("SET_UPDATE_KEYS", payload)
 
@@ -177,9 +179,10 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => reject(error.message))
+					.catch(error => resolve(error))
 			})
 		},
+		//Exporta a PDF un element HTML amb identificat amb un ID
 		exportToPDF({ commit }, payload) {
 			html2pdf(document.getElementById(payload.idItem), payload.options);
 		},

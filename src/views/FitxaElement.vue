@@ -2,9 +2,8 @@
     <section class="row">
         <div class="col-12 col-sm col-lg-9">
             <h1>{{ element.Model.Subcategory.SubcategoryName }} {{ element.Model.Brand.BrandName }} {{
-                    element.Model.ModelName
-            }}
-            </h1>
+        element.Model.ModelName
+}} </h1>
             <form @submit.prevent="UpdateElement()">
                 <div class="row">
                     <div class="col">
@@ -32,7 +31,9 @@
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
-            {{ response }}
+            <div class="alert" v-if="response" v-bind:class="alertType">
+                {{ responseMessage }}
+            </div>
         </div>
         <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
@@ -79,7 +80,10 @@ export default {
 
             editMode: false,
 
-            response: "Resposta",
+            response: null,
+            responseMessage: "",
+
+            alertType: "",
 
             historialMoviments: {
                 headers: [
@@ -116,10 +120,7 @@ export default {
             }
         }
     },
-    async beforeCreate() {
-
-
-        //Obtenir els valors de l'element
+    async beforeMount() {
         let params = {
             collection: "Element",
             item: this.$route.params.SerialNum,
@@ -189,7 +190,29 @@ export default {
                 observacions: this.observacions
             }
             this.response = await this.$store.dispatch("updateItem", payload)
-        }
+
+            this.responseMessage = ""
+            //Comprova el codi d'error per prendre una acció o una altra
+            switch (this.response.status) {
+                case 403: {
+                    this.alertType = "alert-danger"
+                    //Genera un string amb tots els errors que retorna la API
+                    for (let error = 0; error < this.response.data.errors.length; error++) {
+                        this.responseMessage += this.response.data.errors[error].message;
+                    }
+                    break;
+                }
+
+                case 200: {
+                    this.alertType = "alert-success"
+                    this.responseMessage = "Element actualtizat amb èxit"
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        },
     }
 }
 </script>

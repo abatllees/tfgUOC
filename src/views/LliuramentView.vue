@@ -4,9 +4,9 @@
             <LliuramentForm></LliuramentForm>
         </div>
     </section>
-    <section class="w-100 my-2" v-if="false">
+    <section class="w-100 my-2" v-if="this.resultatMoviment">
         <div class="alert alert-success">
-            {{ resultatMoviment }}
+            {{ missatge }}
         </div>
     </section>
     <section class="w-100 my-5">
@@ -47,7 +47,17 @@ export default {
     methods: {
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
+
             this.resultatMoviment = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
+            switch (this.resultatMoviment.status) {
+                case 200:
+                    this.missatge = "Moviment realitzat amb èxit"
+                    break;
+
+                default:
+                    break;
+            }
+            console.log("RESULTAT MOVIMENT", this.resultatMoviment)
         }
     }
 }
