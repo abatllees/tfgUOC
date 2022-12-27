@@ -64,6 +64,7 @@ export default createStore({
 				updateKeysMoviment[i] = {
 					Element: payload[i].SerialNum,
 					Origen: payload[i].DelegacioActual.ID,
+					MovimentVigent: false,
 					Desti: state.destinacio
 				};
 
@@ -200,6 +201,11 @@ export default createStore({
 					for (let error = 0; error < response.data.errors.length; error++) {
 						responseMessage.message.push(response.data.errors[error].message)
 					}
+					break;
+				}
+				case 401: {
+					alert("Token expired")
+					this.$router.push("/")
 					break;
 				}
 				case 400: {

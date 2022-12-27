@@ -33,8 +33,9 @@
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
 
             <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
-                <p v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}
-                </p>
+                <ul class="list-unstyled">
+                    <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
+                </ul>
             </div>
         </div>
         <div class="col-12 col-lg">

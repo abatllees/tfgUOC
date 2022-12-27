@@ -20,11 +20,11 @@
 						<ul class="dropdown-menu">
 							<li v-for="delegacio in this.$store.state.Delegacions" v-bind:key="delegacio"><router-link
 									:to="{
-										name: 'DelegacioView',
-										params: {
-											id: delegacio.ID
-										}
-									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
+	name: 'DelegacioView',
+	params: {
+		id: delegacio.ID
+	}
+}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item">
@@ -65,9 +65,8 @@ export default {
 					refresh_token: sessionStorage.getItem("access_token")
 				})
 					.then(response => {
-						console.log(response)
+						resolve(response)
 						sessionStorage.clear()
-						this.$store.state.auth = false
 						this.$store.state.user = null
 						this.$router.push("/login")
 					})

@@ -44,8 +44,9 @@
                 </div>
                 <small>Si ets un usuari restringit, només pots crear categories de la teva propietat</small>
                 <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
-                    <p v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}
-                    </p>
+                    <ul class="list-unstyled">
+                        <li v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}</li>
+                    </ul>
                 </div>
             </div>
         </template>

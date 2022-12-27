@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="cercarElements()">
+    <form @submit.prevent="">
         <h4 class="text-center">Lliurament de material</h4>
         <div class="form-group mb-2">
             <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
@@ -17,8 +17,8 @@
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model">
                     <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
-                            model.ModelName
-                    }}
+        model.ModelName
+}}
                     </option>
                 </select>
             </div>
@@ -49,7 +49,8 @@
         </template>
         <template v-slot:body>
             <EasyDataTable :headers="this.headers" :items="this.results" alternating buttons-pagination
-                v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType">
+                v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType"
+                :themeColor="this.$store.state.themeColor">
             </EasyDataTable>
         </template>
         <template v-slot:footer>
@@ -75,8 +76,6 @@ export default {
             numSerie: null,
 
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
-
-            isModalVisible: false,
 
             results: [],
 

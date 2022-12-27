@@ -3,8 +3,8 @@
         <h1 class="text-center w-100"> {{ category?.CategoryName }}</h1>
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.subcategory" :key="subcategory">
             <router-link :to="{
-                name: 'LlistatElements', params: { id: subcategory.id }
-            }">
+    name: 'LlistatElements', params: { id: subcategory.id }
+}">
                 <CardButton :title=subcategory.SubcategoryName :icon="'fa-solid fa-folder-open'" :bg-color="'#bb0000'">
                 </CardButton>
             </router-link>
@@ -16,11 +16,11 @@
         </div>
     </section>
     <router-link :to="{
-        name: 'LlistatElements',
-        params: {
-            category: this.$route.params.id
-        },
-    }" class="btn btn-secondary">Mostra tots els elements</router-link>
+    name: 'LlistatElements',
+    params: {
+        category: this.$route.params.id
+    },
+}" class="btn btn-secondary">Mostra tots els elements</router-link>
 
 
     <ModalComponent id="ModalCreateSubCategory">
@@ -34,6 +34,11 @@
                     <input type="text" name="CategoryName" id="CategoryName" class="form-control"
                         v-model="NomCategoria">
                 </div>
+            </div>
+            <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
+                <ul class="list-unstyled">
+                    <li v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}</li>
+                </ul>
             </div>
         </template>
         <template v-slot:footer>
@@ -59,6 +64,8 @@ export default {
             NomCategoria: null,
             CategoriaPare: this.$route.params.id,
             //CREAR CATEGORIA
+
+            respCreateCat: null
         }
     },
     async beforeMount() {
@@ -92,10 +99,7 @@ export default {
             }
 
             const response = await this.$store.dispatch("createItem", payload)
-            if (response) {
-                console.log("RESPONSE", response)
-                alert(response)
-            }
+            this.respCreateCat = await this.$store.dispatch("handlingError", response)
         }
     }
 }
