@@ -76,6 +76,7 @@ export default {
 			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
+		console.log(await this.$store.dispatch("handlingError", this.groupedElements))
 
 		//Mostra el material pendent de retorn
 		params = {
@@ -85,6 +86,7 @@ export default {
 			sort: "" //"&sort[]=date_created"
 		}
 		this.items = await this.$store.dispatch("getCollection", params)
+		console.log(await this.$store.dispatch("handlingError", this.items))
 		this.loading = false
 
 		//Set Categories, Subcategories, Model and Delegacions
@@ -95,6 +97,8 @@ export default {
 			sort: "&sort[]=CategoryName"
 		}
 		this.$store.state.Categories = await this.$store.dispatch("getCollection", params)
+		console.log(await this.$store.dispatch("handlingError", this.$store.state.Categories))
+
 
 		params = {
 			collection: "Subcategory",
@@ -103,6 +107,8 @@ export default {
 			sort: "&sort[]=SubcategoryName"
 		}
 		this.$store.state.Subcategory = await this.$store.dispatch("getCollection", params)
+		console.log(await this.$store.dispatch("handlingError", this.$store.state.Subcategory))
+
 
 		params = {
 			collection: "Delegacio",
@@ -111,6 +117,8 @@ export default {
 			sort: "&sort[]=Name"
 		}
 		this.$store.state.Delegacions = await this.$store.dispatch("getCollection", params)
+		console.log(await this.$store.dispatch("handlingError", this.$store.state.Delegacions))
+
 	}
 }
 </script>

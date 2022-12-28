@@ -60,7 +60,6 @@ export default {
             this.title = await this.getTitle("Category", this.$route.params.category)
 
         }
-        console.log("TITLE", this.title)
         this.llistatElement = await this.$store.dispatch("getCollection", params)
         this.loading = false
     },

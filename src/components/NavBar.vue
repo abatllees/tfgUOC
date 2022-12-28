@@ -35,9 +35,11 @@
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
-					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search">
+					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search"
+						v-model="SearchInput" @input="debounceSearch">
 				</form>
 				<span class="mx-2">{{ fullname }}</span>
+
 				<button v-on:click="logout()" class="btn btn-secondary m-1">Logout</button>
 			</div>
 		</div>
@@ -45,6 +47,7 @@
 </template>
   
 <script>
+
 import api from "@/api.js"
 
 export default {
@@ -52,11 +55,9 @@ export default {
 	data() {
 		return {
 			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
-			delegacions: this.$store.getters.getDelegacions
+			delegacions: this.$store.getters.getDelegacions,
+			SearchInput: null,
 		}
-	},
-	components: {
-
 	},
 	methods: {
 		logout: async function () {
@@ -73,6 +74,26 @@ export default {
 					.catch(error => reject(error.message))
 			})
 		},
+		searchElement: async function () {
+			let params = {
+				collection: "Element",
+				fields: "?fields=NumMag,SerialNum,Subcategory.*,Model.ModelName",
+				filter: "&filter[_or][1][NumMag][_contains]=" + this.SearchInput + "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput,
+				sort: "&sort[]=NumMag"
+			}
+			const response = await this.$store.dispatch("getCollection", params)
+			console.log(response)
+			console.log(await this.$store.dispatch("handlingError", response))
+
+		},
+		async debounceSearch() {
+			clearTimeout(this.debounce)
+			this.debounce = setTimeout(() => {
+				if (this.SearchInput.length) {
+					this.searchElement()
+				}
+			}, 600)
+		}
 
 
 	}

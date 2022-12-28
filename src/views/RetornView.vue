@@ -6,6 +6,13 @@
                 v-model="this.LlistatRetorn.searchValue">
         </div>
     </section>
+    <section class="w-100 my-2" v-if="this.response">
+        <div class="alert" v-bind:class="response.alertType">
+            <ul class="list-unstyled">
+                <li v-for="resposta in response.message" :key="resposta"> {{ resposta }}</li>
+            </ul>
+        </div>
+    </section>
     <section class="row">
         <div class="col">
             <EasyDataTable :headers="this.LlistatRetorn.headers" :items="this.LlistatRetorn.items" alternating
@@ -43,6 +50,8 @@ export default {
                 sortBy: "",
                 sortType: "asc",
                 loading: true,
+
+                response: null
             }
         }
     },
@@ -54,13 +63,19 @@ export default {
             sort: ""
         }
         this.LlistatRetorn.items = await this.$store.dispatch("getCollection", payload)
+        console.log(await this.$store.dispatch("handlingError", this.LlistatRetorn.items))
+
         this.LlistatRetorn.loading = false
     },
     methods: {
-        realitzarRetorn: function () {
+        realitzarRetorn: async function () {
             console.log("Realitzar retorn")
             this.$store.state.destinacio = 22
             this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+            this.response = await this.$store.dispatch("handlingError", this.LlistatRetorn.itemsSelected)
+            if (this.response) {
+                this.LlistatRetorn.items = []
+            }
         }
     }
 }

@@ -110,6 +110,7 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
 					.then(response => {
+						console.log(response)
 						resolve(response.data.data)
 					})
 					.catch(error => reject(error))
