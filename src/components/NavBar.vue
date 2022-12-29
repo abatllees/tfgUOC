@@ -37,6 +37,14 @@
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search"
 						v-model="SearchInput" @input="debounceSearch">
+					<div class="form-group position-absolute top-100 left-0">
+						<ul class="list-group w-100">
+							<li class="list-group-item list-group-item-action" v-for="result in this.SearchResults"
+								:key="result">
+								<CardResult :result="result"></CardResult>
+							</li>
+						</ul>
+					</div>
 				</form>
 				<span class="mx-2">{{ fullname }}</span>
 
@@ -49,14 +57,20 @@
 <script>
 
 import api from "@/api.js"
+import CardResult from "@/components/CardResult.vue"
 
 export default {
 	name: 'NavBar',
+	components: {
+		CardResult
+	},
 	data() {
 		return {
 			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 			delegacions: this.$store.getters.getDelegacions,
 			SearchInput: null,
+
+			SearchResults: null
 		}
 	},
 	methods: {
@@ -83,6 +97,7 @@ export default {
 			}
 			const response = await this.$store.dispatch("getCollection", params)
 			console.log(response)
+			this.SearchResults = response
 			console.log(await this.$store.dispatch("handlingError", response))
 
 		},
@@ -91,8 +106,10 @@ export default {
 			this.debounce = setTimeout(() => {
 				if (this.SearchInput.length) {
 					this.searchElement()
+				} else {
+					this.SearchResults = null
 				}
-			}, 600)
+			}, 200)
 		}
 
 
