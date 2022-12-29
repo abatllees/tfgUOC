@@ -1,5 +1,8 @@
 <template>
-    {{ result.SerialNum }}
+    <p>{{ result.Model?.Subcategory.SubcategoryName }} {{ result.Model?.Brand.BrandName }} {{ result.Model?.ModelName }}
+        <br>{{ result?.NumMag }}<br>
+        <span class="fw-bold">{{ result.SerialNum }}</span>
+    </p>
 </template>
 
 <script>

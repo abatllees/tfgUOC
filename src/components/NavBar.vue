@@ -41,7 +41,11 @@
 						<ul class="list-group w-100">
 							<li class="list-group-item list-group-item-action" v-for="result in this.SearchResults"
 								:key="result">
-								<CardResult :result="result"></CardResult>
+								<router-link :to="{
+	name: 'Fitxa', params: { SerialNum: result?.SerialNum }
+}">
+									<CardResult :result="result"></CardResult>
+								</router-link>
 							</li>
 						</ul>
 					</div>
@@ -91,9 +95,9 @@ export default {
 		searchElement: async function () {
 			let params = {
 				collection: "Element",
-				fields: "?fields=NumMag,SerialNum,Subcategory.*,Model.ModelName",
+				fields: "?fields=NumMag,SerialNum,Model.Subcategory.SubcategoryName,Model.ModelName,Model.Brand.BrandName,status",
 				filter: "&filter[_or][1][NumMag][_contains]=" + this.SearchInput + "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput,
-				sort: "&sort[]=NumMag"
+				sort: "&sort[]=NumMag&limit=5"
 			}
 			const response = await this.$store.dispatch("getCollection", params)
 			console.log(response)

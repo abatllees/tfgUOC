@@ -122,44 +122,16 @@ export default {
         }
     },
     async beforeMount() {
-        let params = {
-            collection: "Element",
-            item: this.$route.params.SerialNum,
-            fields: "?fields=*.*.*",
-            filter: ""
+        this.getData()
+    },
+    watch: {
+        '$route'() {
+            console.log("Changed")
+            this.$router.push({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
+            this.getData()
+
+
         }
-        this.element = await this.$store.dispatch("getElement", params)
-
-        //Obté els possibles valors del desplegable
-        let payload = {
-            collection: "Element",
-            field: "status"
-        }
-        this.statusValues = await this.$store.dispatch("getFields", payload)
-        console.log(this.statusValues)
-
-
-        //Obtenir els moviments de l'element
-        payload = {
-            collection: "Moviment",
-            fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-            filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
-            sort: ""
-        }
-        this.historialMoviments.items = await this.getItems(payload)
-        this.historialMoviments.loading = !this.historialMoviments.loading
-
-        //Obtenir els accessoris
-        payload = {
-            collection: "Element",
-            fields: "?fields=*.*.*",
-            filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
-            sort: ""
-        }
-
-        this.status = this.element.status
-        this.NumMag = this.element.NumMag
-        this.observacions = this.element.Observacions
     },
     methods: {
         getItems: function (payload) {
@@ -194,6 +166,46 @@ export default {
 
             this.respEditElement = await this.$store.dispatch("handlingError", response)
         },
+        getData: async function () {
+            let params = {
+                collection: "Element",
+                item: this.$route.params.SerialNum,
+                fields: "?fields=*.*.*",
+                filter: ""
+            }
+            this.element = await this.$store.dispatch("getElement", params)
+
+            //Obté els possibles valors del desplegable
+            let payload = {
+                collection: "Element",
+                field: "status"
+            }
+            this.statusValues = await this.$store.dispatch("getFields", payload)
+            console.log(this.statusValues)
+
+
+            //Obtenir els moviments de l'element
+            payload = {
+                collection: "Moviment",
+                fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
+                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
+                sort: ""
+            }
+            this.historialMoviments.items = await this.getItems(payload)
+            this.historialMoviments.loading = !this.historialMoviments.loading
+
+            //Obtenir els accessoris
+            payload = {
+                collection: "Element",
+                fields: "?fields=*.*.*",
+                filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
+                sort: ""
+            }
+
+            this.status = this.element.status
+            this.NumMag = this.element.NumMag
+            this.observacions = this.element.Observacions
+        }
     }
 }
 </script>
