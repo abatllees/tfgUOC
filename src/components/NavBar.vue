@@ -27,8 +27,17 @@
 }" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
-					<li class="nav-item">
-						<router-link to="collections" class="nav-link">Inventari</router-link>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+							aria-expanded="false">
+							Inventari
+						</a>
+						<ul class="dropdown-menu">
+							<li class="dropdown-item"> <router-link to="meuInventari">El meu inventari</router-link>
+							</li>
+							<li class="dropdown-item"> <router-link to="collections">Inventari</router-link>
+							</li>
+						</ul>
 					</li>
 					<li class="nav-item">
 						<router-link to="moviments" class="nav-link">Moviments</router-link>
@@ -132,6 +141,11 @@ a {
 
 .dropdown-item {
 	color: black
+}
+
+a {
+	text-decoration: none;
+	color: inherit
 }
 </style>
   

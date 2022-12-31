@@ -1,8 +1,8 @@
 <template>
     <section class="row">
         <div class="col-12 col-sm col-lg-9">
-            <h1>{{ element.Model.Subcategory.SubcategoryName }} {{ element.Model.Brand.BrandName }} {{
-        element.Model.ModelName
+            <h1>{{ element?.Model.Subcategory.SubcategoryName }} {{ element?.Model.Brand.BrandName }} {{
+        element?.Model.ModelName
 }} </h1>
             <form @submit.prevent="UpdateElement()">
                 <div class="row">
@@ -12,14 +12,15 @@
                     </div>
                     <div class="col">
                         <label for="SerialNum">Número de sèrie:</label>
-                        <input type="text" name="SerialNum" id="SerialNum" class="form-control" :value=element.SerialNum
-                            disabled>
+                        <input type="text" name="SerialNum" id="SerialNum" class="form-control"
+                            :value=element?.SerialNum disabled>
                     </div>
                 </div>
                 <label for="responsable">Responsable:</label>
                 <input type="text" name="responsable" id="responsable" class="form-control" disabled>
                 <label for="status">Estat:</label>
-                <select name="status" id="status" class="form-control" disabled v-model="status">
+                <select name="status" id="status" class="form-control" disabled v-model="status"
+                    v-if="this.statusValues">
                     <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
                         :key="state">
                         {{ state.text }}
@@ -55,7 +56,7 @@
             <h6>Incidències</h6>
             <EasyDataTable :headers="this.incidencies.headers" :items="this.incidencies.items" alternating
                 buttons-pagination :sort-by="this.incidencies.sortBy" :sort-type="this.incidencies.sortType"
-                :theme-color="this.$store.state.themeColor">
+                :theme-color="this.$store.state.themeColor" :loading="this.incidencies.loading">
             </EasyDataTable>
             <button class="btn btn-primary mt-1">Crear incidència</button>
         </div>
@@ -63,7 +64,7 @@
             <h6>Equips assignats</h6>
             <EasyDataTable :headers="this.accessoris.headers" :items="this.accessoris.items" alternating
                 buttons-pagination :sort-by="this.accessoris.sortBy" :sort-type="this.accessoris.sortType"
-                :theme-color="this.$store.state.themeColor">
+                :theme-color="this.$store.state.themeColor" :loading="this.accessoris.loading">
             </EasyDataTable>
             <button class="btn btn-primary mt-1">Gestionar accessoris</button>
         </div>
@@ -102,12 +103,13 @@ export default {
                 headers: [
                     { text: "Data", value: "date_created", sortable: true },
                     { text: "OPI", value: "Origen.Name", sortable: true },
-                    { text: "Estat", value: "Desti.Name", sortable: true },
+                    { text: "Estat", value: "status", sortable: true },
                     { text: "Registrada per", value: "user_created.first_name", sortable: true },
                 ],
                 items: [],
                 sortBy: "",
-                sortType: "asc"
+                sortType: "asc",
+                loading: true
             },
             accessoris: {
                 headers: [
@@ -117,27 +119,25 @@ export default {
                 ],
                 items: [],
                 sortBy: "",
-                sortType: "asc"
+                sortType: "asc",
+                loading: true
             }
         }
     },
-    async beforeMount() {
+    async created() {
         this.getData()
     },
     watch: {
         '$route'() {
-            console.log("Changed")
             this.$router.push({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
             this.getData()
-
-
         }
     },
     methods: {
         getItems: function (payload) {
             return this.$store.dispatch("getCollection", payload)
         },
-        EditElement: function () { //Desactiva tots els elements del formulari per poder-los modificar
+        EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
             //document.getElementById("SerialNum").disabled = false;
             //document.getElementById("responsable").disabled = false;
@@ -146,7 +146,7 @@ export default {
 
             this.editMode = true
         },
-        UpdateElement: async function () {
+        UpdateElement: async function () { //Bloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = true;
             //document.getElementById("SerialNum").disabled = true;
             //document.getElementById("responsable").disabled = true;
@@ -167,6 +167,7 @@ export default {
             this.respEditElement = await this.$store.dispatch("handlingError", response)
         },
         getData: async function () {
+            //Obté informació de l'element
             let params = {
                 collection: "Element",
                 item: this.$route.params.SerialNum,
@@ -175,7 +176,7 @@ export default {
             }
             this.element = await this.$store.dispatch("getElement", params)
 
-            //Obté els possibles valors del desplegable
+            //Obté els possibles valors del desplegable de l'estat
             let payload = {
                 collection: "Element",
                 field: "status"
@@ -192,15 +193,27 @@ export default {
                 sort: ""
             }
             this.historialMoviments.items = await this.getItems(payload)
-            this.historialMoviments.loading = !this.historialMoviments.loading
+            this.historialMoviments.loading = false
+
+            //Obtenir les incidències
+            payload = {
+                collection: "Incidencia",
+                fields: "?fields=*.*.*",
+                filter: "&filter[ElementIncidencia][_eq]=" + this.$route.params.SerialNum,
+                sort: ""
+            }
+            this.incidencies.items = await this.getItems(payload)
+            this.incidencies.loading = false
 
             //Obtenir els accessoris
             payload = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
-                filter: "&filter[status][_eq]=published&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
+                filter: "&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
                 sort: ""
             }
+            this.accessoris.items = await this.getItems(payload)
+            this.accessoris.loading = false
 
             this.status = this.element.status
             this.NumMag = this.element.NumMag
