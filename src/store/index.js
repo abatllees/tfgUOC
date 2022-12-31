@@ -15,7 +15,8 @@ export default createStore({
 		//Moviment
 		llistatMoviment: [], //Elements a la taula de LliuramentView
 		llistatConfiguratMoviment: [], //La mateixa llista però configurada per a la càrrega de dades a la API
-		destinacio: null, //Destinació del moviment
+		destinacio: undefined, //Destinació del moviment
+		dataRetorn: null, //Data de retporn del moviment
 
 
 		/*START COLLECTIONS*/
@@ -54,23 +55,6 @@ export default createStore({
 	mutations: {
 		SET_LOGGED_USER(state, payload) {
 			state.user = payload
-		},
-		//Defines the payload to the POST request to create data
-		SET_UPDATE_KEYS(state, payload) {
-
-			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
-			let updateKeysMoviment = []
-			for (let i = 0; i < payload.length; i++) {
-				updateKeysMoviment[i] = {
-					Element: payload[i].SerialNum,
-					Origen: payload[i].DelegacioActual.ID,
-					MovimentVigent: false,
-					Desti: state.destinacio
-				};
-
-			}
-			state.llistatConfiguratMoviment = updateKeysMoviment
-			console.log("Llistat configurat moviment: ", state.llistatConfiguratMoviment)
 		},
 	},
 	actions: {
@@ -147,31 +131,57 @@ export default createStore({
 			})
 		},
 		//Realitza un moviment, tant un enviament com un retorn de material
-		realitzarMoviment({ commit, getters, state }, payload) {
-			commit("SET_UPDATE_KEYS", payload)
+		async realitzarMoviment({ commit, getters, state }, payload) {
 
 			let keys = [] //Create an array with serialNum values to update them
 
-			const iterator = getters.getLlistatConfiguratMoviment
+			const iterator = await this.dispatch("SET_UPDATE_PAYLOAD", payload)
 			for (const value of iterator) {
-				keys.push(value.Element)
+				keys.push(value.Element)  //Element és el camp ID de la taula Element (que conté el s/n)
 			}
-			console.log("keys", keys)
+			console.log("Update payload keys", keys)
 
 			//Crear multiples elements a la categoria moviment
-			console.log("CREATE", "Moviment", ":", state.llistatConfiguratMoviment)
+			console.log("CREATE", "Moviment", ":", iterator)
 
 			return new Promise((resolve, reject) => {
-				api.post("items/" + "Moviment", state.llistatConfiguratMoviment)
+				api.post("items/" + "Moviment", iterator)
 					.then(response => {
 						console.log("Nou registre afegit a " + "Moviment")
 						resolve(response)
 					})
 					.catch(error => reject(error.message))
 					.finally(
-						state.llistatMoviment = []
+						state.llistatMoviment = [],
+						state.dataRetorn = null
 					)
 			})
+		},
+		//Defines the payload to the POST request to create data
+		async SET_UPDATE_PAYLOAD({ state }, payload) {
+
+			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
+			console.log("DESTINACIO", state.destinacio)
+			let updateKeysMoviment = []
+			for (let i = 0; i < payload.length; i++) {
+				updateKeysMoviment[i] = {
+					Element: payload[i].SerialNum,
+					Origen: payload[i].DelegacioActual.ID,
+					Desti: state.destinacio,
+					MovimentVigent: false,
+
+				};
+
+				if (state.dataRetorn) {
+					console.log("DATA RETORN:", state.dataRetorn)
+					updateKeysMoviment[i].DataRetorn = await this.dispatch("formatdate", new Date(state.dataRetorn))
+					updateKeysMoviment[i].MovimentVigent = true
+				}
+
+			}
+			console.log("Llistat configurat moviment: ", updateKeysMoviment)
+
+			return updateKeysMoviment
 		},
 		//Crea un element a una col·lecció indicada per l'usuari
 		createItem({ commit }, payload) {
@@ -230,6 +240,20 @@ export default createStore({
 					break;
 			}
 			return responseMessage
+		},
+		formatdate({ commit }, date) {
+			let month = date.getMonth() + 1
+			let day = date.getDate()
+			let year = date.getFullYear()
+			console.log(day, month, year)
+
+			if (month < 10)
+				month = '0' + month;
+			if (day < 10)
+				day = '0' + day;
+			console.log("FORMATED", day, month, year)
+
+			return [year, month, day].join('-');
 		}
 	},
 	plugins: [

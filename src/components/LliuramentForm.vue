@@ -38,7 +38,7 @@
         <div class="row">
             <div class="col-12 col-sm">
                 <label for="destinacio">Destinació:</label>
-                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
+                <select class="form-control" name="destinacio" id="destinacio" v-model="this.destinacio">
                     <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
                         :value="delegacio.ID">
                         {{ delegacio.Name }}
@@ -47,7 +47,7 @@
             </div>
             <div class="col-12 col-sm">
                 <label for="dataRetorn">Data de retorn:</label>
-                <input type="date" name="dataRetorn" id="dataRetorn" class="form-control">
+                <input type="date" name="dataRetorn" id="dataRetorn" class="form-control" v-model="this.dataRetorn">
             </div>
         </div>
 
@@ -89,6 +89,8 @@ export default {
             model: null,
             numMag: null,
             numSerie: null,
+            destinacio: null,
+            dataRetorn: null,
 
             usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 
@@ -124,6 +126,14 @@ export default {
                 sort: ""
             }
             this.results = await this.$store.dispatch("getCollection", params);
+        },
+        destinacio() {
+            this.$store.state.destinacio = this.destinacio
+            console.log(this.$store.state.destinacio)
+        },
+        dataRetorn() {
+            this.$store.state.dataRetorn = this.dataRetorn
+            console.log(this.$store.state.dataRetorn)
         }
     },
     methods: {

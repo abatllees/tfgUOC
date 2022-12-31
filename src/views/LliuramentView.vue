@@ -14,35 +14,22 @@
     <section class="w-100 my-5">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
             :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
+            <template #item-operation="item">
+                <div class="operation-wrapper">
+                    <img src="../assets/delete.png" alt="delete" class="operation-icon" @click="deleteItem(item)" />
+                </div>
+            </template>
         </EasyDataTable>
         <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
         <button class="btn btn-secondary mt-3" @click="exportPDF()">Export to PDF</button>
     </section>
-    <section id="toPDF" class="w-100">
-        <informePDF>
-            <template v-slot:destinacio>
-                Slot destinació
-            </template>
-            <template v-slot:dataMoviment>
-
-            </template>
-            <template v-slot:lliuratPer>
-                {{ this.$store.state.user.first_name }} {{ this.$store.state.user.last_name }}
-            </template>
-            <template v-slot:entregatA>
-
-            </template>
-        </informePDF>
-    </section>
 </template>
 <script>
 import LliuramentForm from '@/components/LliuramentForm.vue';
-import informePDF from "@/components/InformePDF.vue"
 export default {
     name: "LliuramentView",
     components: {
-        LliuramentForm,
-        informePDF
+        LliuramentForm
     },
     data() {
         return {
@@ -52,6 +39,8 @@ export default {
                 { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                { text: "Operation", value: "operation" },
+
             ],
             sortBy: "NumMag",
             sortType: "asc",
