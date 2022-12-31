@@ -2,7 +2,7 @@
     <form @submit.prevent="">
         <h4 class="text-center">Lliurament de material</h4>
         <div class="form-group mb-2">
-            <input type="serach" class="form-control" id="inputPassword2" placeholder="Cerca">
+            <input type="serach" class="form-control" id="searchForm" placeholder="Cerca">
         </div>
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
@@ -37,10 +37,24 @@
             data-target="#ModalAddElementLliuramentList">Cercar elements</button>
         <div class="row">
             <div class="col-12 col-sm">
-                <label for="personaEntrega">Entrega:</label>
-                <input type="text" class="form-control" id="personaEntrega" disabled placeholder="Usuari"
-                    v-model="usuariEntrega">
+                <label for="destinacio">Destinació:</label>
+                <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
+                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
+                        :value="delegacio.ID">
+                        {{ delegacio.Name }}
+                    </option>
+                </select>
             </div>
+            <div class="col-12 col-sm">
+                <label for="dataRetorn">Data de retorn:</label>
+                <input type="date" name="dataRetorn" id="dataRetorn" class="form-control">
+            </div>
+        </div>
+
+        <div class="w-100 mt-1">
+            <label for="personaEntrega">Entrega:</label>
+            <input type="text" class="form-control" id="personaEntrega" disabled placeholder="Usuari"
+                v-model="usuariEntrega">
         </div>
     </form>
     <ModalComponent id="ModalAddElementLliuramentList">
@@ -54,7 +68,8 @@
             </EasyDataTable>
         </template>
         <template v-slot:footer>
-            <button class="btn btn-primary" @click="addElement(this.itemsSelected)">Afegeix element</button>
+            <button class="btn btn-primary" @click="addElement(this.itemsSelected)" data-dismiss="modal">Afegeix
+                element</button>
         </template>
     </ModalComponent>
 </template>

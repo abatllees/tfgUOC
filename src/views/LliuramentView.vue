@@ -15,12 +15,6 @@
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
             :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
         </EasyDataTable>
-        <label for="destinacio">Destinació:</label>
-        <select class="form-control" name="destinacio" id="destinacio" v-model="this.$store.state.destinacio">
-            <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id" :value="delegacio.ID">
-                {{ delegacio.Name }}
-            </option>
-        </select>
         <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
         <button class="btn btn-secondary mt-3" @click="exportPDF()">Export to PDF</button>
     </section>
@@ -70,13 +64,10 @@ export default {
     methods: {
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
-
             const response = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
-
         },
         exportPDF() {
-
             const payload = {
                 idItem: "toPDF",
                 options: {
@@ -88,7 +79,6 @@ export default {
                 }
             }
             this.$store.dispatch("exportToPDF", payload)
-
         }
     }
 }

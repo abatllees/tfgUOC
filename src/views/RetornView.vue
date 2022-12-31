@@ -56,14 +56,7 @@ export default {
         }
     },
     async beforeMount() {
-        let payload = {
-            collection: "Element",
-            fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID,DelegacioActual.Name",
-            filter: "&filter[status][_eq]=published&filter[DelegacioActual][_neq]=22",
-            sort: ""
-        }
-        this.LlistatRetorn.items = await this.$store.dispatch("getCollection", payload)
-        console.log(await this.$store.dispatch("handlingError", this.LlistatRetorn.items))
+        this.LlistatRetorn.items = await this.elementsPendentRetorn()
 
         this.LlistatRetorn.loading = false
     },
@@ -73,9 +66,16 @@ export default {
             this.$store.state.destinacio = 22
             this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
             this.response = await this.$store.dispatch("handlingError", this.LlistatRetorn.itemsSelected)
-            if (this.response) {
-                this.LlistatRetorn.items = []
+            this.LlistatRetorn.items = await this.elementsPendentRetorn()
+        },
+        elementsPendentRetorn: async function () {
+            let payload = {
+                collection: "Element",
+                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID,DelegacioActual.Name",
+                filter: "&filter[DelegacioActual][_neq]=22",
+                sort: ""
             }
+            return await this.$store.dispatch("getCollection", payload)
         }
     }
 }
