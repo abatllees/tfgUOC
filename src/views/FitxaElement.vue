@@ -17,18 +17,35 @@
                     </div>
                     <div class="col-12 col-sm-4">
                         <label for="responsable">Responsable:</label>
-                        <input type="text" name="responsable" id="responsable" class="form-control" disabled>
+                        <input type="text" name="responsable" id="responsable" class="form-control" disabled
+                            :value="responsable.first_name + ' ' + responsable.last_name">
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <label for="status">Estat:</label>
+                        <select name="status" id="status" class="form-control" disabled v-model="status"
+                            v-if="this.statusValues">
+                            <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
+                                :key="state">
+                                {{ state.text }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <label for="delegacioAssignada">Delegació assignada:</label>
+                        <select name="delegacioAssignada" id="delegacioAssignada" class="form-control" disabled
+                            v-model="DelegacioAssignada">
+                            <option v-for="delegacio in this.delegacions" :value="delegacio.ID" :key="delegacio">
+                                {{ delegacio.Name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-sm-4">
+                        <label for="delegacioActual">Delegació actual:</label>
+                        <input type="text" name="delegacioActual" id="delegacioActual" class="form-control" disabled
+                            :value="element.DelegacioActual.Name">
                     </div>
                 </div>
 
-                <label for="status">Estat:</label>
-                <select name="status" id="status" class="form-control" disabled v-model="status"
-                    v-if="this.statusValues">
-                    <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
-                        :key="state">
-                        {{ state.text }}
-                    </option>
-                </select>
                 <label for="observations">Observacions:</label>
                 <textarea class="form-control" name="observations" id="observations" v-model="element.Observacions"
                     disabled></textarea>
@@ -84,7 +101,9 @@ export default {
             NumMag: "",
             status: "",
             observacions: "",
-
+            responsable: "",
+            delegacions: this.getDelegacions(),
+            DelegacioAssignada: "",
             editMode: false,
 
             response: null,
@@ -129,6 +148,9 @@ export default {
     },
     async created() {
         this.getData()
+        this.delegacions = this.getDelegacions()
+        console.log("DELEGACIONS", this.delegacions)
+
     },
     watch: {
         '$route'() {
@@ -136,9 +158,15 @@ export default {
             this.getData()
         }
     },
+    computed: {
+
+    },
     methods: {
         getItems: function (payload) {
             return this.$store.dispatch("getCollection", payload)
+        },
+        getDelegacions() {
+            return this.$store.getters.getDelegacions
         },
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
@@ -146,6 +174,7 @@ export default {
             //document.getElementById("responsable").disabled = false;
             document.getElementById("status").disabled = false;
             document.getElementById("observations").disabled = false;
+            document.getElementById("delegacioAssignada").disabled = false;
 
             this.editMode = true
         },
@@ -155,6 +184,7 @@ export default {
             //document.getElementById("responsable").disabled = true;
             document.getElementById("status").disabled = true;
             document.getElementById("observations").disabled = true;
+            document.getElementById("delegacioAssignada").disabled = true;
 
             this.editMode = false
 
@@ -174,10 +204,11 @@ export default {
             let params = {
                 collection: "Element",
                 item: this.$route.params.SerialNum,
-                fields: "?fields=*.*.*",
+                fields: "?fields=*.*.*.*",
                 filter: ""
             }
             this.element = await this.$store.dispatch("getElement", params)
+            console.log(this.element)
 
             //Obté els possibles valors del desplegable de l'estat
             let payload = {
@@ -187,7 +218,15 @@ export default {
             this.statusValues = await this.$store.dispatch("getFields", payload)
             console.log(this.statusValues)
 
-
+            //Obtenir l'usuari responsable
+            payload = {
+                id: this.element.Model.Subcategory.Category.CategoryOwner,
+                fields: "?fields=first_name,last_name",
+                filter: "",
+                sort: ""
+            }
+            this.responsable = await this.$store.dispatch("getUsers", payload)
+            console.log(this.responsable)
             //Obtenir els moviments de l'element
             payload = {
                 collection: "Moviment",

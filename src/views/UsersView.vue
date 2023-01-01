@@ -21,6 +21,7 @@ export default {
     async created() {
         let params = {
             collection: "",
+            id: "",
             fields: "?fields=*.*.*",
             filter: "&filter[status][_eq]=active",
             sort: "&sort=first_name"

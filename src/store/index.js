@@ -73,7 +73,7 @@ export default createStore({
 		//Obté el llistat d'usuaris
 		getUsers({ commit }, payload) {
 			return new Promise((resolve, reject) => {
-				api.get("users/" + payload.fields + payload.filter + payload.sort)
+				api.get("users/" + payload.id + payload.fields + payload.filter + payload.sort)
 					.then(response => {
 						resolve(response.data.data)
 					})
