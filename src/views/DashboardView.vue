@@ -16,8 +16,8 @@
 		<section class="row">
 			<h5>Material en préstec pendent de retornar</h5>
 			<EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
-				v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType"
-				:loading="this.loading" :theme-color="this.$store.state.themeColor">
+				:sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
+				:theme-color="this.$store.state.themeColor">
 			</EasyDataTable>
 			<router-link to="prestecs" class="btn btn-primary mt-2">Mostra tots els préstecs</router-link>
 		</section>
@@ -42,13 +42,13 @@ export default {
 					id: 0,
 					icon: "fa-solid fa-plane-departure",
 					router: "lliurament",
-					name: "Lliurament de material"
+					name: "Sortida de material"
 				},
 				{
 					id: 2,
 					icon: "fa-solid fa-plane-arrival",
 					router: "retorn",
-					name: "Retorn de material"
+					name: "Entrada de material"
 				}
 			],
 			groupedElements: [],
@@ -62,7 +62,6 @@ export default {
 				{ text: "Entregat per", value: "user_created.first_name", sortable: true },
 			],
 			items: [],
-			itemsSelected: [],
 			sortBy: "",
 			sortType: "asc",
 			loading: true,

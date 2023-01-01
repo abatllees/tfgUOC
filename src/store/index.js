@@ -112,20 +112,13 @@ export default createStore({
 		},
 		//Actualitza un únic element
 		updateItem({ commit }, payload) {
-			console.log("Update item:", payload)
-			const newValues = {
-				"NumMag": payload.NumMag,
-				"status": payload.status,
-				"Observacions": payload.Observacions
-			}
-			return new Promise((resolve, reject) => {
-				api.patch("items/" + payload.collection + "/" + payload.SerialNum, newValues)
+			console.log("Update payload:", payload)
+			return new Promise((resolve) => {
+				api.patch("items/" + payload.collection + "/" + payload.item, payload)
 					.then(response => {
-						console.log(response)
 						resolve(response)
 					})
 					.catch(error => {
-						console.log(error.response)
 						resolve(error.response)
 					})
 			})

@@ -1,5 +1,5 @@
 <template>
-    <h1 class="text-center">Retorn de material</h1>
+    <h1 class="text-center">Entrada de material</h1>
     <section class="row">
         <div class="col col-lg-3">
             <input type="text" class="form-control mb-2" name="search" placeholder="Comença a cercar"
@@ -64,15 +64,49 @@ export default {
         realitzarRetorn: async function () {
             console.log("Realitzar retorn")
             this.$store.state.destinacio = 22
-            this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
-            this.response = await this.$store.dispatch("handlingError", this.LlistatRetorn.itemsSelected)
-            this.LlistatRetorn.items = await this.elementsPendentRetorn()
+
+            for (const elementARetornar of this.LlistatRetorn.itemsSelected) {
+                let found = await this.comprovarPrestec(elementARetornar)
+                if (found.length) {
+                    let payload = {
+                        collection: "Moviment",
+                        item: found[0].id,
+                        MovimentVigent: false
+                    }
+                    let eliminarVigencia = await this.$store.dispatch("updateItem", payload)
+                    console.log(await this.$store.dispatch("handlingError", eliminarVigencia))
+
+                }
+                const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+                this.response = await this.$store.dispatch("handlingError", retorn)
+                this.LlistatRetorn.items = await this.elementsPendentRetorn()
+            }
+
+            //Foreach item a itemsSelected
+            //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
+            //Si és vigent actualitzar-lo a no vigent (és préstec. Al actualitzar-lo ja no surt a la llista de pendent de retorn)
+            //Si no és vigent no cal fer res (no és préstec)
+
+            //Realitzar el moviment dels elements seleccionats
+
+            /* const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+             this.response = await this.$store.dispatch("handlingError", retorn)
+             this.LlistatRetorn.items = await this.elementsPendentRetorn()*/
         },
         elementsPendentRetorn: async function () {
             let payload = {
                 collection: "Element",
                 fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID,DelegacioActual.Name",
                 filter: "&filter[DelegacioActual][_neq]=22",
+                sort: ""
+            }
+            return await this.$store.dispatch("getCollection", payload)
+        },
+        comprovarPrestec: async function (element) {
+            let payload = {
+                collection: "Moviment",
+                fields: "?fields=Element,MovimentVigent,id",
+                filter: "&filter[MovimentVigent][_eq]=true&filter[Element][_eq]=" + element.SerialNum,
                 sort: ""
             }
             return await this.$store.dispatch("getCollection", payload)

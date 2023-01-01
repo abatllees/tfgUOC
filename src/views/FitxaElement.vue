@@ -34,7 +34,7 @@
                         <label for="delegacioAssignada">Delegació assignada:</label>
                         <select name="delegacioAssignada" id="delegacioAssignada" class="form-control" disabled
                             v-model="DelegacioAssignada">
-                            <option v-for="delegacio in this.delegacions" :value="delegacio.ID" :key="delegacio">
+                            <option v-for="delegacio in this.delegacionsValues" :value="delegacio.ID" :key="delegacio">
                                 {{ delegacio.Name }}
                             </option>
                         </select>
@@ -102,8 +102,10 @@ export default {
             status: "",
             observacions: "",
             responsable: "",
-            delegacions: this.getDelegacions(),
+
+            delegacionsValues: this.getDelegacions(),
             DelegacioAssignada: "",
+
             editMode: false,
 
             response: null,
@@ -170,8 +172,6 @@ export default {
         },
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
-            //document.getElementById("SerialNum").disabled = false;
-            //document.getElementById("responsable").disabled = false;
             document.getElementById("status").disabled = false;
             document.getElementById("observations").disabled = false;
             document.getElementById("delegacioAssignada").disabled = false;
@@ -180,8 +180,6 @@ export default {
         },
         UpdateElement: async function () { //Bloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = true;
-            //document.getElementById("SerialNum").disabled = true;
-            //document.getElementById("responsable").disabled = true;
             document.getElementById("status").disabled = true;
             document.getElementById("observations").disabled = true;
             document.getElementById("delegacioAssignada").disabled = true;
@@ -190,14 +188,16 @@ export default {
 
             let payload = {
                 collection: "Element",
-                SerialNum: this.$route.params.SerialNum,
+                item: this.$route.params.SerialNum,
                 NumMag: this.NumMag,
                 status: this.status,
+                DelegacioAssignada: this.DelegacioAssignada,
                 observacions: this.observacions
             }
+            console.log("PAYLOAD", payload)
             const response = await this.$store.dispatch("updateItem", payload)
-
             this.respEditElement = await this.$store.dispatch("handlingError", response)
+            console.log("Resposta actualitzacio", this.respEditElement)
         },
         getData: async function () {
             //Obté informació de l'element
@@ -227,6 +227,7 @@ export default {
             }
             this.responsable = await this.$store.dispatch("getUsers", payload)
             console.log(this.responsable)
+
             //Obtenir els moviments de l'element
             payload = {
                 collection: "Moviment",
@@ -260,6 +261,7 @@ export default {
             this.status = this.element.status
             this.NumMag = this.element.NumMag
             this.observacions = this.element.Observacions
+            this.DelegacioAssignada = this.element.DelegacioAssignada.ID
         }
     }
 }
