@@ -18,7 +18,6 @@
             </CardButton>
         </div>
     </section>
-    <button @click="generatePDF">Export to PDF</button>
 
 
     <ModalComponent id="ModalCreateCategory">
@@ -112,20 +111,6 @@ export default {
 
             const response = await this.$store.dispatch("createItem", payload)
             this.respCreateCat = await this.$store.dispatch("handlingError", response)
-
-        },
-        generatePDF() {
-
-            const payload = {
-                idItem: "toPDF",
-                options: {
-                    margin: 2,
-                    filename: 'export.pdf',
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
-                }
-            }
-            this.$store.dispatch("exportToPDF", payload)
 
         }
     }

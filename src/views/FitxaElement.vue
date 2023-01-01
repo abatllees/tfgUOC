@@ -6,18 +6,21 @@
 }} </h1>
             <form @submit.prevent="UpdateElement()">
                 <div class="row">
-                    <div class="col">
+                    <div class="col-12 col-sm-4">
                         <label for="NumMag">Número de magatzem:</label>
                         <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="NumMag" disabled>
                     </div>
-                    <div class="col">
+                    <div class="col-12 col-sm-4">
                         <label for="SerialNum">Número de sèrie:</label>
                         <input type="text" name="SerialNum" id="SerialNum" class="form-control"
                             :value=element?.SerialNum disabled>
                     </div>
+                    <div class="col-12 col-sm-4">
+                        <label for="responsable">Responsable:</label>
+                        <input type="text" name="responsable" id="responsable" class="form-control" disabled>
+                    </div>
                 </div>
-                <label for="responsable">Responsable:</label>
-                <input type="text" name="responsable" id="responsable" class="form-control" disabled>
+
                 <label for="status">Estat:</label>
                 <select name="status" id="status" class="form-control" disabled v-model="status"
                     v-if="this.statusValues">
