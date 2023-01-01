@@ -64,9 +64,12 @@ export default {
         realitzarRetorn: async function () {
             console.log("Realitzar retorn")
             this.$store.state.destinacio = 22
+            //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
 
             for (const elementARetornar of this.LlistatRetorn.itemsSelected) {
                 let found = await this.comprovarPrestec(elementARetornar)
+                //Si és vigent actualitzar-lo a no vigent (és préstec. Al actualitzar-lo ja no surt a la llista de pendent de retorn)
+
                 if (found.length) {
                     let payload = {
                         collection: "Moviment",
@@ -75,23 +78,14 @@ export default {
                     }
                     let eliminarVigencia = await this.$store.dispatch("updateItem", payload)
                     console.log(await this.$store.dispatch("handlingError", eliminarVigencia))
-
                 }
-                const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
-                this.response = await this.$store.dispatch("handlingError", retorn)
-                this.LlistatRetorn.items = await this.elementsPendentRetorn()
+                //Si no és vigent no cal fer res (no és préstec)
+
             }
-
-            //Foreach item a itemsSelected
-            //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
-            //Si és vigent actualitzar-lo a no vigent (és préstec. Al actualitzar-lo ja no surt a la llista de pendent de retorn)
-            //Si no és vigent no cal fer res (no és préstec)
-
             //Realitzar el moviment dels elements seleccionats
-
-            /* const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
-             this.response = await this.$store.dispatch("handlingError", retorn)
-             this.LlistatRetorn.items = await this.elementsPendentRetorn()*/
+            const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+            this.response = await this.$store.dispatch("handlingError", retorn)
+            this.LlistatRetorn.items = await this.elementsPendentRetorn()
         },
         elementsPendentRetorn: async function () {
             let payload = {
