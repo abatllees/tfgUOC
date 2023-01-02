@@ -1,6 +1,6 @@
 <template>
   <div class="card text-white text-center h-100" :style="style">
-    <font-awesome-icon :icon="icon" size="4x" class="py-2" />
+    <i size="4x" class="py-2 4x" v-bind:class="icon" style="font-size: 3.5rem"></i>
     <h5> {{ title }}</h5>
     <p class="text-right">{{ owner?.first_name }} {{ owner?.last_name }}</p>
   </div>

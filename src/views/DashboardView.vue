@@ -40,13 +40,13 @@ export default {
 			options: [
 				{
 					id: 0,
-					icon: "fa-solid fa-plane-departure",
+					icon: "bi bi-box-arrow-up-right",
 					router: "lliurament",
 					name: "Sortida de material"
 				},
 				{
 					id: 2,
-					icon: "fa-solid fa-plane-arrival",
+					icon: "bi bi-box-arrow-in-down-right",
 					router: "retorn",
 					name: "Entrada de material"
 				}

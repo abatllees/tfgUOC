@@ -8,12 +8,12 @@
         id: category.id
     }
 }">
-                <CardButton :title=category.CategoryName :owner="category.CategoryOwner"
-                    :icon="'fa-solid fa-folder-tree'" :bg-color="'#bb0000'"></CardButton>
+                <CardButton :title=category.CategoryName :owner="category.CategoryOwner" :icon="'bi bi-folder2-open'"
+                    :bg-color="'#bb0000'"></CardButton>
             </router-link>
         </div>
         <div class="col-6 col-sm col-md-2 my-3">
-            <CardButton :title="'Afegir categoria'" :owner="{}" :icon="'fa-solid fa-plus'" :bg-color="'#36333E'"
+            <CardButton :title="'Afegir categoria'" :owner="{}" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
                 data-toggle="modal" data-target="#ModalCreateCategory" @click="listusers()">
             </CardButton>
         </div>
@@ -93,6 +93,7 @@ export default {
     methods: {
         async listusers() {
             let params = {
+                id: "",
                 collection: "",
                 fields: "?fields=first_name,last_name,id",
                 filter: "&filter[status][_eq]=active",

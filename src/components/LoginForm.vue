@@ -9,6 +9,7 @@
             <input type="password" class="form-control" id="passwordLogin" v-model="this.password">
         </div>
         <div class="alert alert-danger" v-if="this.error">
+
             {{ error[0].message }}
         </div>
         <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>

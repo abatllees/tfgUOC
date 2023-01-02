@@ -11,19 +11,12 @@
             </ul>
         </div>
     </section>
-    <section class="w-100 my-5">
+    <section class="w-100 my-5" id="toPDF">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
             :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
             <template #item-operation="item">
                 <div class="operation-wrapper">
-                    <i class="bi bi-trash"></i>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                        class="bi bi-trash" viewBox="0 0 16 16" @click="deleteItem(item)">
-                        <path
-                            d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                        <path fill-rule="evenodd"
-                            d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                    </svg>
+                    <i class="bi bi-trash" style="font-size: 1rem" @click="deleteItem(item)"></i>
                 </div>
             </template>
         </EasyDataTable>
@@ -33,6 +26,10 @@
 </template>
 <script>
 import LliuramentForm from '@/components/LliuramentForm.vue';
+import jsPDF from 'jspdf'
+import html2pdf from "html2pdf"
+
+
 export default {
     name: "LliuramentView",
     components: {
@@ -41,12 +38,12 @@ export default {
     data() {
         return {
             headers: [
-                { text: "Núm. Mag", value: "NumMag", sortable: true },
-                { text: "Subcategoria", value: "Model.Subcategory.SubcategoryName", sortable: true },
+                { text: "Tipus de material", value: "Model.Subcategory.SubcategoryName", sortable: true },
                 { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
                 { text: "Model", value: "Model.ModelName", sortable: true },
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                { text: "Operation", value: "operation" },
+                { text: "Accions", value: "operation" },
 
             ],
             sortBy: "NumMag",
@@ -63,18 +60,23 @@ export default {
             const response = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
         },
-        exportPDF() {
-            const payload = {
-                idItem: "toPDF",
-                options: {
-                    margin: 2,
-                    filename: 'export.pdf',
-                    html2canvas: { scale: 10 },
-                    jsPDF: { unit: 'cm', format: 'a3', orientation: 'portrait' },
-                    quality: 2
+        async exportPDF() {
+
+            const contentCanvas = await html2pdf(document.getElementById("toPDF"));
+            const image = contentCanvas.toDataURL("image/png");
+            var doc = new jsPDF();
+            doc.addImage(image, "png", 0, 0);
+            doc.save("resumse.pdf");
+
+            /*doc.html(document.getElementById("toPDF"), {
+                callback: function (doc) {
+                    doc.scale(0.2, 0.2)
+
+                    doc.save();
                 }
-            }
-            this.$store.dispatch("exportToPDF", payload)
+            })*/
+            //doc.text("Hello world!", 10, 10);
+            //doc.save("a4.pdf"); // will save the file in the current working directory
         },
         deleteItem(item) {
             const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
