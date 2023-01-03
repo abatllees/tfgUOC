@@ -64,16 +64,30 @@ export default {
         async exportPDF() {
             const doc = new jsPDF()
 
+            //Capçaleres de la taula
+            let head = []
+            //Array d'elements. 
+            let elements = []
 
+            this.headers.forEach(titol => {
+                head.push(titol.text)
+            })
 
-            // Or use javascript directly:
+            this.$store.state.llistatMoviment.forEach(element => {
+                elements.push([
+                    element.Model.Subcategory.SubcategoryName,
+                    element.Model.Brand.BrandName,
+                    element.Model.ModelName,
+                    element.NumMag,
+                    element.SerialNum
+                ])
+
+            })
+            console.log("ELEMENTS", elements)
+
             autoTable(doc, {
-                head: [['Name', 'Email', 'Country']],
-                body: [
-                    ['David', 'david@example.com', 'Sweden'],
-                    ['Castille', 'castille@example.com', 'Spain'],
-
-                ],
+                head: [head],
+                body: elements,
             })
 
             doc.save('table.pdf')
