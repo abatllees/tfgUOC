@@ -247,6 +247,11 @@ export default createStore({
 			console.log("FORMATED", day, month, year)
 
 			return [year, month, day].join('-');
+		},
+		ShortDate({ commit }, date) {
+			let dateFromatted = new Date(date)
+			const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+			return dateFromatted.toLocaleDateString('ca-ES', options);
 		}
 	},
 	plugins: [

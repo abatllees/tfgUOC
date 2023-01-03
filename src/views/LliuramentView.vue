@@ -83,12 +83,15 @@ export default {
 
             })
 
-
-
             const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+
             const desti = await this.obtenirDestinacio(this.$store.state.destinacio)
 
             const today = await this.$store.dispatch("formatdate", new Date())
+
+            //Realitzat per
+            doc.setFontSize(8)
+            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 10)
 
             //Títol
             doc.setFontSize(22)
@@ -96,6 +99,7 @@ export default {
             //Subtítol
             doc.setFontSize(15)
             doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
+
             //Informació del moviment
             doc.setFontSize(12)
             if (this.$store.state.dataRetorn) {
@@ -104,8 +108,8 @@ export default {
             }
             doc.text("Data: " + today, 10, 65)
             doc.text("Destinació: " + desti.Name, 10, 77)
-            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 10)
             doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 77)
+
             //Mostra la taula
             autoTable(doc, {
                 head: [head],
@@ -113,7 +117,7 @@ export default {
                 startY: 80,
                 margin: 10,
                 headStyles: { fillColor: [187, 0, 0] },
-                bodyStyles: { color: [0, 0, 0] }
+                bodyStyles: { textColor: [0, 0, 0] }
             },)
             doc.save('table.pdf')
         },

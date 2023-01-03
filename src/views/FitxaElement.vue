@@ -119,8 +119,8 @@ export default {
                     { text: "Realitzat per", value: "user_created.first_name", sortable: true },
                 ],
                 items: [],
-                sortBy: "",
-                sortType: "asc",
+                sortBy: "date_created",
+                sortType: "desc",
                 loading: true
             },
             incidencies: {
@@ -151,7 +151,6 @@ export default {
     async created() {
         this.getData()
         this.delegacions = this.getDelegacions()
-        console.log("DELEGACIONS", this.delegacions)
 
     },
     watch: {
@@ -194,10 +193,8 @@ export default {
                 DelegacioAssignada: this.DelegacioAssignada,
                 observacions: this.observacions
             }
-            console.log("PAYLOAD", payload)
             const response = await this.$store.dispatch("updateItem", payload)
             this.respEditElement = await this.$store.dispatch("handlingError", response)
-            console.log("Resposta actualitzacio", this.respEditElement)
         },
         getData: async function () {
             //Obté informació de l'element
@@ -208,7 +205,6 @@ export default {
                 filter: ""
             }
             this.element = await this.$store.dispatch("getElement", params)
-            console.log(this.element)
 
             //Obté els possibles valors del desplegable de l'estat
             let payload = {
@@ -216,7 +212,6 @@ export default {
                 field: "status"
             }
             this.statusValues = await this.$store.dispatch("getFields", payload)
-            console.log(this.statusValues)
 
             //Obtenir l'usuari responsable
             payload = {
@@ -226,7 +221,6 @@ export default {
                 sort: ""
             }
             this.responsable = await this.$store.dispatch("getUsers", payload)
-            console.log(this.responsable)
 
             //Obtenir els moviments de l'element
             payload = {
@@ -237,6 +231,13 @@ export default {
             }
             this.historialMoviments.items = await this.getItems(payload)
             this.historialMoviments.loading = false
+            console.log("MOVIMENTS", this.historialMoviments.items)
+
+            this.historialMoviments.items.forEach(moviment => {
+                let dateFromatted = new Date(moviment.date_created)
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                moviment.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
+            });
 
             //Obtenir les incidències
             payload = {
@@ -247,6 +248,7 @@ export default {
             }
             this.incidencies.items = await this.getItems(payload)
             this.incidencies.loading = false
+
 
             //Obtenir els accessoris
             payload = {
