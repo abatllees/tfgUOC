@@ -88,6 +88,7 @@ export default {
             const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
             const desti = await this.obtenirDestinacio(this.$store.state.destinacio)
 
+            const today = await this.$store.dispatch("formatdate", new Date())
 
             //Títol
             doc.setFontSize(22)
@@ -97,17 +98,22 @@ export default {
             doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
             //Informació del moviment
             doc.setFontSize(12)
-            doc.text("Data:", 10, 65)
-            doc.text("Destinació: " + desti.Name, amplada - amplada / 2, 65)
-            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 71)
-            doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 71)
+            if (this.$store.state.dataRetorn) {
+                const dataRetorn = await this.$store.dispatch("formatdate", new Date(this.$store.state.dataRetorn))
+                doc.text("Data de retorn: " + dataRetorn, amplada / 2, 65)
+            }
+            doc.text("Data: " + today, 10, 65)
+            doc.text("Destinació: " + desti.Name, 10, 77)
+            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 10)
+            doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 77)
             //Mostra la taula
             autoTable(doc, {
                 head: [head],
                 body: elements,
                 startY: 80,
                 margin: 10,
-                headStyles: { fillColor: [187, 0, 0] }
+                headStyles: { fillColor: [187, 0, 0] },
+                bodyStyles: { color: [0, 0, 0] }
             },)
             doc.save('table.pdf')
         },
