@@ -13,7 +13,7 @@
     </section>
     <section class="w-100 my-5" id="toPDF">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
-            :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor">
+            :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor" id="data">
             <template #item-operation="item">
                 <div class="operation-wrapper">
                     <i class="bi bi-trash" style="font-size: 1rem" @click="deleteItem(item)"></i>
@@ -27,7 +27,8 @@
 <script>
 import LliuramentForm from '@/components/LliuramentForm.vue';
 import jsPDF from 'jspdf'
-import html2pdf from "html2pdf"
+import autoTable from 'jspdf-autotable'
+
 
 
 export default {
@@ -61,28 +62,28 @@ export default {
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
         },
         async exportPDF() {
+            const doc = new jsPDF()
 
-            const contentCanvas = await html2pdf(document.getElementById("toPDF"));
-            const image = contentCanvas.toDataURL("image/png");
-            var doc = new jsPDF();
-            doc.addImage(image, "png", 0, 0);
-            doc.save("resumse.pdf");
 
-            /*doc.html(document.getElementById("toPDF"), {
-                callback: function (doc) {
-                    doc.scale(0.2, 0.2)
 
-                    doc.save();
-                }
-            })*/
-            //doc.text("Hello world!", 10, 10);
-            //doc.save("a4.pdf"); // will save the file in the current working directory
-        },
-        deleteItem(item) {
-            const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
-            const index = this.$store.state.llistatMoviment.indexOf(findItem);
-            this.$store.state.llistatMoviment.splice(index, 1)
+            // Or use javascript directly:
+            autoTable(doc, {
+                head: [['Name', 'Email', 'Country']],
+                body: [
+                    ['David', 'david@example.com', 'Sweden'],
+                    ['Castille', 'castille@example.com', 'Spain'],
+
+                ],
+            })
+
+            doc.save('table.pdf')
         }
+    },
+    deleteItem(item) {
+        const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
+        const index = this.$store.state.llistatMoviment.indexOf(findItem);
+        this.$store.state.llistatMoviment.splice(index, 1)
     }
 }
+
 </script>
