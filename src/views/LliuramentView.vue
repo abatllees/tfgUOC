@@ -82,37 +82,54 @@ export default {
                 ])
 
             })
-            doc.setFontSize(22)
+
+
 
             const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+            const desti = await this.obtenirDestinacio(this.$store.state.destinacio)
 
 
-
-            //doc.addImage('@/assets/ccma_corp.jpg', "", amplada / 2, 10)
-
-            doc.text("Magatzem de rodatges", amplada / 2, 25, { align: "center" })
+            //Títol
+            doc.setFontSize(22)
+            doc.text("Magatzem de rodatges", amplada / 2, 40, { align: "center" })
+            //Subtítol
             doc.setFontSize(15)
-            doc.text("Lliurament de material", 10, 50, { align: "left" })
+            doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
+            //Informació del moviment
             doc.setFontSize(12)
-            doc.text("Data:", 10, 60)
-            doc.text("Destinació:", amplada - amplada / 2, 60)
-            doc.text("Realitzat per: " + this.$store.state.user.first_name + this.$store.state.user.last_name, 10, 70)
-            doc.text("Entregat a: ", amplada - amplada / 2, 70)
+            doc.text("Data:", 10, 65)
+            doc.text("Destinació: " + desti.Name, amplada - amplada / 2, 65)
+            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 71)
+            doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 71)
             //Mostra la taula
             autoTable(doc, {
                 head: [head],
                 body: elements,
-                startY: 80
+                startY: 80,
+                margin: 10,
+                headStyles: { fillColor: [187, 0, 0] }
             },)
-
             doc.save('table.pdf')
+        },
+        obtenirDestinacio: async function (destinacio) {
+            let params = {
+                collection: "Delegacio",
+                item: destinacio,
+                fields: "?fields=Name,ResponsableDelegacio.*",
+                filter: "",
+                sort: ""
+            }
+            return await this.$store.dispatch("getElement", params);
+            //this.resultatMoviment =  this.$store.dispatch("handlingError", response)
+
         }
     },
     deleteItem(item) {
         const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
         const index = this.$store.state.llistatMoviment.indexOf(findItem);
         this.$store.state.llistatMoviment.splice(index, 1)
-    }
+    },
+
 }
 
 </script>
