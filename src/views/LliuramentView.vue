@@ -68,11 +68,10 @@ export default {
             let head = []
             //Array d'elements. 
             let elements = []
-
+            //Omplena les dades de la taula
             this.headers.forEach(titol => {
                 head.push(titol.text)
             })
-
             this.$store.state.llistatMoviment.forEach(element => {
                 elements.push([
                     element.Model.Subcategory.SubcategoryName,
@@ -83,12 +82,26 @@ export default {
                 ])
 
             })
-            console.log("ELEMENTS", elements)
+            doc.setFontSize(22)
 
+            const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+
+
+
+            //doc.addImage('@/assets/ccma_corp.jpg', "", amplada / 2, 10)
+
+            doc.text("Magatzem de rodatges", amplada / 2, 25, { align: "center" })
+            doc.setFontSize(15)
+            doc.text("Lliurament de material", 10, 50, { align: "left" })
+            doc.setFontSize(12)
+            doc.text("Data:", 10, 60)
+            doc.text("Destinació:", amplada - amplada / 2, 60)
+            //Mostra la taula
             autoTable(doc, {
                 head: [head],
                 body: elements,
-            })
+                startY: 70
+            },)
 
             doc.save('table.pdf')
         }
