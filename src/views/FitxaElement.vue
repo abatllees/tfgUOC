@@ -249,6 +249,10 @@ export default {
             this.incidencies.items = await this.getItems(payload)
             this.incidencies.loading = false
 
+            this.incidencies.items.forEach(incidencia => {
+                incidencia.date_created = this.$store.dispatch("ShortDate", incidencia.date_created)
+            });
+
 
             //Obtenir els accessoris
             payload = {
