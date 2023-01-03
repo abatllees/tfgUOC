@@ -96,11 +96,13 @@ export default {
             doc.setFontSize(12)
             doc.text("Data:", 10, 60)
             doc.text("Destinació:", amplada - amplada / 2, 60)
+            doc.text("Realitzat per: " + this.$store.state.user.first_name + this.$store.state.user.last_name, 10, 70)
+            doc.text("Entregat a: ", amplada - amplada / 2, 70)
             //Mostra la taula
             autoTable(doc, {
                 head: [head],
                 body: elements,
-                startY: 70
+                startY: 80
             },)
 
             doc.save('table.pdf')
