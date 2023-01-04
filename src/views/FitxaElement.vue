@@ -182,7 +182,7 @@ export default {
                     { text: "Model", value: "Model.Subcategory.SubcategoryName", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                    { text: "Accions", value: "operation" },
+                    { text: "", value: "operation" },
 
                 ],
                 items: [],
@@ -309,8 +309,8 @@ export default {
             let payload = {
                 collection: "Moviment",
                 fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
-                sort: ""
+                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum + "&limit=10",
+                sort: "&sort[]=-date_created"
             }
             this.historialMoviments.items = await this.getItems(payload)
             this.historialMoviments.loading = false
@@ -376,6 +376,7 @@ export default {
             const response = this.$store.dispatch("updateMultipleItems", payload)
             const resposta = await this.$store.dispatch("handlingError", response)
             console.log(resposta)
+            this.nousAccessoris.itemsSelected = []
             this.getAccessoris()
         },
         deleteAccessori: async function (item) {
