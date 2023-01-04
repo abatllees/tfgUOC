@@ -87,7 +87,7 @@
                 :theme-color="this.$store.state.themeColor" :loading="this.accessoris.loading">
                 <template #item-operation="item">
                     <div class="operation-wrapper">
-                        <i class="bi bi-trash" style="font-size: 1rem" @click="deleteItem(item)"></i>
+                        <i class="bi bi-trash" style="font-size: 1rem" @click="deleteAccessori(item)"></i>
                     </div>
                 </template>
             </EasyDataTable>
@@ -119,7 +119,8 @@
             </EasyDataTable>
         </template>
         <template v-slot:footer>
-
+            <button class="btn btn-primary" @click="associar(this.nousAccessoris.itemsSelected)">Associar
+                elements</button>
         </template>
     </ModalComponent>
 </template>
@@ -185,23 +186,21 @@ export default {
 
                 ],
                 items: [],
+                itemsSelected: [],
                 sortBy: "",
                 sortType: "asc",
                 loading: true
             },
             nousAccessoris: {
                 headers: [
-                    { text: "Model", value: "Model.Subcategory.SubcategoryName", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                    { text: "Accions", value: "operation" },
-
                 ],
                 items: [],
                 sortBy: "",
                 sortType: "asc",
                 itemsSelected: [],
-                loading: true
+                loading: true,
             }
         }
     },
@@ -228,8 +227,8 @@ export default {
             this.nousAccessoris.items = []
             let params = {
                 collection: "Element",
-                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory",
-                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial,
+                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
+                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
                 sort: "&sort[]=Model.ModelName"
             }
             this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
@@ -347,6 +346,37 @@ export default {
             this.NumMag = this.element.NumMag
             this.observacions = this.element.Observacions
             this.DelegacioAssignada = this.element.DelegacioAssignada.ID
+        },
+        associar: async function (elements) {
+
+            let updateKeys = []
+            elements.forEach(element => {
+                updateKeys.push(element.SerialNum)
+            });
+            console.log(updateKeys)
+            const payload = {
+                collection: "Element",
+                data: {
+                    keys: updateKeys,
+                    data: {
+                        "ElementPare": this.$route.params.SerialNum
+                    }
+                }
+            }
+            const response = this.$store.dispatch("updateMultipleItems", payload)
+            const resposta = await this.$store.dispatch("handlingError", response)
+            console.log(resposta)
+        },
+        deleteAccessori: async function (item) {
+            console.log(item.SerialNum)
+            let payload = {
+                collection: "Element",
+                item: item.SerialNum,
+                ElementPare: null,
+            }
+            const response = await this.$store.dispatch("updateItem", payload)
+            const resposta = await this.$store.dispatch("handlingError", response)
+            console.log(resposta)
         }
     }
 }

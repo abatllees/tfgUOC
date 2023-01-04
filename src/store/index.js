@@ -2,8 +2,6 @@ import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import api from "@/api"
 
-import html2pdf from "html2pdf.js";
-
 /* eslint-disable */
 
 export default createStore({
@@ -58,7 +56,7 @@ export default createStore({
 		},
 	},
 	actions: {
-		//Obté l'usuari logat i el desa a l'state
+		//Obté l'usuari logat i el desa a l'state i al sessionStorage
 		getUser({ commit }) {
 			return new Promise((resolve, reject) => {
 				api.get("users/me")
@@ -80,6 +78,7 @@ export default createStore({
 					.catch(error => reject(error))
 			})
 		},
+		//Obté els valors d'un camp d'una col·lecció
 		getFields({ commit }, payload) {
 			return new Promise((resolve, reject) => {
 				api.get("fields/" + payload.collection + "/" + payload.field)
@@ -123,6 +122,19 @@ export default createStore({
 					})
 			})
 		},
+		//Actualitza més d'un element
+		updateMultipleItems({ commit }, payload) {
+			console.log("Update payload:", payload)
+			return new Promise((resolve) => {
+				api.patch("items/" + payload.collection, payload.data)
+					.then(response => {
+						resolve(response)
+					})
+					.catch(error => {
+						resolve(error.response)
+					})
+			})
+		},
 		//Realitza un moviment, tant un enviament com un retorn de material
 		async realitzarMoviment({ commit, getters, state }, payload) {
 
@@ -150,14 +162,14 @@ export default createStore({
 					)
 			})
 		},
-		//Defines the payload to the POST request to create data
+		//Configura el llistat per als moviments
 		async SET_UPDATE_PAYLOAD({ state }, payload) {
 
 			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
 			console.log("DESTINACIO", state.destinacio)
-			let updateKeysMoviment = []
+			let payloadMoviment = []
 			for (let i = 0; i < payload.length; i++) {
-				updateKeysMoviment[i] = {
+				payloadMoviment[i] = {
 					Element: payload[i].SerialNum,
 					Origen: payload[i].DelegacioActual.ID,
 					Desti: state.destinacio,
@@ -167,14 +179,14 @@ export default createStore({
 
 				if (state.dataRetorn) {
 					console.log("DATA RETORN:", state.dataRetorn)
-					updateKeysMoviment[i].DataRetorn = await this.dispatch("formatdate", new Date(state.dataRetorn))
-					updateKeysMoviment[i].MovimentVigent = true
+					payloadMoviment[i].DataRetorn = await this.dispatch("formatdate", new Date(state.dataRetorn))
+					payloadMoviment[i].MovimentVigent = true
 				}
 
 			}
-			console.log("Llistat configurat moviment: ", updateKeysMoviment)
+			console.log("Llistat configurat moviment: ", payloadMoviment)
 
-			return updateKeysMoviment
+			return payloadMoviment
 		},
 		//Crea un element a una col·lecció indicada per l'usuari
 		createItem({ commit }, payload) {
@@ -187,10 +199,7 @@ export default createStore({
 					.catch(error => resolve(error.response))
 			})
 		},
-		//Exporta a PDF un element HTML amb identificat amb un ID
-		exportToPDF({ commit }, payload) {
-			html2pdf(document.getElementById(payload.idItem), payload.options);
-		},
+		//Comprova si hi ha algun error
 		handlingError({ commit }, response) {
 			let responseMessage = {
 				"alertType": "",
@@ -207,6 +216,7 @@ export default createStore({
 					}
 					break;
 				}
+				//No funciona!!!!
 				case 401: {
 					alert("Token expired")
 					this.$router.push("/")
@@ -220,7 +230,11 @@ export default createStore({
 					}
 					break;
 				}
-
+				case 204: {
+					responseMessage.alertType = "alert-success"
+					responseMessage.message.push("Sessió tancada correctament")
+					break;
+				}
 				case 200: {
 					responseMessage.alertType = "alert-success"
 					responseMessage.message.push("No s'ha obtingut cap codi d'error")
