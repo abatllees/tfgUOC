@@ -85,14 +85,52 @@
             <EasyDataTable :headers="this.accessoris.headers" :items="this.accessoris.items" alternating
                 buttons-pagination :sort-by="this.accessoris.sortBy" :sort-type="this.accessoris.sortType"
                 :theme-color="this.$store.state.themeColor" :loading="this.accessoris.loading">
+                <template #item-operation="item">
+                    <div class="operation-wrapper">
+                        <i class="bi bi-trash" style="font-size: 1rem" @click="deleteItem(item)"></i>
+                    </div>
+                </template>
             </EasyDataTable>
-            <button class="btn btn-primary mt-1">Gestionar accessoris</button>
+            <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#gestionarAccessoris"
+                @click="obtenirelements('Element')">Afegir un
+                accessori</button>
         </div>
     </section>
+
+    <ModalComponent id="gestionarAccessoris">
+        <template v-slot:header>
+            <h6>Afegir un accessori</h6>
+        </template>
+        <template v-slot:body>
+            <div class="form-group row mb-2">
+                <label for="tipusMaterial" class="col-sm col-form-label">Tipus de material: </label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial">
+                        <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
+                            {{ subcategory.SubcategoryName }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <EasyDataTable :headers="this.nousAccessoris.headers" :items="this.nousAccessoris.items" alternating
+                buttons-pagination v-model:items-selected="this.nousAccessoris.itemsSelected"
+                :sort-by="this.nousAccessoris.sortBy" :sort-type="this.nousAccessoris.sortType"
+                :theme-color="this.$store.state.themeColor" :loading="this.nousAccessoris.loading">
+            </EasyDataTable>
+        </template>
+        <template v-slot:footer>
+
+        </template>
+    </ModalComponent>
 </template>
 <script>
+import ModalComponent from "@/components/ModalComponent.vue"
+
 export default {
     name: "FitxaElement",
+    components: {
+        ModalComponent
+    },
     data() {
         return {
             element: null,
@@ -105,6 +143,9 @@ export default {
 
             delegacionsValues: this.getDelegacions(),
             DelegacioAssignada: "",
+
+            subcategory: [],
+            tipusMaterial: null,
 
             editMode: false,
 
@@ -140,23 +181,57 @@ export default {
                     { text: "Model", value: "Model.Subcategory.SubcategoryName", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                    { text: "Accions", value: "operation" },
+
                 ],
                 items: [],
                 sortBy: "",
                 sortType: "asc",
                 loading: true
+            },
+            nousAccessoris: {
+                headers: [
+                    { text: "Model", value: "Model.Subcategory.SubcategoryName", sortable: true },
+                    { text: "Model", value: "Model.ModelName", sortable: true },
+                    { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                    { text: "Accions", value: "operation" },
+
+                ],
+                items: [],
+                sortBy: "",
+                sortType: "asc",
+                itemsSelected: [],
+                loading: true
             }
         }
     },
     async created() {
-        this.getData()
+        await this.getData()
         this.delegacions = this.getDelegacions()
+
+        let params = {
+            collection: "Subcategory",
+            fields: "?fields=id,SubcategoryName",
+            filter: "",
+            sort: "&sort[]=SubcategoryName"
+        }
+        this.subcategory = await this.$store.dispatch("getCollection", params)
 
     },
     watch: {
         '$route'() {
             this.$router.push({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
             this.getData()
+        },
+        async tipusMaterial() {
+            this.nousAccessoris.items = []
+            let params = {
+                collection: "Element",
+                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory",
+                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial,
+                sort: "&sort[]=Model.ModelName"
+            }
+            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
         }
     },
     computed: {
@@ -250,11 +325,13 @@ export default {
             this.incidencies.loading = false
 
             this.incidencies.items.forEach(incidencia => {
-                incidencia.date_created = this.$store.dispatch("ShortDate", incidencia.date_created)
+                let dateFromatted = new Date(incidencia.date_created)
+                const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                incidencia.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
             });
 
 
-            //Obtenir els accessoris
+            //Obtenir els accessoris assignats actualment
             payload = {
                 collection: "Element",
                 fields: "?fields=*.*.*",

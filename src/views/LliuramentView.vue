@@ -132,13 +132,14 @@ export default {
             return await this.$store.dispatch("getElement", params);
             //this.resultatMoviment =  this.$store.dispatch("handlingError", response)
 
-        }
+        },
+        deleteItem(item) {
+            const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
+            const index = this.$store.state.llistatMoviment.indexOf(findItem);
+            this.$store.state.llistatMoviment.splice(index, 1)
+        },
     },
-    deleteItem(item) {
-        const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
-        const index = this.$store.state.llistatMoviment.indexOf(findItem);
-        this.$store.state.llistatMoviment.splice(index, 1)
-    },
+
 
 }
 
