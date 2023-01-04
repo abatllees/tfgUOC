@@ -224,6 +224,7 @@ export default {
             this.getData()
         },
         async tipusMaterial() {
+            this.nousAccessoris.loading = true
             this.nousAccessoris.items = []
             let params = {
                 collection: "Element",
@@ -232,6 +233,7 @@ export default {
                 sort: "&sort[]=Model.ModelName"
             }
             this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
+            this.nousAccessoris.loading = false
         }
     },
     computed: {
