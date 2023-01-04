@@ -234,6 +234,7 @@ export default {
             this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
             this.nousAccessoris.loading = false
         }
+
     },
     computed: {
 
@@ -272,7 +273,7 @@ export default {
             const response = await this.$store.dispatch("updateItem", payload)
             this.respEditElement = await this.$store.dispatch("handlingError", response)
         },
-        getData: async function () {
+        getElementInfo: async function () {
             //Obté informació de l'element
             let params = {
                 collection: "Element",
@@ -298,8 +299,14 @@ export default {
             }
             this.responsable = await this.$store.dispatch("getUsers", payload)
 
+            this.status = this.element.status
+            this.NumMag = this.element.NumMag
+            this.observacions = this.element.Observacions
+            this.DelegacioAssignada = this.element.DelegacioAssignada.ID
+        },
+        getMoviments: async function () {
             //Obtenir els moviments de l'element
-            payload = {
+            let payload = {
                 collection: "Moviment",
                 fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
                 filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
@@ -307,16 +314,16 @@ export default {
             }
             this.historialMoviments.items = await this.getItems(payload)
             this.historialMoviments.loading = false
-            console.log("MOVIMENTS", this.historialMoviments.items)
 
             this.historialMoviments.items.forEach(moviment => {
                 let dateFromatted = new Date(moviment.date_created)
                 const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
                 moviment.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
             });
-
+        },
+        getIncidencies: async function () {
             //Obtenir les incidències
-            payload = {
+            let payload = {
                 collection: "Incidencia",
                 fields: "?fields=*.*.*",
                 filter: "&filter[ElementIncidencia][_eq]=" + this.$route.params.SerialNum,
@@ -330,10 +337,11 @@ export default {
                 const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
                 incidencia.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
             });
-
-
+        },
+        getAccessoris: async function () {
+            this.accessoris.loading = true
             //Obtenir els accessoris assignats actualment
-            payload = {
+            let payload = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
                 filter: "&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
@@ -341,11 +349,14 @@ export default {
             }
             this.accessoris.items = await this.getItems(payload)
             this.accessoris.loading = false
+        },
+        getData: async function () {
+            await this.getElementInfo()
+            await this.getMoviments()
+            await this.getIncidencies()
+            await this.getAccessoris()
 
-            this.status = this.element.status
-            this.NumMag = this.element.NumMag
-            this.observacions = this.element.Observacions
-            this.DelegacioAssignada = this.element.DelegacioAssignada.ID
+
         },
         associar: async function (elements) {
 
@@ -353,7 +364,6 @@ export default {
             elements.forEach(element => {
                 updateKeys.push(element.SerialNum)
             });
-            console.log(updateKeys)
             const payload = {
                 collection: "Element",
                 data: {
@@ -366,6 +376,7 @@ export default {
             const response = this.$store.dispatch("updateMultipleItems", payload)
             const resposta = await this.$store.dispatch("handlingError", response)
             console.log(resposta)
+            this.getAccessoris()
         },
         deleteAccessori: async function (item) {
             console.log(item.SerialNum)
@@ -377,6 +388,8 @@ export default {
             const response = await this.$store.dispatch("updateItem", payload)
             const resposta = await this.$store.dispatch("handlingError", response)
             console.log(resposta)
+            this.getAccessoris()
+
         }
     }
 }
