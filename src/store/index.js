@@ -2,6 +2,9 @@ import { createStore } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import api from "@/api"
 
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
+
 /* eslint-disable */
 
 export default createStore({
@@ -156,10 +159,6 @@ export default createStore({
 						resolve(response)
 					})
 					.catch(error => reject(error.message))
-					.finally(
-						state.llistatMoviment = [],
-						state.dataRetorn = null
-					)
 			})
 		},
 		//Configura el llistat per als moviments
@@ -266,7 +265,74 @@ export default createStore({
 			let dateFromatted = new Date(date)
 			const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
 			return dateFromatted.toLocaleDateString('ca-ES', options);
-		}
+		},
+		async exportPDF({ commit, state }, data) {
+			console.log(data)
+			const doc = new jsPDF()
+
+			//Capçaleres de la taula
+			let head = []
+			//Array d'elements. 
+			let rows = []
+			//Omplena les dades de la taula
+			data.table.headers.forEach(titol => {
+				head.push(titol.text)
+			})
+			data.table.data.forEach(element => {
+				rows.push([
+					element.Model.Subcategory.SubcategoryName,
+					element.Model.Brand.BrandName,
+					element.Model.ModelName,
+					element.NumMag,
+					element.SerialNum
+				])
+
+			})
+
+			const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
+			let params = {
+				collection: "Delegacio",
+				item: data.destinacio,
+				fields: "?fields=*",
+				filter: ""
+			}
+			const desti = await this.dispatch("getElement", params)
+
+			const today = await this.dispatch("formatdate", new Date())
+
+			//Realitzat per
+			doc.setFontSize(8)
+			doc.text("Realitzat per: " + data.realitzatPer, 10, 10)
+
+			//Títol
+			doc.setFontSize(22)
+			doc.text("Magatzem de rodatges", amplada / 2, 40, { align: "center" })
+			//Subtítol
+			doc.setFontSize(15)
+			doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
+
+			//Informació del moviment
+			doc.setFontSize(12)
+			console.log(state)
+			if (state.dataRetorn) {
+				const dataRetorn = await this.dispatch("formatdate", new Date(this.$store.state.dataRetorn))
+				doc.text("Data de retorn: " + dataRetorn, amplada / 2, 65)
+			}
+			doc.text("Data: " + today, 10, 65)
+			doc.text("Destinació: " + desti.Name, 10, 77)
+			doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 77)
+
+			//Mostra la taula
+			autoTable(doc, {
+				head: [head],
+				body: rows,
+				startY: 80,
+				margin: 10,
+				headStyles: { fillColor: [187, 0, 0] },
+				bodyStyles: { textColor: [0, 0, 0] }
+			},)
+			doc.save('table.pdf')
+		},
 	},
 	plugins: [
 		new VuexPersistence({

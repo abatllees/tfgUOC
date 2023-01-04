@@ -47,7 +47,8 @@
             </div>
             <div class="col-12 col-sm">
                 <label for="dataRetorn">Data de retorn:</label>
-                <input type="date" name="dataRetorn" id="dataRetorn" class="form-control" v-model="this.dataRetorn">
+                <input type="date" name="dataRetorn" id="dataRetorn" class="form-control"
+                    v-model="this.$store.state.dataRetorn">
             </div>
         </div>
 

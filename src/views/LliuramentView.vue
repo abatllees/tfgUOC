@@ -26,10 +26,6 @@
 </template>
 <script>
 import LliuramentForm from '@/components/LliuramentForm.vue';
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
-
-
 
 export default {
     name: "LliuramentView",
@@ -45,93 +41,43 @@ export default {
                 { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Accions", value: "operation" },
-
             ],
             sortBy: "NumMag",
             sortType: "asc",
 
             resultatMoviment: null,
-
-
         }
     },
     methods: {
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
             const response = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
-            this.resultatMoviment = await this.$store.dispatch("handlingError", response)
-        },
-        async exportPDF() {
-            const doc = new jsPDF()
-
-            //Capçaleres de la taula
-            let head = []
-            //Array d'elements. 
-            let elements = []
-            //Omplena les dades de la taula
-            this.headers.forEach(titol => {
-                head.push(titol.text)
-            })
-            this.$store.state.llistatMoviment.forEach(element => {
-                elements.push([
-                    element.Model.Subcategory.SubcategoryName,
-                    element.Model.Brand.BrandName,
-                    element.Model.ModelName,
-                    element.NumMag,
-                    element.SerialNum
-                ])
-
-            })
-
-            const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
-
-            const desti = await this.obtenirDestinacio(this.$store.state.destinacio)
-
-            const today = await this.$store.dispatch("formatdate", new Date())
-
-            //Realitzat per
-            doc.setFontSize(8)
-            doc.text("Realitzat per: " + this.$store.state.user.first_name + " " + this.$store.state.user.last_name, 10, 10)
-
-            //Títol
-            doc.setFontSize(22)
-            doc.text("Magatzem de rodatges", amplada / 2, 40, { align: "center" })
-            //Subtítol
-            doc.setFontSize(15)
-            doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
-
-            //Informació del moviment
-            doc.setFontSize(12)
-            if (this.$store.state.dataRetorn) {
-                const dataRetorn = await this.$store.dispatch("formatdate", new Date(this.$store.state.dataRetorn))
-                doc.text("Data de retorn: " + dataRetorn, amplada / 2, 65)
+            if (response.status == 200) {
+                const data = {
+                    realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
+                    dataMoviment: new Date(),
+                    destinacio: this.$store.state.destinacio,
+                    table: {
+                        headers: this.headers,
+                        data: this.$store.state.llistatMoviment
+                    }
+                }
+                this.$store.dispatch("exportPDF", data)
+                this.$store.state.llistatMoviment = []
+                this.$store.state.dataRetorn = null
             }
-            doc.text("Data: " + today, 10, 65)
-            doc.text("Destinació: " + desti.Name, 10, 77)
-            doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 77)
-
-            //Mostra la taula
-            autoTable(doc, {
-                head: [head],
-                body: elements,
-                startY: 80,
-                margin: 10,
-                headStyles: { fillColor: [187, 0, 0] },
-                bodyStyles: { textColor: [0, 0, 0] }
-            },)
-            doc.save('table.pdf')
+            this.resultatMoviment = await this.$store.dispatch("handlingError", response)
         },
         obtenirDestinacio: async function (destinacio) {
             let params = {
                 collection: "Delegacio",
                 item: destinacio,
-                fields: "?fields=Name,ResponsableDelegacio.*",
+                fields: "?fields=Name,ResponsableDelegacio.first_name,ResponsableDelegacio.last_name",
                 filter: "",
                 sort: ""
             }
             return await this.$store.dispatch("getElement", params);
             //this.resultatMoviment =  this.$store.dispatch("handlingError", response)
-
         },
         deleteItem(item) {
             const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
@@ -139,8 +85,6 @@ export default {
             this.$store.state.llistatMoviment.splice(index, 1)
         },
     },
-
-
 }
 
 </script>
