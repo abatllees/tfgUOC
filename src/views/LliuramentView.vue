@@ -52,6 +52,7 @@ export default {
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
             const response = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
+            //Genera l'informe PDF si el resultat és correcte
             if (response.status == 200) {
                 const data = {
                     realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
@@ -67,17 +68,6 @@ export default {
                 this.$store.state.dataRetorn = null
             }
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
-        },
-        obtenirDestinacio: async function (destinacio) {
-            let params = {
-                collection: "Delegacio",
-                item: destinacio,
-                fields: "?fields=Name,ResponsableDelegacio.first_name,ResponsableDelegacio.last_name",
-                filter: "",
-                sort: ""
-            }
-            return await this.$store.dispatch("getElement", params);
-            //this.resultatMoviment =  this.$store.dispatch("handlingError", response)
         },
         deleteItem(item) {
             const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);

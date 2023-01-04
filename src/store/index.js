@@ -293,7 +293,7 @@ export default createStore({
 			let params = {
 				collection: "Delegacio",
 				item: data.destinacio,
-				fields: "?fields=*",
+				fields: "?fields=*.*.*",
 				filter: ""
 			}
 			const desti = await this.dispatch("getElement", params)
