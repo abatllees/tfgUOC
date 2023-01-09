@@ -52,7 +52,22 @@
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
-
+            <ModalComponent id="ModalResposta">
+                <template v-slot:header>
+                    <h6>Resultats de la cerca</h6>
+                </template>
+                <template v-slot:body>
+                    <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
+                        <ul class="list-unstyled">
+                            <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
+                        </ul>
+                    </div>
+                </template>
+                <template v-slot:footer>
+                    <button class="btn btn-primary" data-dismiss="modal">Afegeix
+                        element</button>
+                </template>
+            </ModalComponent>
             <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
                 <ul class="list-unstyled">
                     <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
@@ -264,6 +279,12 @@ export default {
             }
             const response = await this.$store.dispatch("updateItem", payload)
             this.respEditElement = await this.$store.dispatch("handlingError", response)
+
+            var myModalEl = document.getElementById('ModalResposta')
+            myModalEl.addEventListener('show.bs.modal', function (event) {
+                console.log(event)
+            })
+
         },
         getElementInfo: async function () {
             //Obté informació de l'element
