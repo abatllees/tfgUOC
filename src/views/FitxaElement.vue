@@ -2,8 +2,8 @@
     <section class="row">
         <div class="col-12 col-sm col-lg-9">
             <h1>{{ element?.Model.Subcategory.SubcategoryName }} {{ element?.Model.Brand.BrandName }} {{
-        element?.Model.ModelName
-}} </h1>
+                element?.Model.ModelName
+            }} </h1>
             <form @submit.prevent="UpdateElement()">
                 <div class="row">
                     <div class="col-12 col-sm-4">
@@ -193,6 +193,7 @@ export default {
             },
             nousAccessoris: {
                 headers: [
+                    { text: "Núm. Mag", value: "NumMag", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 ],
@@ -223,16 +224,7 @@ export default {
             this.getData()
         },
         async tipusMaterial() {
-            this.nousAccessoris.loading = true
-            this.nousAccessoris.items = []
-            let params = {
-                collection: "Element",
-                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
-                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
-                sort: "&sort[]=Model.ModelName"
-            }
-            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
-            this.nousAccessoris.loading = false
+            await this.llistarAccessoris()
         }
 
     },
@@ -378,6 +370,17 @@ export default {
             console.log(resposta)
             this.nousAccessoris.itemsSelected = []
             this.getAccessoris()
+        },
+        llistarAccessoris: async function () {
+            this.nousAccessoris.loading = true
+            let params = {
+                collection: "Element",
+                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
+                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
+                sort: "&sort[]=Model.ModelName"
+            }
+            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
+            this.nousAccessoris.loading = false
         },
         deleteAccessori: async function (item) {
             console.log(item.SerialNum)

@@ -10,7 +10,11 @@
 		</section>
 		<section class="row my-2">
 			<div class="col-6 col-sm-4 col-lg-2 my-1" v-for="grouped in groupedElements" :key="grouped">
-				<CardCount :count="grouped.count.SerialNum" :model="grouped.Model"></CardCount>
+				<router-link :to="{
+					name: 'LlistatElements', params: { model: grouped.Model }
+				}">
+					<CardCount :count="grouped.count.SerialNum" :model="grouped.Model"></CardCount>
+				</router-link>
 			</div>
 		</section>
 		<section class="row">
@@ -71,7 +75,7 @@ export default {
 		let params = {
 			collection: "Element",
 			fields: "", //When agreggate this not applies
-			filter: "?filter=status[_eq]=published&filter=Model[_neq]=NULL&aggregate[count]=SerialNum&groupBy[]=Model",
+			filter: "?filter=Model[_neq]=NULL&aggregate[count]=SerialNum&groupBy[]=Model",
 			sort: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
@@ -85,6 +89,14 @@ export default {
 			sort: "" //"&sort[]=date_created"
 		}
 		this.items = await this.$store.dispatch("getCollection", params)
+
+		//Formata la data
+		this.items.forEach(moviment => {
+			let dateFromatted = new Date(moviment.date_created)
+			const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+			moviment.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
+			moviment.DataRetorn = dateFromatted.toLocaleDateString('ca-ES', options);
+		});
 		console.log(await this.$store.dispatch("handlingError", this.items))
 		this.loading = false
 
@@ -121,3 +133,8 @@ export default {
 	}
 }
 </script>
+<style scoped>
+a {
+	text-decoration: none;
+}
+</style>>

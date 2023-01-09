@@ -11,7 +11,7 @@
             </ul>
         </div>
     </section>
-    <section class="w-100 my-5" id="toPDF">
+    <section class="w-100 my-5">
         <EasyDataTable :headers="this.headers" :items="this.$store.state.llistatMoviment" alternating buttons-pagination
             :sort-by="this.sortBy" :sort-type="this.sortType" :theme-color="this.$store.state.themeColor" id="data">
             <template #item-operation="item">
@@ -55,6 +55,7 @@ export default {
             //Genera l'informe PDF si el resultat és correcte
             if (response.status == 200) {
                 const data = {
+                    tipusMoviment: "Lliurament de mataterial",
                     realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
                     dataMoviment: new Date(),
                     destinacio: this.$store.state.destinacio,

@@ -57,7 +57,7 @@ const routes = [
     component: RetornView
   },
   {
-    path: "/collections/llistatElements/:id?:category?",
+    path: "/collections/llistatElements/:id?:category?:model?",
     name: "LlistatElements",
     component: LlistatElements,
     params: true,

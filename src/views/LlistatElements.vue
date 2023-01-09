@@ -52,12 +52,17 @@ export default {
             sort: ""
         }
         if (this.$route.params.id) {
-            params.filter = params.filter + "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
+            params.filter = "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
             this.title = await this.getTitle("Subcategory", this.$route.params.id)
         }
         if (this.$route.params.category) {
             params.filter = "&filter[Model][Subcategory][Category][_eq]=" + this.$route.params.category
             this.title = await this.getTitle("Category", this.$route.params.category)
+
+        }
+        if (this.$route.params.model) {
+            params.filter = "&filter[Model][[_eq]=" + this.$route.params.model
+            this.title = await this.getTitle("Model", this.$route.params.model)
 
         }
         this.llistatElement = await this.$store.dispatch("getCollection", params)

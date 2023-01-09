@@ -17,8 +17,8 @@
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model">
                     <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
-        model.ModelName
-}}
+                        model.ModelName
+                    }}
                     </option>
                 </select>
             </div>
@@ -138,9 +138,8 @@ export default {
         }
     },
     methods: {
-        addElement(itemsSelected) {
+        addElement() {
             //Add element to list
-            console.log(itemsSelected)
             this.itemsSelected.forEach(item => this.$store.state.llistatMoviment.push(item))
             this.itemsSelected = []
         }

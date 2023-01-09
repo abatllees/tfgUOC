@@ -93,13 +93,12 @@ export default createStore({
 		},
 		//Obté els elements dins d'una col·lecció
 		getCollection({ commit }, payload) {
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve) => {
 				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
 					.then(response => {
-						console.log(response)
 						resolve(response.data.data)
 					})
-					.catch(error => reject(error))
+					.catch(error => resolve(error))
 			})
 		},
 		//Obté només un element d'una col·lecció
@@ -293,7 +292,7 @@ export default createStore({
 			let params = {
 				collection: "Delegacio",
 				item: data.destinacio,
-				fields: "?fields=*.*.*",
+				fields: "?fields=*.*.*lo",
 				filter: ""
 			}
 			const desti = await this.dispatch("getElement", params)
@@ -309,7 +308,7 @@ export default createStore({
 			doc.text("Magatzem de rodatges", amplada / 2, 40, { align: "center" })
 			//Subtítol
 			doc.setFontSize(15)
-			doc.text("Lliurament de material", amplada / 2, 48, { align: "center" })
+			doc.text(data.tipusMoviment, amplada / 2, 48, { align: "center" })
 
 			//Informació del moviment
 			doc.setFontSize(12)
