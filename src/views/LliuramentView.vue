@@ -55,7 +55,7 @@ export default {
             //Genera l'informe PDF si el resultat és correcte
             if (response.status == 200) {
                 const data = {
-                    tipusMoviment: "Lliurament de mataterial",
+                    tipusMoviment: "Lliurament de material",
                     realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
                     dataMoviment: new Date(),
                     destinacio: this.$store.state.destinacio,
