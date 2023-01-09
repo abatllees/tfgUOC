@@ -47,7 +47,7 @@ export default {
                 items: [],
                 itemsSelected: [],
                 searchValue: "",
-                sortBy: "",
+                sortBy: "NumMag",
                 sortType: "asc",
                 loading: true,
 
@@ -57,7 +57,6 @@ export default {
     },
     async beforeMount() {
         this.LlistatRetorn.items = await this.elementsPendentRetorn()
-
         this.LlistatRetorn.loading = false
     },
     methods: {
@@ -83,9 +82,29 @@ export default {
 
             }
             //Realitzar el moviment dels elements seleccionats
-            const retorn = this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
-            this.response = await this.$store.dispatch("handlingError", retorn)
+            const response = await this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+            console.log("RESPONSE ENTRADA", response)
+            this.response = await this.$store.dispatch("handlingError", response)
+
+            if (response.status == 200) {
+                const data = {
+                    tipusMoviment: "Entrada de material",
+                    realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
+                    dataMoviment: new Date(),
+                    destinacio: 22,
+                    table: {
+                        headers: this.LlistatRetorn.headers,
+                        data: this.LlistatRetorn.itemsSelected
+                    }
+                }
+                this.$store.dispatch("exportPDF", data)
+                this.$store.state.llistatMoviment = []
+            }
+            this.LlistatRetorn.items = []
+            this.LlistatRetorn.loading = true
             this.LlistatRetorn.items = await this.elementsPendentRetorn()
+            this.LlistatRetorn.loading = false
+
         },
         elementsPendentRetorn: async function () {
             let payload = {

@@ -278,13 +278,32 @@ export default createStore({
 				head.push(titol.text)
 			})
 			data.table.data.forEach(element => {
-				rows.push([
-					element.Model.Subcategory.SubcategoryName,
-					element.Model.Brand.BrandName,
-					element.Model.ModelName,
-					element.NumMag,
-					element.SerialNum
-				])
+				switch (data.tipusMoviment) {
+					case "Entrada de material":
+						rows.push([
+							element.NumMag,
+							element.Model.Subcategory.SubcategoryName,
+							element.Model.Brand.BrandName,
+							element.Model.ModelName,
+							element.SerialNum,
+							element.DelegacioActual.Name
+						])
+
+						break;
+					case "Lliurament de material":
+						rows.push([
+							element.Model.Subcategory.SubcategoryName,
+							element.Model.Brand.BrandName,
+							element.Model.ModelName,
+							element.NumMag,
+							element.SerialNum
+						])
+						break;
+					default:
+
+						break;
+				}
+
 
 			})
 
@@ -296,6 +315,7 @@ export default createStore({
 				filter: ""
 			}
 			const desti = await this.dispatch("getElement", params)
+
 
 			const today = await this.dispatch("formatdate", new Date())
 
@@ -320,6 +340,7 @@ export default createStore({
 			doc.text("Data: " + today, 10, 65)
 			doc.text("Destinació: " + desti.Name, 10, 77)
 			doc.text("Entregat a: " + desti.ResponsableDelegacio.first_name + " " + desti.ResponsableDelegacio.last_name, amplada - amplada / 2, 77)
+
 
 			//Mostra la taula
 			autoTable(doc, {
