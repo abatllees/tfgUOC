@@ -7,7 +7,7 @@
                 <select class="form-control" id="delegacio" name="delegacio" v-model="FiltreDelegacio">
                     <option value="">--TOTES LES DELEGACIONS--</option>
                     <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio" :value="delegacio.ID">{{
-                            delegacio.Name
+                        delegacio.Name
                     }}
                     </option>
                 </select>
@@ -46,8 +46,9 @@ export default {
             params: {
                 collection: "Moviment",
                 fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
-                filter: "&filter[status][_eq]=published&limit=-1",
-                sort: ""
+                filter: "&filter[status][_eq]=published",
+                sort: "",
+                limit: "&limit=-1"
             },
         }
     },
@@ -62,9 +63,7 @@ export default {
                 //Mostra tots els moviments
                 this.params.filter = "&filter[status][_eq]=published"
             }
-
             this.moviments = await this.getMoviments()
-
             this.loading = false
         },
     },

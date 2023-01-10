@@ -78,7 +78,7 @@ export default {
                     let eliminarVigencia = await this.$store.dispatch("updateItem", payload)
                     console.log(await this.$store.dispatch("handlingError", eliminarVigencia))
                 }
-                //Si no és vigent no cal fer res (no és préstec)
+                //Si no és vigent (no és préstec) no cal fer res 
 
             }
             //Realitzar el moviment dels elements seleccionats
@@ -111,7 +111,8 @@ export default {
                 collection: "Element",
                 fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID,DelegacioActual.Name",
                 filter: "&filter[DelegacioActual][_neq]=22",
-                sort: ""
+                sort: "",
+                limit: ""
             }
             return await this.$store.dispatch("getCollection", payload)
         },
@@ -120,7 +121,8 @@ export default {
                 collection: "Moviment",
                 fields: "?fields=Element,MovimentVigent,id",
                 filter: "&filter[MovimentVigent][_eq]=true&filter[Element][_eq]=" + element.SerialNum,
-                sort: ""
+                sort: "",
+                limit: ""
             }
             return await this.$store.dispatch("getCollection", payload)
         }

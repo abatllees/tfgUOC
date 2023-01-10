@@ -228,7 +228,8 @@ export default {
             collection: "Subcategory",
             fields: "?fields=id,SubcategoryName",
             filter: "",
-            sort: "&sort[]=SubcategoryName"
+            sort: "&sort[]=SubcategoryName",
+            limit: ""
         }
         this.subcategory = await this.$store.dispatch("getCollection", params)
 
@@ -308,7 +309,8 @@ export default {
                 id: this.element.Model.Subcategory.Category.CategoryOwner,
                 fields: "?fields=first_name,last_name",
                 filter: "",
-                sort: ""
+                sort: "",
+                limit: ""
             }
             this.responsable = await this.$store.dispatch("getUsers", payload)
 
@@ -323,7 +325,8 @@ export default {
                 collection: "Moviment",
                 fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
                 filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum + "&limit=10",
-                sort: "&sort[]=-date_created"
+                sort: "&sort[]=-date_created",
+                limit: ""
             }
             this.historialMoviments.items = await this.getItems(payload)
             this.historialMoviments.loading = false
@@ -340,7 +343,8 @@ export default {
                 collection: "Incidencia",
                 fields: "?fields=*.*.*",
                 filter: "&filter[ElementIncidencia][_eq]=" + this.$route.params.SerialNum,
-                sort: ""
+                sort: "",
+                limit: ""
             }
             this.incidencies.items = await this.getItems(payload)
             this.incidencies.loading = false
@@ -358,7 +362,8 @@ export default {
                 collection: "Element",
                 fields: "?fields=*.*.*",
                 filter: "&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
-                sort: ""
+                sort: "",
+                limit: ""
             }
             this.accessoris.items = await this.getItems(payload)
             this.accessoris.loading = false
@@ -398,7 +403,8 @@ export default {
                 collection: "Element",
                 fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
                 filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
-                sort: "&sort[]=Model.ModelName"
+                sort: "&sort[]=Model.ModelName",
+                limit: ""
             }
             this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
             this.nousAccessoris.loading = false

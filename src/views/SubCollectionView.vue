@@ -3,8 +3,8 @@
         <h1 class="text-center w-100"> {{ category?.CategoryName }}</h1>
         <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.subcategory" :key="subcategory">
             <router-link :to="{
-    name: 'LlistatElements', params: { id: subcategory.id }
-}">
+                name: 'LlistatElements', params: { id: subcategory.id }
+            }">
                 <CardButton :title=subcategory.SubcategoryName :icon="'bi bi-folder2-open'" :bg-color="'#bb0000'">
                 </CardButton>
             </router-link>
@@ -16,11 +16,11 @@
         </div>
     </section>
     <router-link :to="{
-    name: 'LlistatElements',
-    params: {
-        category: this.$route.params.id
-    },
-}" class="btn btn-secondary">Mostra tots els elements</router-link>
+        name: 'LlistatElements',
+        params: {
+            category: this.$route.params.id
+        },
+    }" class="btn btn-secondary">Mostra tots els elements</router-link>
 
 
     <ModalComponent id="ModalCreateSubCategory">
@@ -73,7 +73,8 @@ export default {
             collection: "Subcategory",
             fields: "?fields=SubcategoryName,id",
             filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
-            sort: "&sort[]=SubcategoryName"
+            sort: "&sort[]=SubcategoryName",
+            limit: ""
         }
 
         this.subcategory = await this.$store.dispatch("getCollection", params);
@@ -83,7 +84,8 @@ export default {
             item: this.$route.params.id,
             fields: "?fields=CategoryName",
             filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
-            sort: ""
+            sort: "",
+            limit: ""
         }
 
         this.category = await this.$store.dispatch("getElement", params);

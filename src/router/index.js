@@ -67,7 +67,6 @@ const routes = [
     path: "/resultatCerca/:query?",
     name: "ResultatCerca",
     component: LlistatElements,
-    params: true,
     props: true
   },
   {

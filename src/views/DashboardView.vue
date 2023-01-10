@@ -76,7 +76,8 @@ export default {
 			collection: "Element",
 			fields: "", //When agreggate this not applies
 			filter: "?filter=Model[_neq]=NULL&aggregate[count]=SerialNum&groupBy[]=Model",
-			sort: ""
+			sort: "",
+			limit: ""
 		}
 		this.groupedElements = await this.$store.dispatch("getCollection", params)
 		console.log(await this.$store.dispatch("handlingError", this.groupedElements))
@@ -86,7 +87,8 @@ export default {
 			collection: "Moviment",
 			fields: "?fields=date_created,DataRetorn,Desti.Name,Element.NumMag,Element.Model.Subcategory.SubcategoryName,Element.SerialNum,user_created.first_name",
 			filter: "&filter[MovimentVigent][_eq]=true",
-			sort: "" //"&sort[]=date_created"
+			sort: "",
+			limit: ""
 		}
 		this.items = await this.$store.dispatch("getCollection", params)
 
@@ -105,7 +107,8 @@ export default {
 			collection: "Category",
 			fields: "?fields=*.*.*",
 			filter: "?filter[status][_eq]=published",
-			sort: "&sort[]=CategoryName"
+			sort: "&sort[]=CategoryName",
+			limit: ""
 		}
 		this.$store.state.Categories = await this.$store.dispatch("getCollection", params)
 		console.log(await this.$store.dispatch("handlingError", this.$store.state.Categories))
@@ -115,7 +118,8 @@ export default {
 			collection: "Subcategory",
 			fields: "?fields=*.*.*",
 			filter: "?filter[status][_eq]=published",
-			sort: "&sort[]=SubcategoryName"
+			sort: "&sort[]=SubcategoryName",
+			limit: ""
 		}
 		this.$store.state.Subcategory = await this.$store.dispatch("getCollection", params)
 		console.log(await this.$store.dispatch("handlingError", this.$store.state.Subcategory))
@@ -125,7 +129,8 @@ export default {
 			collection: "Delegacio",
 			fields: "?fields=*.*.*",
 			filter: "&filter[status][_eq]=published",
-			sort: "&sort[]=Name"
+			sort: "&sort[]=Name",
+			limit: ""
 		}
 		this.$store.state.Delegacions = await this.$store.dispatch("getCollection", params)
 		console.log(await this.$store.dispatch("handlingError", this.$store.state.Delegacions))

@@ -1,5 +1,4 @@
 <template>
-    {{ object }}
     <h1 class="text-center">{{ title?.CategoryName }}</h1>
     <h1 class="text-center">{{ title?.SubcategoryName }}</h1>
     <section class="row justify-content-end">
@@ -21,8 +20,7 @@ export default {
     },
     props: {
         category: String,
-        id: Number,
-        query: Object
+        id: String,
     },
     data() {
         return {
@@ -47,13 +45,20 @@ export default {
         }
     },
     async beforeMount() {
-        console.log(typeof (this.object))
         let params = {
             collection: "Element",
             fields: "?fields=*.*.*",
             filter: "",
-            sort: ""
+            sort: "",
+            limit: ""
         }
+
+        if (this.$store.state.NavQuery) {
+            params = this.$store.state.NavQuery
+            params.sort = //Eliminar 8 chars,
+                console.log(typeof (params))
+        }
+
         if (this.$route.params.id) {
             params.filter = "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
             this.title = await this.getTitle("Subcategory", this.$route.params.id)
@@ -82,14 +87,10 @@ export default {
                 item: key,
                 fields: "?fields=*",
                 filter: "&filter[Category][_eq]=" + this.$route.params.id,
-                sort: ""
+                sort: "",
+                limit: ""
             }
             return await this.$store.dispatch("getElement", params);
-        }
-    },
-    computed: {
-        object: function () {
-            return this.$route.params.query
         }
     }
 }

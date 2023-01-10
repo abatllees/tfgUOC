@@ -28,7 +28,8 @@ export default {
 				item: this.model,
 				fields: "?fields=ModelName",
 				filter: "",
-				sort: null
+				sort: null,
+				limit: ""
 			}
 			return await this.$store.dispatch("getElement", params)
 		}

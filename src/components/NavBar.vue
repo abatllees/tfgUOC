@@ -57,8 +57,9 @@
 								</router-link>
 							</li>
 
-							<li class="text-center list-group-item list-group-item-primary" @click="ampliarCerca()">
-								Amplia la cerca
+							<li class="text-center list-group-item list-group-item-primary"><router-link
+									to="ResultatCerca">
+									Amplia la cerca</router-link>
 							</li>
 
 						</ul>
@@ -87,7 +88,6 @@ export default {
 			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 			delegacions: this.$store.getters.getDelegacions,
 			SearchInput: "",
-
 			SearchResults: null
 		}
 	},
@@ -114,21 +114,15 @@ export default {
 					+ "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput
 					+ "&filter[_or][3][Model][ModelName][_contains]=" + this.SearchInput
 					+ "&filter[_or][4][Model][Brand][BrandName][_contains]=" + this.SearchInput,
-				sort: "&sort[]=NumMag&limit=5"
+				sort: "&sort[]=NumMag",
+				limit: "&limit=5"
 			}
 
 			const response = await this.$store.dispatch("getCollection", params)
 			this.SearchResults = response
+			this.$store.state.NavQuery = params //Defineix l'objecte a l'STATE per quan s'amplia la cerca
 			console.log(await this.$store.dispatch("handlingError", response))
 
-		},
-		ampliarCerca: function () {
-			this.$router.push({
-				name: "ResultatCerca",
-				params: {
-					query: this.SearchQuery
-				}
-			})
 		},
 		async debounceSearch() {
 			clearTimeout(this.debounce)

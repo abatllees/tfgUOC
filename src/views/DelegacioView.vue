@@ -57,7 +57,8 @@ export default {
                 item: this.$route.params.id,
                 fields: "?fields=Name,ResponsableDelegacio.first_name,ResponsableDelegacio.last_name,ResponsableDelegacio.email",
                 filter: "",
-                sort: ""
+                sort: "",
+                limit: ""
             }
             return await this.$store.dispatch("getElement", params)
         },
@@ -66,7 +67,8 @@ export default {
                 collection: "Element",
                 fields: "?fields=*.*.*",
                 filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published",
-                sort: ""
+                sort: "",
+                limit: ""
             }
             return await this.$store.dispatch("getCollection", params)
         }

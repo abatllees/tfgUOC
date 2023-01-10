@@ -13,6 +13,9 @@ export default createStore({
 
 		GettedElement: null,
 
+		//NAVBAR QUERY
+		NavQuery: null,
+
 		//Moviment
 		llistatMoviment: [], //Elements a la taula de LliuramentView
 		llistatConfiguratMoviment: [], //La mateixa llista però configurada per a la càrrega de dades a la API
@@ -94,7 +97,7 @@ export default createStore({
 		//Obté els elements dins d'una col·lecció
 		getCollection({ commit }, payload) {
 			return new Promise((resolve) => {
-				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort)
+				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort + payload.limit)
 					.then(response => {
 						resolve(response.data.data)
 					})

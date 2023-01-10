@@ -115,7 +115,8 @@ export default {
                 collection: "Model",
                 fields: "?fields=*.*.*",
                 filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.tipusMaterial,
-                sort: "&sort[]=ModelName"
+                sort: "&sort[]=ModelName",
+                limit: ""
             }
             this.$store.state.Model = await this.$store.dispatch("getCollection", params);
         },
@@ -124,7 +125,8 @@ export default {
                 collection: "Element",
                 fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID",
                 filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model + "&filter[DelegacioActual][_eq]=22",
-                sort: ""
+                sort: "",
+                limit: ""
             }
             this.results = await this.$store.dispatch("getCollection", params);
         },

@@ -3,11 +3,11 @@
     <section class="row row-cols-5" id="toPDF">
         <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
             <router-link :to="{
-    name: 'subcollection',
-    params: {
-        id: category.id
-    }
-}">
+                name: 'subcollection',
+                params: {
+                    id: category.id
+                }
+            }">
                 <CardButton :title=category.CategoryName :owner="category.CategoryOwner" :icon="'bi bi-folder2-open'"
                     :bg-color="'#bb0000'"></CardButton>
             </router-link>
@@ -36,8 +36,8 @@
                     <select class="form-control" name="CategoryOwner" id="CategoryOwner" v-model="ResponsableCategoria"
                         required>
                         <option v-for="usuari in this.users" :key="usuari.id" :value="usuari.id">{{
-        usuari.first_name + " " + usuari.last_name
-}}
+                            usuari.first_name + " " + usuari.last_name
+                        }}
                         </option>
                     </select>
                 </div>
@@ -72,7 +72,8 @@ export default {
                 collection: "Category",
                 fields: "?fields=CategoryName,id,CategoryOwner.first_name,CategoryOwner.last_name",
                 filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
-                sort: "&sort[]=CategoryName"
+                sort: "&sort[]=CategoryName",
+                limit: ""
             },
             categories: [],
 
