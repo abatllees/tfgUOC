@@ -5,7 +5,7 @@
             <router-link :to="{
                 name: 'LlistatElements', params: { id: subcategory.id }
             }">
-                <CardButton :title=subcategory.SubcategoryName :subtitle="'hola'" :icon="'bi bi-folder2-open'"
+                <CardButton :title=subcategory.SubcategoryName :subtitle="null" :icon="'bi bi-folder2-open'"
                     :bg-color="'#bb0000'">
                 </CardButton>
             </router-link>

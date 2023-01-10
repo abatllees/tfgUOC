@@ -10,44 +10,33 @@
             </router-link>
         </div>
         <div class="col-6 col-sm col-md-2 my-3">
-            <CardButton :title="'Afegir categoria'" :subtitle="''" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
-                data-toggle="modal" data-target="#ModalCreateCategory" @click="listusers()">
+            <CardButton :title="'Afegir subcategoria'" :subtitle="''" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
+                data-toggle="modal" data-target="#ModalCreateSubcategory">
             </CardButton>
         </div>
     </section>
 
 
-    <ModalComponent id="ModalCreateCategory">
+    <ModalComponent id="ModalCreateSubcategory">
         <template v-slot:header>
-            <h6>Crear categoria</h6>
+            <h6>Crear subcategoria</h6>
         </template>
         <template v-slot:body>
             <div class="row">
                 <label for="CategoryName" class="col-12 col-sm-1 col-form-label">Nom:</label>
                 <div class="col-sm">
                     <input type="text" name="CategoryName" id="CategoryName" class="form-control"
-                        v-model="NomCategoria">
+                        v-model="NomSubcategoria">
                 </div>
-                <label for="CategoryOwner" class="col-12 col-sm-2 col-form-label">Responsable:</label>
-                <div class="col-sm">
-                    <select class="form-control" name="CategoryOwner" id="CategoryOwner" v-model="ResponsableCategoria"
-                        required>
-                        <option v-for="usuari in this.users" :key="usuari.id" :value="usuari.id">{{
-                            usuari.first_name + " " + usuari.last_name
-                        }}
-                        </option>
-                    </select>
-                </div>
-                <small>Si ets un usuari restringit, només pots crear categories de la teva propietat</small>
-                <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
-                    <ul class="list-unstyled">
-                        <li v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}</li>
-                    </ul>
-                </div>
+            </div>
+            <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
+                <ul class="list-unstyled">
+                    <li v-for="resposta in respCreateCat.message" :key="resposta"> {{ resposta }}</li>
+                </ul>
             </div>
         </template>
         <template v-slot:footer>
-            <button type="submit" class="btn btn-primary" @click="crearCategoria()">Crear categoria</button>
+            <button type="submit" class="btn btn-primary" @click="crearSubcategoria()">Crear subcategoria</button>
         </template>
     </ModalComponent>
 </template>
@@ -78,22 +67,20 @@ export default {
 
 
             //CREAR CATEGORIA
-            NomCategoria: null,
-            ResponsableCategoria: null
+            NomSubcategoria: null,
             //CREAR CATEGORIA
         }
     },
-    async mounted() {
+    async created() {
         this.subcategories = await this.$store.dispatch("getCollection", this.params)
         console.log(this.subcategories)
     },
     methods: {
-        async crearCategoria() {
+        async crearSubcategoria() {
             let payload = {
-                collection: "Category",
+                collection: "Subcategory",
                 values: {
-                    "CategoryName": this.NomCategoria,
-                    "CategoryOwner": this.ResponsableCategoria
+                    "SubcategoryName": this.NomSubcategoria,
                 }
             }
 
