@@ -1,6 +1,6 @@
 <template>
 	<NavBar v-if="this.$store.state.user" class="sticky-top" />
-	<main class=" container my-5 overflow-hidden">
+	<main class=" container mt-1 overflow-hidden">
 		<router-view />
 	</main>
 </template>

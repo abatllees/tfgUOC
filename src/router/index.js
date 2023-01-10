@@ -64,6 +64,13 @@ const routes = [
     props: true
   },
   {
+    path: "/resultatCerca/:query?",
+    name: "ResultatCerca",
+    component: LlistatElements,
+    params: true,
+    props: true
+  },
+  {
     path: "/:pathMatch(.*)",
     name: "404",
     component: NotFound

@@ -1,4 +1,5 @@
 <template>
+    {{ object }}
     <h1 class="text-center">{{ title?.CategoryName }}</h1>
     <h1 class="text-center">{{ title?.SubcategoryName }}</h1>
     <section class="row justify-content-end">
@@ -20,7 +21,8 @@ export default {
     },
     props: {
         category: String,
-        id: Number
+        id: Number,
+        query: Object
     },
     data() {
         return {
@@ -45,6 +47,7 @@ export default {
         }
     },
     async beforeMount() {
+        console.log(typeof (this.object))
         let params = {
             collection: "Element",
             fields: "?fields=*.*.*",
@@ -82,6 +85,11 @@ export default {
                 sort: ""
             }
             return await this.$store.dispatch("getElement", params);
+        }
+    },
+    computed: {
+        object: function () {
+            return this.$route.params.query
         }
     }
 }

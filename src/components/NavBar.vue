@@ -20,11 +20,11 @@
 						<ul class="dropdown-menu">
 							<li v-for="delegacio in this.$store.state.Delegacions" v-bind:key="delegacio"><router-link
 									:to="{
-	name: 'DelegacioView',
-	params: {
-		id: delegacio.ID
-	}
-}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
+										name: 'DelegacioView',
+										params: {
+											id: delegacio.ID
+										}
+									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item dropdown">
@@ -46,16 +46,21 @@
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search"
 						v-model="SearchInput" @input="debounceSearch">
-					<div class="form-group position-absolute top-100 left-0">
+					<div class="form-group position-absolute top-100 left-0" v-if="this.SearchResults">
 						<ul class="list-group w-100">
 							<li class="list-group-item list-group-item-action" v-for="result in this.SearchResults"
 								:key="result">
 								<router-link :to="{
-	name: 'Fitxa', params: { SerialNum: result?.SerialNum }
-}">
+									name: 'Fitxa', params: { SerialNum: result?.SerialNum }
+								}">
 									<CardResult :result="result"></CardResult>
 								</router-link>
 							</li>
+
+							<li class="text-center list-group-item list-group-item-primary" @click="ampliarCerca()">
+								Amplia la cerca
+							</li>
+
 						</ul>
 					</div>
 				</form>
@@ -66,7 +71,7 @@
 		</div>
 	</nav>
 </template>
-  
+
 <script>
 
 import api from "@/api.js"
@@ -81,7 +86,7 @@ export default {
 		return {
 			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
 			delegacions: this.$store.getters.getDelegacions,
-			SearchInput: null,
+			SearchInput: "",
 
 			SearchResults: null
 		}
@@ -105,14 +110,25 @@ export default {
 			let params = {
 				collection: "Element",
 				fields: "?fields=NumMag,SerialNum,Model.Subcategory.SubcategoryName,Model.ModelName,Model.Brand.BrandName,status",
-				filter: "&filter[_or][1][NumMag][_contains]=" + this.SearchInput + "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput,
+				filter: "&filter[_or][1][NumMag][_contains]=" + this.SearchInput
+					+ "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput
+					+ "&filter[_or][3][Model][ModelName][_contains]=" + this.SearchInput
+					+ "&filter[_or][4][Model][Brand][BrandName][_contains]=" + this.SearchInput,
 				sort: "&sort[]=NumMag&limit=5"
 			}
+
 			const response = await this.$store.dispatch("getCollection", params)
-			console.log(response)
 			this.SearchResults = response
 			console.log(await this.$store.dispatch("handlingError", response))
 
+		},
+		ampliarCerca: function () {
+			this.$router.push({
+				name: "ResultatCerca",
+				params: {
+					query: this.SearchQuery
+				}
+			})
 		},
 		async debounceSearch() {
 			clearTimeout(this.debounce)
@@ -148,4 +164,3 @@ a {
 	color: inherit
 }
 </style>
-  
