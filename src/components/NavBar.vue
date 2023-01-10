@@ -33,7 +33,7 @@
 							Inventari
 						</a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item"> <router-link to="meuInventari">El meu inventari</router-link>
+							<li class="dropdown-item"> <router-link to="MeuInventari">El meu inventari</router-link>
 							</li>
 							<li class="dropdown-item"> <router-link to="collections">Inventari</router-link>
 							</li>

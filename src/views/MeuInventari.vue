@@ -1,21 +1,17 @@
 <template>
-    <h1 class="text-center">Categories</h1>
-    <section class="row row-cols-5" id="toPDF">
-        <div class="col-6 col-sm col-md-2 my-3" v-for="category in this.categories" :key="category">
+    <h1 class="text-center">El meu inventari</h1>
+    <section class="row row-cols-5">
+        <div class="col-6 col-sm col-md-2 my-3" v-for="subcategory in this.subcategories" :key="subcategory">
             <router-link :to="{
-                name: 'subcollection',
-                params: {
-                    id: category.id
-                }
+                name: 'LlistatElements', params: { id: subcategory.id }
             }">
-                <CardButton :title=category.CategoryName
-                    :subtitle="category.CategoryOwner?.first_name + ' ' + category.CategoryOwner?.last_name"
+                <CardButton :title=subcategory.SubcategoryName :subtitle="subcategory.Category.CategoryName"
                     :icon="'bi bi-folder2-open'" :bg-color="'#bb0000'"></CardButton>
             </router-link>
         </div>
         <div class="col-6 col-sm col-md-2 my-3">
-            <CardButton :title="'Afegir categoria'" :owner="{}" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
-                data-toggle="modal" data-target="#ModalCreateCategory">
+            <CardButton :title="'Afegir categoria'" :subtitle="''" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
+                data-toggle="modal" data-target="#ModalCreateCategory" @click="listusers()">
             </CardButton>
         </div>
     </section>
@@ -37,7 +33,7 @@
                     <select class="form-control" name="CategoryOwner" id="CategoryOwner" v-model="ResponsableCategoria"
                         required>
                         <option v-for="usuari in this.users" :key="usuari.id" :value="usuari.id">{{
-                            usuari.first_name + ' ' + usuari.last_name
+                            usuari.first_name + " " + usuari.last_name
                         }}
                         </option>
                     </select>
@@ -55,28 +51,26 @@
         </template>
     </ModalComponent>
 </template>
+
 <script>
+import ModalComponent from '@/components/ModalComponent.vue'
 import CardButton from '@/components/CardButton.vue'
-import ModalComponent from "@/components/ModalComponent.vue"
-
 export default {
-    name: 'CollectionsView',
+    name: "MeuInventari",
     components: {
-        CardButton,
-        ModalComponent
-
-
+        ModalComponent,
+        CardButton
     },
     data() {
         return {
             params: {
-                collection: "Category",
-                fields: "?fields=CategoryName,id,CategoryOwner.first_name,CategoryOwner.last_name",
-                filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
-                sort: "&sort[]=CategoryName",
+                collection: "Subcategory",
+                fields: "?fields=SubcategoryName,id,Category.CategoryName",
+                filter: "&filter[Category][CategoryOwner][_eq]=$CURRENT_USER",
+                sort: "&sort[]=SubcategoryName",
                 limit: ""
             },
-            categories: [],
+            subcategories: [],
 
             respCreateCat: null,
 
@@ -90,21 +84,10 @@ export default {
         }
     },
     async mounted() {
-        this.categories = await this.$store.dispatch("getCollection", this.params)
-        await this.listusers()
+        this.subcategories = await this.$store.dispatch("getCollection", this.params)
+        console.log(this.subcategories)
     },
     methods: {
-        async listusers() {
-            let params = {
-                id: "",
-                collection: "",
-                fields: "?fields=first_name,last_name,id",
-                filter: "&filter[status][_eq]=active",
-                sort: "&sort=first_name",
-                limit: ""
-            }
-            this.users = await this.$store.dispatch("getUsers", params)
-        },
         async crearCategoria() {
             let payload = {
                 collection: "Category",
@@ -121,3 +104,7 @@ export default {
     }
 }
 </script>
+
+<style>
+
+</style>

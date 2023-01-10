@@ -2,7 +2,7 @@
   <div class="card text-white text-center h-100" :style="style">
     <i size="4x" class="py-2 4x" v-bind:class="icon" style="font-size: 3.5rem"></i>
     <h5> {{ title }}</h5>
-    <p class="text-right">{{ owner?.first_name }} {{ owner?.last_name }}</p>
+    <p class="text-right">{{ subtitle }}</p>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
   props: {
     title: String,
     icon: String,
-    owner: Object,
+    subtitle: String,
     bgColor: String
   },
   data() {

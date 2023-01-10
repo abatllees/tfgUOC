@@ -5,12 +5,13 @@
             <router-link :to="{
                 name: 'LlistatElements', params: { id: subcategory.id }
             }">
-                <CardButton :title=subcategory.SubcategoryName :icon="'bi bi-folder2-open'" :bg-color="'#bb0000'">
+                <CardButton :title=subcategory.SubcategoryName :subtitle="'hola'" :icon="'bi bi-folder2-open'"
+                    :bg-color="'#bb0000'">
                 </CardButton>
             </router-link>
         </div>
         <div class="col-6 col-sm-4 col-md-3  my-1">
-            <CardButton :title="'Afegir subcategoria'" :owner="{}" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
+            <CardButton :title="'Afegir subcategoria'" :subtitle="''" :icon="'bi bi-plus-lg'" :bg-color="'#36333E'"
                 data-toggle="modal" data-target="#ModalCreateSubCategory">
             </CardButton>
         </div>

@@ -72,7 +72,7 @@ export default {
         if (this.$route.params.model) {
             params.filter = "&filter[Model][[_eq]=" + this.$route.params.model
             const response = await this.getTitle("Model", this.$route.params.model)
-            this.title = response
+            this.title = response.ModelName
 
         }
         this.llistatElement = await this.$store.dispatch("getCollection", params)

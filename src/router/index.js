@@ -13,6 +13,7 @@ import MovimentsView from "@/views/MovimentsView.vue"
 import DelegacioView from "@/views/DelegacioView.vue"
 import Fitxa from "@/views/FitxaElement.vue"
 import RetornView from "@/views/RetornView.vue"
+import MeuInventari from "@/views/MeuInventari.vue"
 
 const routes = [
   {
@@ -89,6 +90,12 @@ const routes = [
     path: "/fitxaElement/:SerialNum",
     name: "Fitxa",
     component: Fitxa,
+    params: true
+  },
+  {
+    path: "/meuInventari",
+    name: "MeuInventari",
+    component: MeuInventari,
     params: true
   }
 ]
