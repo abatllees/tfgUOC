@@ -109,7 +109,7 @@ export default {
 		searchElement: async function () {
 			let params = {
 				collection: "Element",
-				fields: "?fields=NumMag,SerialNum,Model.Subcategory.SubcategoryName,Model.ModelName,Model.Brand.BrandName,status",
+				fields: "?fields=NumMag,SerialNum,Model.Subcategory.SubcategoryName,Model.ModelName,Model.Brand.BrandName,status,DelegacioActual.Name,Observacions",
 				filter: "&filter[_or][1][NumMag][_contains]=" + this.SearchInput
 					+ "&filter[_or][2][SerialNum][_contains]=" + this.SearchInput
 					+ "&filter[_or][3][Model][ModelName][_contains]=" + this.SearchInput

@@ -1,6 +1,5 @@
 <template>
-    <h1 class="text-center">{{ title?.CategoryName }}</h1>
-    <h1 class="text-center">{{ title?.SubcategoryName }}</h1>
+    <h1 class="text-center">{{ title }}</h1>
     <section class="row justify-content-end">
         <div class="col col-md-3 mb-2">
             <label for="site-search">Comença a cercar:</label>
@@ -52,25 +51,28 @@ export default {
             sort: "",
             limit: ""
         }
-
+        //Resultats de la cerca
         if (this.$store.state.NavQuery) {
             params = this.$store.state.NavQuery
-            params.sort = //Eliminar 8 chars,
-                console.log(typeof (params))
+            params.limit = "&limit=-1"
+            this.title = "Resultats de la cerca"
         }
 
         if (this.$route.params.id) {
             params.filter = "&filter[Model][Subcategory][_eq]=" + this.$route.params.id
-            this.title = await this.getTitle("Subcategory", this.$route.params.id)
+            const response = await this.getTitle("Subcategory", this.$route.params.id)
+            this.title = response.SubcategoryName
         }
         if (this.$route.params.category) {
             params.filter = "&filter[Model][Subcategory][Category][_eq]=" + this.$route.params.category
-            this.title = await this.getTitle("Category", this.$route.params.category)
+            const response = await this.getTitle("Category", this.$route.params.category)
+            this.title = response.CategoryName
 
         }
         if (this.$route.params.model) {
             params.filter = "&filter[Model][[_eq]=" + this.$route.params.model
-            this.title = await this.getTitle("Model", this.$route.params.model)
+            const response = await this.getTitle("Model", this.$route.params.model)
+            this.title = response
 
         }
         this.llistatElement = await this.$store.dispatch("getCollection", params)
