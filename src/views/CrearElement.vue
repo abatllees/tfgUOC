@@ -30,8 +30,9 @@
             <div class="row">
                 <div class="col-12 col-lg mb-2">
                     <label for="DelegacioAssignada">Delegació assignada</label>
-                    <select name="delegacioAssignada" id="delegacioAssignada" class="form-control">
-                        <option :value="delegacio.ID" v-for="delegacio in delegacioAssignada" :key="delegacio">{{
+                    <select name="delegacioAssignada" id="delegacioAssignada" class="form-control"
+                        v-model="delegacioAssignada">
+                        <option :value="delegacio.ID" v-for="delegacio in delegacions" :key="delegacio">{{
                             delegacio.Name
                         }}
                         </option>
@@ -39,8 +40,9 @@
                 </div>
                 <div class="col-12 col-lg mb-2">
                     <label for="DelegacioActual">Delegació actual</label>
-                    <select name="DelegacioActual" id="DelegacioActual" class="form-control">
-                        <option :value="delegacio.ID" v-for="delegacio in delegacioActual" :key="delegacio">{{
+                    <select name="DelegacioActual" id="DelegacioActual" class="form-control" v-model="delegacioActual"
+                        disabled>
+                        <option :value="delegacio.ID" v-for="delegacio in delegacions" :key="delegacio">{{
                             delegacio.Name
                         }}
                         </option>
@@ -63,8 +65,10 @@ export default {
     name: "CrearElement",
     data() {
         return {
-            delegacioActual: store.getters.getDelegacions,
-            delegacioAssignada: store.getters.getDelegacions
+            delegacions: store.getters.getDelegacions,
+
+            delegacioActual: 22,
+            delegacioAssignada: null
         }
     }
 }
