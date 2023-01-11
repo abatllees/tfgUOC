@@ -30,11 +30,21 @@
             <div class="row">
                 <div class="col-12 col-lg mb-2">
                     <label for="DelegacioAssignada">Delegació assignada</label>
-                    <input type="text" class="form-control" name="DelegacioAssignada">
+                    <select name="delegacioAssignada" id="delegacioAssignada" class="form-control">
+                        <option :value="delegacio.ID" v-for="delegacio in delegacioAssignada" :key="delegacio">{{
+                            delegacio.Name
+                        }}
+                        </option>
+                    </select>
                 </div>
                 <div class="col-12 col-lg mb-2">
                     <label for="DelegacioActual">Delegació actual</label>
-                    <input type="text" class="form-control" name="DelegacioActual">
+                    <select name="DelegacioActual" id="DelegacioActual" class="form-control">
+                        <option :value="delegacio.ID" v-for="delegacio in delegacioActual" :key="delegacio">{{
+                            delegacio.Name
+                        }}
+                        </option>
+                    </select>
                 </div>
             </div>
             <div class="row">
@@ -48,8 +58,15 @@
     </secton>
 </template>
 <script>
+import store from "@/store/index.js"
 export default {
-    name: "CrearElement"
+    name: "CrearElement",
+    data() {
+        return {
+            delegacioActual: store.getters.getDelegacions,
+            delegacioAssignada: store.getters.getDelegacions
+        }
+    }
 }
 </script>
 
