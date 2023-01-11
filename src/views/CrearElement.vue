@@ -14,7 +14,8 @@
                 </div>
                 <div class="col-12 col-lg-6 mb-2">
                     <label for="model">Model</label>
-                    <input type="text" name="model" class="form-control" placeholder="Selecciona un model...">
+                    <input type="text" name="model" class="form-control" placeholder="Selecciona un model..."
+                        @input="debounceSearch" v-model="model">
                 </div>
             </div>
             <div class="row">
@@ -58,6 +59,16 @@
             <button type="submit" class="btn btn-primary">Crear element</button>
         </form>
     </secton>
+    <ul class="list-group w-100">
+        <li class="list-group-item list-group-item-action" v-for="result in this.SearchResults" :key="result">
+            <CardResult :result="result"></CardResult>
+        </li>
+
+        <li class="text-center list-group-item list-group-item-primary"><router-link to="ResultatCerca">
+                Amplia la cerca</router-link>
+        </li>
+
+    </ul>
 </template>
 <script>
 import store from "@/store/index.js"
@@ -68,7 +79,37 @@ export default {
             delegacions: store.getters.getDelegacions,
 
             delegacioActual: 22,
-            delegacioAssignada: null
+            delegacioAssignada: null,
+
+            model: null,
+            SearchResults: null
+        }
+    },
+    methods: {
+        searchElement: async function () {
+            let params = {
+                collection: "Model",
+                fields: "?fields=*.*.*",
+                filter: "&filter[_or][1][ModelName][_contains]=" + this.model
+                    + "&filter[_or][2][Brand][BrandName][_contains]=" + this.model,
+                sort: "",
+                limit: "&limit=-1"
+            }
+
+            const response = await this.$store.dispatch("getCollection", params)
+
+            console.log(await this.$store.dispatch("handlingError", response))
+            return response
+
+        },
+        async debounceSearch() {
+            setTimeout(async () => {
+                if (this.model.length) {
+                    this.SearchResults = await this.searchElement()
+                } else {
+                    this.SearchResults = null
+                }
+            }, 200)
         }
     }
 }
