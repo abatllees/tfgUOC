@@ -118,7 +118,7 @@ export default createStore({
 		updateItem({ commit }, payload) {
 			console.log("Update payload:", payload)
 			return new Promise((resolve) => {
-				api.patch("items/" + payload.collection + "/" + payload.item, payload)
+				api.patch("items/" + payload.collection + "/" + payload.item, payload.data)
 					.then(response => {
 						resolve(response)
 					})

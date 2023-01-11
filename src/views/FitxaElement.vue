@@ -273,10 +273,13 @@ export default {
             let payload = {
                 collection: "Element",
                 item: this.$route.params.SerialNum,
-                NumMag: this.NumMag,
-                status: this.status,
-                DelegacioAssignada: this.DelegacioAssignada,
-                observacions: this.observacions
+                data: {
+                    NumMag: this.NumMag,
+                    status: this.status,
+                    DelegacioAssignada: this.DelegacioAssignada,
+                    observacions: this.observacions
+                }
+
             }
             const response = await this.$store.dispatch("updateItem", payload)
             this.respEditElement = await this.$store.dispatch("handlingError", response)

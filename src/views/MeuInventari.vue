@@ -15,18 +15,34 @@
             </CardButton>
         </div>
     </section>
-
+    <section class="w-100">
+        <EasyDataTable :headers="this.headers" :items="this.inventari" alternating buttons-pagination
+            :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
+            :theme-color="this.$store.state.themeColor">
+        </EasyDataTable>
+        <router-link to="crearElement" class="btn btn-primary mt-2">Crea un element nou</router-link>
+    </section>
 
     <ModalComponent id="ModalCreateSubcategory">
         <template v-slot:header>
             <h6>Crear subcategoria</h6>
         </template>
         <template v-slot:body>
-            <div class="row">
-                <label for="CategoryName" class="col-12 col-sm-1 col-form-label">Nom:</label>
-                <div class="col-sm">
-                    <input type="text" name="CategoryName" id="CategoryName" class="form-control"
+            <div class="row mb-2">
+                <label for="SubcategoryName" class="col-12 col-lg col-sm-4 col-form-label">Nom:</label>
+                <div class="col-sm col-lg">
+                    <input type="text" name="SubcategoryName" id="SubcategoryName" class="form-control"
                         v-model="NomSubcategoria">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <label for="Category" class="col-12 col-lg col-sm-4 col-form-label">Categoria:</label>
+                <div class="col-sm col-lg">
+                    <select name="Category" id="" class="form-control" v-model="Categoria">
+                        <option v-for="categoria in CategoriesPropietat" :key="categoria.id" :value="categoria">
+                            {{ categoria.CategoryName }}
+                        </option>
+                    </select>
                 </div>
             </div>
             <div class="alert" v-if="respCreateCat" v-bind:class="respCreateCat.alertType">
@@ -48,7 +64,7 @@ export default {
     name: "MeuInventari",
     components: {
         ModalComponent,
-        CardButton
+        CardButton,
     },
     data() {
         return {
@@ -61,19 +77,38 @@ export default {
             },
             subcategories: [],
 
-            respCreateCat: null,
-
-            users: null,
-
+            CategoriesPropietat: null,
 
             //CREAR CATEGORIA
             NomSubcategoria: null,
+            Categoria: null,
+            respCreateCat: null,
             //CREAR CATEGORIA
+
+            //ELS MEUS ELEMENTS
+            headers: [
+                { text: "Estat", value: "status", sortable: true },
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
+                { text: "Tipus d'element", value: "Model.Subcategory.SubcategoryName", sortable: true },
+                { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
+                { text: "Model", value: "Model.ModelName", sortable: true },
+                { text: "Número de sèrie", value: "SerialNum", sortable: true },
+                { text: "Data d'entrada", value: "DataEntrada", sortable: true },
+                { text: "Delegació actual", value: "DelegacioActual.Name", sortable: true },
+                { text: "Delegació assignada", value: "DelegacioAssignada.Name", sortable: true },
+            ],
+            inventari: [],
+            sortBy: "",
+            sortType: "asc",
+            loading: true
         }
     },
     async created() {
         this.subcategories = await this.$store.dispatch("getCollection", this.params)
         console.log(this.subcategories)
+        this.CategoriesPropietat = await this.mostrarCategories()
+        this.inventari = await this.mostrarElements()
+        this.loading = false
     },
     methods: {
         async crearSubcategoria() {
@@ -81,12 +116,35 @@ export default {
                 collection: "Subcategory",
                 values: {
                     "SubcategoryName": this.NomSubcategoria,
+                    "Category": this.Categoria,
                 }
             }
 
             const response = await this.$store.dispatch("createItem", payload)
             this.respCreateCat = await this.$store.dispatch("handlingError", response)
 
+        },
+        async mostrarCategories() {
+            let params = {
+                collection: "Category",
+                fields: "?fields=CategoryName,id",
+                filter: "&filter[CategoryOwner][_eq]=$CURRENT_USER",
+                sort: "&sort[]=CategoryName",
+                limit: ""
+            }
+
+            return await this.$store.dispatch("getCollection", params);
+        },
+        async mostrarElements() {
+            let params = {
+                collection: "Element",
+                fields: "?fields=status,NumMag,DataEntrada,DelegacioActual.Name,DelegacioAssignada.Name,Model.ModelName,Model.Brand.BrandName,Model.Subcategory.Category.CategoryName,Model.Subcategory.SubcategoryName,SerialNum",
+                filter: "&filter[Model][Subcategory][Category][CategoryOwner][_eq]=$CURRENT_USER",
+                sort: "",
+                limit: ""
+            }
+
+            return await this.$store.dispatch("getCollection", params);
         }
     }
 }

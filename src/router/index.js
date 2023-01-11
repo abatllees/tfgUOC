@@ -14,6 +14,7 @@ import DelegacioView from "@/views/DelegacioView.vue"
 import Fitxa from "@/views/FitxaElement.vue"
 import RetornView from "@/views/RetornView.vue"
 import MeuInventari from "@/views/MeuInventari.vue"
+import CrearElement from "@/views/CrearElement.vue"
 
 const routes = [
   {
@@ -96,6 +97,12 @@ const routes = [
     path: "/meuInventari",
     name: "MeuInventari",
     component: MeuInventari,
+    params: true
+  },
+  {
+    path: "/CrearElement",
+    name: "CrearElement",
+    component: CrearElement,
     params: true
   }
 ]

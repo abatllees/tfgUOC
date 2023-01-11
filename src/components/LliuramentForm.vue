@@ -23,7 +23,7 @@
                 </select>
             </div>
         </div>
-        <div class="row">
+        <div class="row" v-if="false">
             <div class="col-12 col-sm-6 my-1">
                 <label for="numMag">Número de magatzem:</label>
                 <input type="text" class="form-control" id="numMag" v-model="numMag">
