@@ -16,7 +16,19 @@
                     <label for="model">Model</label>
                     <input type="text" name="model" class="form-control" placeholder="Selecciona un model..."
                         @input="debounceSearch" v-model="model">
+                    <ul class="list-group dropdown-menu" v-if="this.SearchResults">
+                        <li class="list-group-item list-group-item-action" v-for="result in SearchResults"
+                            :key="result">
+                            <CardResult :result="result"></CardResult>
+                        </li>
+
+                        <li class="text-center list-group-item list-group-item-primary"><router-link to="ResultatCerca">
+                                Amplia la cerca</router-link>
+                        </li>
+
+                    </ul>
                 </div>
+
             </div>
             <div class="row">
                 <div class="col-12 col-lg-6 mb-2">
@@ -59,21 +71,15 @@
             <button type="submit" class="btn btn-primary">Crear element</button>
         </form>
     </secton>
-    <ul class="list-group w-100">
-        <li class="list-group-item list-group-item-action" v-for="result in this.SearchResults" :key="result">
-            <CardResult :result="result"></CardResult>
-        </li>
-
-        <li class="text-center list-group-item list-group-item-primary"><router-link to="ResultatCerca">
-                Amplia la cerca</router-link>
-        </li>
-
-    </ul>
 </template>
 <script>
 import store from "@/store/index.js"
+import CardResult from "@/components/CardResult.vue"
 export default {
     name: "CrearElement",
+    components: {
+        CardResult
+    },
     data() {
         return {
             delegacions: store.getters.getDelegacions,
