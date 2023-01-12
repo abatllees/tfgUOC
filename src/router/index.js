@@ -15,6 +15,7 @@ import Fitxa from "@/views/FitxaElement.vue"
 import RetornView from "@/views/RetornView.vue"
 import MeuInventari from "@/views/MeuInventari.vue"
 import CrearElement from "@/views/CrearElement.vue"
+import BrandView from "@/views/BrandView.vue"
 
 const routes = [
   {
@@ -59,7 +60,7 @@ const routes = [
     component: RetornView
   },
   {
-    path: "/collections/llistatElements/:id?:category?:model?",
+    path: "/llistatElements/:id?:category?:model?:brand?",
     name: "LlistatElements",
     component: LlistatElements,
     params: true,
@@ -104,7 +105,12 @@ const routes = [
     name: "CrearElement",
     component: CrearElement,
     params: true
-  }
+  },
+  {
+    path: "/brand",
+    name: "Brand",
+    component: BrandView,
+  },
 ]
 
 const router = createRouter({

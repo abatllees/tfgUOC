@@ -38,6 +38,7 @@
 							</li>
 							<li class="dropdown-item"> <router-link to="collections" replace>Categories</router-link>
 							</li>
+							<li class="dropdown-item"> <router-link to="brand" replace>Marques</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item">

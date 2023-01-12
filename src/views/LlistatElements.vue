@@ -72,6 +72,12 @@ export default {
             this.title = response.CategoryName
 
         }
+        if (this.$route.params.brand) {
+            params.filter = "&filter[Model][Brand][[_eq]=" + this.$route.params.brand
+            const response = await this.getTitle("Brand", this.$route.params.brand)
+            this.title = response.BrandName
+
+        }
         if (this.$route.params.model) {
             params.filter = "&filter[Model][[_eq]=" + this.$route.params.model
             const response = await this.getTitle("Model", this.$route.params.model)
