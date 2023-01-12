@@ -59,27 +59,31 @@ export default {
         }
     },
     async created() {
-        let params = {
-            collection: "Brand",
-            fields: "?fields=BrandName,id",
-            filter: "",
-            sort: "&sort[]=BrandName",
-            limit: ""
-        }
-
-        this.brands = await this.$store.dispatch("getCollection", params)
+        this.brands = await this.listBrands()
     },
     methods: {
         async createBrand() {
             let payload = {
                 collection: "Brand",
                 values: {
-                    "BrandName": this.NomCategoria,
+                    "BrandName": this.BrandName,
                 }
             }
             const response = await this.$store.dispatch("createItem", payload)
             this.BrandResponse = await this.$store.dispatch("handlingError", response)
+            this.brands = await this.listBrands()
 
+        },
+        async listBrands() {
+            let params = {
+                collection: "Brand",
+                fields: "?fields=BrandName,id",
+                filter: "",
+                sort: "&sort[]=BrandName",
+                limit: ""
+            }
+
+            return await this.$store.dispatch("getCollection", params)
         }
     }
 }
