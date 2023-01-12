@@ -73,7 +73,9 @@ export default {
                     let payload = {
                         collection: "Moviment",
                         item: found[0].id,
-                        MovimentVigent: false
+                        data: {
+                            MovimentVigent: false
+                        }
                     }
                     let eliminarVigencia = await this.$store.dispatch("updateItem", payload)
                     console.log(await this.$store.dispatch("handlingError", eliminarVigencia))

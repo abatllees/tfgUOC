@@ -128,7 +128,7 @@ export default {
             let params = {
                 collection: "Category",
                 fields: "?fields=CategoryName,id",
-                filter: "&filter[CategoryOwner][_eq]=$CURRENT_USER",
+                filter: "",
                 sort: "&sort[]=CategoryName",
                 limit: ""
             }
