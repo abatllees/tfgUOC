@@ -6,9 +6,9 @@
         <br>{{ result?.NumMag }}<br>
         <span class="fw-bold">{{ result.SerialNum }}</span>
     </p>
-    <p v-else>
-        {{ result.ModelName }}
-    </p>
+    <div v-else>
+        {{ result.Subcategory?.SubcategoryName }} {{ result.Brand?.BrandName }} {{ result.ModelName }}
+    </div>
 </template>
 
 <script>
@@ -17,9 +17,6 @@ export default {
     props: {
         result: Object
     },
-    created() {
-        console.log(this.result)
-    }
 }
 </script>
 <style>

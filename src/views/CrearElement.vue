@@ -16,16 +16,12 @@
                     <label for="model">Model</label>
                     <input type="text" name="model" class="form-control" placeholder="Selecciona un model..."
                         @input="debounceSearch" v-model="model">
+
                     <ul class="list-group dropdown-menu" v-if="this.SearchResults">
                         <li class="list-group-item list-group-item-action" v-for="result in SearchResults"
                             :key="result">
-                            <CardResult :result="result"></CardResult>
+                            <CardResult :result="result" @click="assignarModel(result)"></CardResult>
                         </li>
-
-                        <li class="text-center list-group-item list-group-item-primary"><router-link to="ResultatCerca">
-                                Amplia la cerca</router-link>
-                        </li>
-
                     </ul>
                 </div>
 
@@ -101,21 +97,16 @@ export default {
                 sort: "",
                 limit: "&limit=-1"
             }
-
-            const response = await this.$store.dispatch("getCollection", params)
-
-            console.log(await this.$store.dispatch("handlingError", response))
-            return response
-
+            return await this.$store.dispatch("getCollection", params)
         },
         async debounceSearch() {
             setTimeout(async () => {
-                if (this.model.length) {
-                    this.SearchResults = await this.searchElement()
-                } else {
-                    this.SearchResults = null
-                }
+                this.SearchResults = await this.searchElement()
             }, 200)
+        },
+        assignarModel(model) {
+            this.model = model.id
+            this.SearchResults = null
         }
     }
 }
