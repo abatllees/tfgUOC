@@ -23,7 +23,7 @@
                     <div class="col-12 col-sm-4">
                         <label for="status">Estat:</label>
                         <select name="status" id="status" class="form-control" disabled v-model="status"
-                            v-if="this.statusValues">
+                            v-if="statusValues">
                             <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
                                 :key="state">
                                 {{ state.text }}
@@ -45,38 +45,21 @@
                             :value="element.DelegacioActual.Name">
                     </div>
                 </div>
-
                 <label for="observations">Observacions:</label>
                 <textarea class="form-control" name="observations" id="observations" v-model="element.Observacions"
                     disabled></textarea>
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
-            <ModalComponent id="ModalResposta">
-                <template v-slot:header>
-                    <h6>Resultats de la cerca</h6>
-                </template>
-                <template v-slot:body>
-                    <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
-                        <ul class="list-unstyled">
-                            <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
-                        </ul>
-                    </div>
-                </template>
-                <template v-slot:footer>
-                    <button class="btn btn-primary" data-dismiss="modal">Afegeix
-                        element</button>
-                </template>
-            </ModalComponent>
             <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
                 <ul class="list-unstyled">
                     <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
                 </ul>
             </div>
         </div>
-        <div class="col-12 col-lg">
+        <!-- <div class="col-12 col-lg">
             <img src="" alt="Imatge del model" class="img">
-        </div>
+        </div> -->
     </section>
     <section class="row">
         <div class="col-12 col-lg">
@@ -107,8 +90,7 @@
                 </template>
             </EasyDataTable>
             <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#gestionarAccessoris"
-                @click="obtenirelements('Element')">Afegir un
-                accessori</button>
+                @click="obtenirelements('Element')">Afegir un accessori</button>
         </div>
     </section>
 
@@ -134,13 +116,14 @@
             </EasyDataTable>
         </template>
         <template v-slot:footer>
-            <button class="btn btn-primary" @click="associar(this.nousAccessoris.itemsSelected)">Associar
-                elements</button>
+            <button class="btn btn-primary" @click="associar(this.nousAccessoris.itemsSelected)"
+                data-dismiss="modal">Associar elements</button>
         </template>
     </ModalComponent>
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
+import store from "@/store/index.js"
 
 export default {
     name: "FitxaElement",
@@ -149,18 +132,18 @@ export default {
     },
     data() {
         return {
-            element: null,
-            statusValues: null,
+            element: null, //Objecte amb tota la informació de l'item
+            statusValues: null, //Valors disponibles de l'estat de l'item
 
-            NumMag: "",
-            status: "",
-            observacions: "",
-            responsable: "",
+            NumMag: null,
+            status: null,
+            observacions: null,
+            responsable: null,
 
-            delegacionsValues: this.getDelegacions(),
-            DelegacioAssignada: "",
+            delegacionsValues: store.getters.getDelegacions,
+            DelegacioAssignada: null,
 
-            subcategory: [],
+            subcategory: store.getters.getSubcategory,
             tipusMaterial: null,
 
             editMode: false,
@@ -220,46 +203,24 @@ export default {
             }
         }
     },
-    async created() {
+    async beforeMount() {
         await this.getData()
-        this.delegacions = this.getDelegacions()
-
-        let params = {
-            collection: "Subcategory",
-            fields: "?fields=id,SubcategoryName",
-            filter: "",
-            sort: "&sort[]=SubcategoryName",
-            limit: ""
-        }
-        this.subcategory = await this.$store.dispatch("getCollection", params)
-
     },
     watch: {
         '$route'() {
-            this.$router.push({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
+            this.$router.replace({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
             this.getData()
         },
         async tipusMaterial() {
             await this.llistarAccessoris()
         }
-
-    },
-    computed: {
-
     },
     methods: {
-        getItems: function (payload) {
-            return this.$store.dispatch("getCollection", payload)
-        },
-        getDelegacions() {
-            return this.$store.getters.getDelegacions
-        },
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
             document.getElementById("status").disabled = false;
             document.getElementById("observations").disabled = false;
             document.getElementById("delegacioAssignada").disabled = false;
-
             this.editMode = true
         },
         UpdateElement: async function () { //Bloqueja tots els elements del formulari per poder-los modificar
@@ -267,7 +228,6 @@ export default {
             document.getElementById("status").disabled = true;
             document.getElementById("observations").disabled = true;
             document.getElementById("delegacioAssignada").disabled = true;
-
             this.editMode = false
 
             let payload = {
@@ -279,16 +239,9 @@ export default {
                     DelegacioAssignada: this.DelegacioAssignada,
                     observacions: this.observacions
                 }
-
             }
             const response = await this.$store.dispatch("updateItem", payload)
             this.respEditElement = await this.$store.dispatch("handlingError", response)
-
-            var myModalEl = document.getElementById('ModalResposta')
-            myModalEl.addEventListener('show.bs.modal', function (event) {
-                console.log(event)
-            })
-
         },
         getElementInfo: async function () {
             //Obté informació de l'element
@@ -327,11 +280,11 @@ export default {
             let payload = {
                 collection: "Moviment",
                 fields: "?fields=Element,date_created,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name",
-                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum + "&limit=10",
+                filter: "&filter[status][_eq]=published&filter[Element][_eq]=" + this.$route.params.SerialNum,
                 sort: "&sort[]=-date_created",
-                limit: ""
+                limit: "&limit=10"
             }
-            this.historialMoviments.items = await this.getItems(payload)
+            this.historialMoviments.items = await this.$store.dispatch("getCollection", payload)
             this.historialMoviments.loading = false
 
             this.historialMoviments.items.forEach(moviment => {
@@ -349,7 +302,7 @@ export default {
                 sort: "",
                 limit: ""
             }
-            this.incidencies.items = await this.getItems(payload)
+            this.incidencies.items = await this.$store.dispatch("getCollection", payload)
             this.incidencies.loading = false
 
             this.incidencies.items.forEach(incidencia => {
@@ -363,24 +316,21 @@ export default {
             //Obtenir els accessoris assignats actualment
             let payload = {
                 collection: "Element",
-                fields: "?fields=*.*.*",
+                fields: "?fields=SerialNum,Model.ModelName,Model.Subcategory.SubcategoryName",
                 filter: "&filter[ElementPare][_eq]=" + this.$route.params.SerialNum,
                 sort: "",
                 limit: ""
             }
-            this.accessoris.items = await this.getItems(payload)
             this.accessoris.loading = false
+            return await this.$store.dispatch("getCollection", payload)
         },
         getData: async function () {
             await this.getElementInfo()
             await this.getMoviments()
             await this.getIncidencies()
-            await this.getAccessoris()
-
-
+            this.accessoris.items = await this.getAccessoris()
         },
         associar: async function (elements) {
-
             let updateKeys = []
             elements.forEach(element => {
                 updateKeys.push(element.SerialNum)
@@ -398,7 +348,7 @@ export default {
             const resposta = await this.$store.dispatch("handlingError", response)
             console.log(resposta)
             this.nousAccessoris.itemsSelected = []
-            this.getAccessoris()
+            this.accessoris.items = await this.getAccessoris()
         },
         llistarAccessoris: async function () {
             this.nousAccessoris.loading = true
@@ -413,27 +363,17 @@ export default {
             this.nousAccessoris.loading = false
         },
         deleteAccessori: async function (item) {
-            console.log(item.SerialNum)
             let payload = {
                 collection: "Element",
                 item: item.SerialNum,
-                ElementPare: null,
+                data: {
+                    ElementPare: null,
+                }
             }
-            const response = await this.$store.dispatch("updateItem", payload)
-            const resposta = await this.$store.dispatch("handlingError", response)
-            console.log(resposta)
-            this.getAccessoris()
-
+            await this.$store.dispatch("updateItem", payload)
+            //const resposta = await this.$store.dispatch("handlingError", response)
+            this.accessoris.items = await this.getAccessoris()
         }
     }
 }
 </script>
-<style scoped>
-.dot {
-    height: 15px;
-    width: 15px;
-    background-color: #027505;
-    border-radius: 50%;
-    display: inline-block;
-}
-</style>

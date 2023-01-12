@@ -10,6 +10,9 @@
         :search-value="searchValue" :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
         :theme-color="this.$store.state.themeColor" @click-row="showDetail">
     </EasyDataTable>
+    <router-link to="CrearElement" class="btn btn-primary my-2" replace>
+        Crear un nou element
+    </router-link>
 </template>
 <script>
 export default {

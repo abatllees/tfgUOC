@@ -122,14 +122,13 @@ export default {
             this.model = model.ModelName
             this.selectedModel = model
             this.SearchResults = null
-            console.log(this.selectedModel)
         },
         async crearElement() {
             const payload = {
                 collection: "Element",
                 values: {
                     status: this.status,
-                    Model: this.selectedModel?.id,
+                    Model: this.selectedModel,
                     NumMag: this.NumMag,
                     SerialNum: this.SerialNum,
                     DelegacioAssignada: this.delegacioAssignada,

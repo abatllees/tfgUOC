@@ -195,7 +195,16 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.post("items/" + payload.collection, payload.values)
 					.then(response => {
-						resolve(response.data.data)
+						resolve(response)
+					})
+					.catch(error => resolve(error.response))
+			})
+		},
+		getActivity({ commit }, payload) {
+			return new Promise((resolve, reject) => {
+				api.get("activity/" + payload.item + payload.fields + payload.filter + payload.sort + payload.limit)
+					.then(response => {
+						resolve(response)
 					})
 					.catch(error => resolve(error.response))
 			})
@@ -208,7 +217,6 @@ export default createStore({
 			}
 			//Comprova el codi d'error per prendre una acció o una altra
 			switch (response.status) {
-
 				case 403: {
 					responseMessage.alertType = "alert-danger"
 					//Genera un string amb tots els errors que retorna la API
@@ -220,7 +228,7 @@ export default createStore({
 				//No funciona!!!!
 				case 401: {
 					alert("Token expired")
-					this.$router.push("/")
+					//this.$router.push("/")
 					break;
 				}
 				case 400: {
@@ -243,8 +251,8 @@ export default createStore({
 				}
 
 				default:
-					responseMessage.alertType = "alert-success"
-					responseMessage.message.push("No s'ha obtingut cap codi d'error")
+					responseMessage.alertType = "alert-info"
+					responseMessage.message.push("Default response")
 					break;
 			}
 			return responseMessage
@@ -276,6 +284,7 @@ export default createStore({
 			let head = []
 			//Array d'elements. 
 			let rows = []
+
 			//Omplena les dades de la taula
 			data.table.headers.forEach(titol => {
 				head.push(titol.text)
@@ -309,6 +318,8 @@ export default createStore({
 
 
 			})
+
+
 
 			const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 			let params = {

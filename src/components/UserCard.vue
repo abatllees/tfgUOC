@@ -30,7 +30,7 @@ export default {
         if (this.avatar) {
             console.log("I HAVE A FOTO", this.name + this.last_name, this.avatar)
             return this.imageURL = await new Promise((resolve, reject) => {
-                api.get("assets/" + this.avatar + "?access_token=" + sessionStorage.getItem('access_token'))
+                api.get("assets/" + this.avatar.filename_disk + "?height=200")
                     .then(response => {
                         resolve(response.config.url)
                     })

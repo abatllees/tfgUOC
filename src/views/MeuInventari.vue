@@ -127,7 +127,7 @@ export default {
         async mostrarCategories() {
             let params = {
                 collection: "Category",
-                fields: "?fields=CategoryName,id",
+                fields: "?fields=CategoryName,id,CategoryOwner",
                 filter: "",
                 sort: "&sort[]=CategoryName",
                 limit: ""

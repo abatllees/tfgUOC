@@ -24,7 +24,7 @@
 										params: {
 											id: delegacio.ID
 										}
-									}" class="dropdown-item">{{ delegacio.Name }}</router-link></li>
+									}" class="dropdown-item" replace>{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item dropdown">
@@ -33,14 +33,15 @@
 							Inventari
 						</a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-item"> <router-link to="MeuInventari">El meu inventari</router-link>
+							<li class="dropdown-item"> <router-link to="MeuInventari" replace>El meu
+									inventari</router-link>
 							</li>
-							<li class="dropdown-item"> <router-link to="collections">Inventari</router-link>
+							<li class="dropdown-item"> <router-link to="collections" replace>Categories</router-link>
 							</li>
 						</ul>
 					</li>
 					<li class="nav-item">
-						<router-link to="moviments" class="nav-link">Moviments</router-link>
+						<router-link to="moviments" class="nav-link" replace>Moviments</router-link>
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
