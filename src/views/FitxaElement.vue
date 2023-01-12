@@ -57,9 +57,6 @@
                 </ul>
             </div>
         </div>
-        <!-- <div class="col-12 col-lg">
-            <img src="" alt="Imatge del model" class="img">
-        </div> -->
     </section>
     <section class="row">
         <div class="col-12 col-lg">
@@ -330,6 +327,18 @@ export default {
             await this.getIncidencies()
             this.accessoris.items = await this.getAccessoris()
         },
+        llistarAccessoris: async function () {
+            this.nousAccessoris.loading = true
+            let params = {
+                collection: "Element",
+                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
+                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
+                sort: "&sort[]=Model.ModelName",
+                limit: ""
+            }
+            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
+            this.nousAccessoris.loading = false
+        },
         associar: async function (elements) {
             let updateKeys = []
             elements.forEach(element => {
@@ -350,19 +359,9 @@ export default {
             this.nousAccessoris.itemsSelected = []
             this.accessoris.items = await this.getAccessoris()
         },
-        llistarAccessoris: async function () {
-            this.nousAccessoris.loading = true
-            let params = {
-                collection: "Element",
-                fields: "?fields=SerialNum,NumMag,Model.ModelName,Model.Subcategory,ElementPare",
-                filter: "&filter[Model][Subcategory][_eq]=" + this.tipusMaterial + "&filter[ElementPare][_null]=true",
-                sort: "&sort[]=Model.ModelName",
-                limit: ""
-            }
-            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
-            this.nousAccessoris.loading = false
-        },
+
         deleteAccessori: async function (item) {
+            this.accessoris.loading = true
             let payload = {
                 collection: "Element",
                 item: item.SerialNum,
@@ -372,7 +371,10 @@ export default {
             }
             await this.$store.dispatch("updateItem", payload)
             //const resposta = await this.$store.dispatch("handlingError", response)
+
             this.accessoris.items = await this.getAccessoris()
+            this.accessoris.loading = false
+
         }
     }
 }
