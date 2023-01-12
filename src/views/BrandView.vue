@@ -18,18 +18,44 @@
             </CardButton>
         </div>
     </section>
+    <ModalComponent id="ModalCreateCategory">
+        <template v-slot:header>
+            <h6>Crear marca</h6>
+        </template>
+        <template v-slot:body>
+            <div class="row">
+                <label for="BrandName" class="col-12 col-sm-2 col-form-label">Nom:</label>
+                <div class="col-sm">
+                    <input type="text" name="BrandName" id="BrandName" class="form-control" v-model="BrandName">
+                </div>
+                <div class="alert my-2" v-if="BrandResponse" v-bind:class="BrandResponse.alertType">
+                    <ul class="list-unstyled">
+                        <li v-for="resposta in BrandResponse.message" :key="resposta"> {{ resposta }}</li>
+                    </ul>
+                </div>
+            </div>
+        </template>
+        <template v-slot:footer>
+            <button type="submit" class="btn btn-primary" @click="createBrand()">Crear marca</button>
+        </template>
+    </ModalComponent>
 </template>
 
 <script>
 import CardButton from '@/components/CardButton.vue';
+import ModalComponent from '@/components/ModalComponent.vue';
 export default {
     name: "BrandView",
     components: {
-        CardButton
+        CardButton,
+        ModalComponent
     },
     data() {
         return {
             brands: null,
+
+            BrandResponse: null,
+            BrandName: null
         }
     },
     async created() {
@@ -42,6 +68,19 @@ export default {
         }
 
         this.brands = await this.$store.dispatch("getCollection", params)
+    },
+    methods: {
+        async createBrand() {
+            let payload = {
+                collection: "Brand",
+                values: {
+                    "BrandName": this.NomCategoria,
+                }
+            }
+            const response = await this.$store.dispatch("createItem", payload)
+            this.BrandResponse = await this.$store.dispatch("handlingError", response)
+
+        }
     }
 }
 </script>
