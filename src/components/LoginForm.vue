@@ -33,8 +33,8 @@ export default {
         }
     },
     methods: {
-        HANDLE_LOGIN() {
-            return new Promise((resolve, reject) => {
+        async HANDLE_LOGIN() {
+            const login = await new Promise((resolve) => {
                 api.post("auth/login", {
                     email: this.email,
                     password: this.password
@@ -44,12 +44,22 @@ export default {
                         sessionStorage.setItem("access_token", response.data.data.access_token)
                         sessionStorage.setItem("expires", response.data.data.expires)
                         sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
+                        this.$store.state.auth = {
+                            access_token: response.data.data.access_token,
+                            refresh_token: response.data.data.refresh_token,
+                        }
+                        console.log("STATE AUTH", this.$store.state.auth)
 
                         this.$store.dispatch("getUser")
                         router.push("/")
                     })
-                    .catch(error => reject(this.error = error.response.data.errors))
+                    .catch(error => {
+                        this.error = error.response.data.errors
+                        resolve(error.response)
+
+                    })
             })
+            console.log("LOGIN RESPONSE", await this.$store.dispatch("handlingError", login))
         },
     }
 }

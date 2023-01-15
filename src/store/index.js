@@ -9,12 +9,14 @@ import autoTable from 'jspdf-autotable'
 
 export default createStore({
 	state: {
-		user: null, //Information about the logged user
+		//Information about the logged user
+		auth: {
+			user: null,
+			access_token: null,
+			refresh_token: null,
+		},
 
 		GettedElement: null,
-
-		//NAVBAR QUERY
-		NavQuery: null,
 
 		//Moviment
 		llistatMoviment: [], //Elements a la taula de LliuramentView
@@ -64,14 +66,12 @@ export default createStore({
 	actions: {
 		//Obté l'usuari logat i el desa a l'state i al sessionStorage
 		getUser({ commit }) {
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve) => {
 				api.get("users/me")
 					.then(response => {
-						commit('SET_LOGGED_USER', response.data.data)
-						sessionStorage.setItem("user", JSON.stringify(response.data.data))
-						resolve(response.data.data)
+						resolve(commit('SET_LOGGED_USER', response.data.data))
 					})
-					.catch(error => reject(error.message))
+					.catch(error => resolve(error.response))
 			})
 		},
 		//Obté el llistat d'usuaris
@@ -81,7 +81,7 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => reject(error))
+					.catch(error => reject(error.response))
 			})
 		},
 		//Obté els valors d'un camp d'una col·lecció
@@ -91,7 +91,7 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => reject(error))
+					.catch(error => reject(error.response))
 			})
 		},
 		//Obté els elements dins d'una col·lecció
@@ -101,7 +101,7 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => resolve(error))
+					.catch(error => resolve(error.response))
 			})
 		},
 		//Obté només un element d'una col·lecció
@@ -111,7 +111,7 @@ export default createStore({
 					.then(response => {
 						resolve(response.data.data)
 					})
-					.catch(error => reject(error))
+					.catch(error => reject(error.response))
 			})
 		},
 		//Actualitza un únic element
@@ -200,9 +200,12 @@ export default createStore({
 					.catch(error => resolve(error.response))
 			})
 		},
-		getActivity({ commit }, payload) {
+		refresh_token({ commit }, refresh_token) {
 			return new Promise((resolve, reject) => {
-				api.get("activity/" + payload.item + payload.fields + payload.filter + payload.sort + payload.limit)
+				api.post("auth/refresh", {
+					refresh_token: refresh_token,
+					mode: "json"
+				})
 					.then(response => {
 						resolve(response)
 					})
@@ -210,7 +213,7 @@ export default createStore({
 			})
 		},
 		//Comprova si hi ha algun error
-		handlingError({ commit }, response) {
+		async handlingError({ commit, dispatch, state }, response) {
 			let responseMessage = {
 				"alertType": "",
 				"message": []
@@ -225,10 +228,11 @@ export default createStore({
 					}
 					break;
 				}
-				//No funciona!!!!
-				case 401: {
-					alert("Token expired")
-					//this.$router.push("/")
+				case 401: {//No funciona!!!!
+					console.log("Token expired", response)
+
+					const refresh = await dispatch("refresh_token", state.auth.refresh_token)
+					console.log("REFRESH", refresh)
 					break;
 				}
 				case 400: {
@@ -253,6 +257,7 @@ export default createStore({
 				default:
 					responseMessage.alertType = "alert-info"
 					responseMessage.message.push("Default response")
+					console.log("SOMETHING WENT WRONG", response)
 					break;
 			}
 			return responseMessage
@@ -374,7 +379,8 @@ export default createStore({
 			reducer: (state) => ({
 				user: state.user,
 				Subcategory: state.Subcategory,
-				Delegacions: state.Delegacions
+				Delegacions: state.Delegacions,
+				auth: state.auth
 			})
 		}).plugin
 	]

@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent="">
         <h4 class="text-center">Lliurament de material</h4>
-        <div class="form-group mb-2">
+        <div class="form-group mb-2" v-if="false">
             <input type="serach" class="form-control" id="searchForm" placeholder="Cerca">
         </div>
         <div class="row">

@@ -1,7 +1,7 @@
 <template>
 	<div class="card text-center h-100">
 		<h1>{{ count }}</h1>
-		<p>{{ modelName.ModelName }}</p>
+		<p class="text-black font-weight-bold">{{ modelName.ModelName }}</p>
 	</div>
 </template>
 

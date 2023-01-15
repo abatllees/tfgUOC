@@ -46,8 +46,19 @@
                     </div>
                 </div>
                 <label for="observations">Observacions:</label>
-                <textarea class="form-control" name="observations" id="observations" v-model="element.Observacions"
-                    disabled></textarea>
+                <editor api-key="01ip8sucmcp0yvrrfeed05p8sfkchlu2osrreplih48qih29" :init="{
+                    height: 200,
+                    menubar: false,
+                    plugins: [
+                        'advlist autolink lists link image charmap print preview anchor',
+                        'searchreplace visualblocks code fullscreen',
+                        'insertdatetime media table paste code help wordcount'
+                    ],
+                    toolbar:
+                        'undo redo | formatselect | bold italic backcolor | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        bullist numlist outdent indent | removeformat | help'
+                }" v-model="observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
@@ -73,7 +84,8 @@
                 buttons-pagination :sort-by="this.incidencies.sortBy" :sort-type="this.incidencies.sortType"
                 :theme-color="this.$store.state.themeColor" :loading="this.incidencies.loading">
             </EasyDataTable>
-            <button class="btn btn-primary mt-1">Crear incidència</button>
+            <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#incidencia">Crear
+                incidència</button>
         </div>
         <div class="col-12 col-lg">
             <h6>Equips assignats</h6>
@@ -117,15 +129,42 @@
                 data-dismiss="modal">Associar elements</button>
         </template>
     </ModalComponent>
+    <ModalComponent id="incidencia">
+        <template v-slot:header>
+            <h6>Nova incidència</h6>
+        </template>
+        <template v-slot:body>
+            <div class="alert" v-if="respIncidencia" v-bind:class="respIncidencia.alertType">
+                <ul class="list-unstyled">
+                    <li v-for="resposta in respIncidencia.message" :key="resposta"> {{ resposta }}</li>
+                </ul>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label for="incidencia">Descripció de la incidència:</label>
+                    <textarea name="incidencia" id="incidencia" rows="5" v-model="incidencia"
+                        class="form-control"></textarea>
+                </div>
+            </form>
+        </template>
+        <template v-slot:footer>
+            <button class="btn btn-primary" @click="CrearIncidencia()">Enregistrar
+                incidència</button>
+        </template>
+
+    </ModalComponent>
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
 import store from "@/store/index.js"
 
+import Editor from '@tinymce/tinymce-vue'
+
 export default {
     name: "FitxaElement",
     components: {
-        ModalComponent
+        ModalComponent,
+        'editor': Editor
     },
     data() {
         return {
@@ -144,6 +183,10 @@ export default {
             tipusMaterial: null,
 
             editMode: false,
+            tinyDisabled: true,
+
+            incidencia: null,
+            respIncidencia: null,
 
             response: null,
             respEditElement: null,
@@ -163,9 +206,8 @@ export default {
             incidencies: {
                 headers: [
                     { text: "Data", value: "date_created", sortable: true },
-                    { text: "OPI", value: "Origen.Name", sortable: true },
-                    { text: "Estat", value: "status", sortable: true },
                     { text: "Registrada per", value: "user_created.first_name", sortable: true },
+                    { text: "Descripcio", value: "DescripcioIncidencia", sortable: true },
                 ],
                 items: [],
                 sortBy: "",
@@ -202,6 +244,7 @@ export default {
     },
     async beforeMount() {
         await this.getData()
+
     },
     watch: {
         '$route'() {
@@ -216,15 +259,15 @@ export default {
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
             document.getElementById("status").disabled = false;
-            document.getElementById("observations").disabled = false;
             document.getElementById("delegacioAssignada").disabled = false;
+            this.tinyDisabled = false
             this.editMode = true
         },
         UpdateElement: async function () { //Bloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = true;
             document.getElementById("status").disabled = true;
-            document.getElementById("observations").disabled = true;
             document.getElementById("delegacioAssignada").disabled = true;
+            this.tinyDisabled = true
             this.editMode = false
 
             let payload = {
@@ -234,10 +277,11 @@ export default {
                     NumMag: this.NumMag,
                     status: this.status,
                     DelegacioAssignada: this.DelegacioAssignada,
-                    observacions: this.observacions
+                    Observacions: this.observacions
                 }
             }
             const response = await this.$store.dispatch("updateItem", payload)
+            console.log("RESPONSE UPDATE", response)
             this.respEditElement = await this.$store.dispatch("handlingError", response)
         },
         getElementInfo: async function () {
@@ -271,6 +315,20 @@ export default {
             this.NumMag = this.element.NumMag
             this.observacions = this.element.Observacions
             this.DelegacioAssignada = this.element.DelegacioAssignada.ID
+        },
+        CrearIncidencia: async function () {
+            let payload = {
+                collection: "Incidencia",
+                values: {
+                    ElementIncidencia: this.$route.params.SerialNum,
+                    DescripcioIncidencia: this.incidencia
+
+                }
+            }
+            const novaIncidencia = await this.$store.dispatch("createItem", payload)
+            this.respIncidencia = await this.$store.dispatch("handlingError", novaIncidencia)
+            this.incidencies.loading = true
+            this.getIncidencies()
         },
         getMoviments: async function () {
             //Obtenir els moviments de l'element
@@ -377,5 +435,7 @@ export default {
 
         }
     }
+
 }
+
 </script>
