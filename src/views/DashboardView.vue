@@ -94,10 +94,12 @@ export default {
 
 		//Formata la data
 		this.items.forEach(moviment => {
-			let dateFromatted = new Date(moviment.date_created)
+			let date_created_Fromatted = new Date(moviment.date_created)
 			const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-			moviment.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
-			moviment.DataRetorn = dateFromatted.toLocaleDateString('ca-ES', options);
+			moviment.date_created = date_created_Fromatted.toLocaleDateString('ca-ES', options);
+
+			let dataRetorn_Fromatted = new Date(moviment.DataRetorn)
+			moviment.DataRetorn = dataRetorn_Fromatted.toLocaleDateString('ca-ES', options);
 		});
 		console.log(await this.$store.dispatch("handlingError", this.items))
 		this.loading = false
