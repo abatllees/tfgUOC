@@ -192,7 +192,7 @@ export default createStore({
 		//Crea un element a una col·lecció indicada per l'usuari
 		createItem({ commit }, payload) {
 			console.log("CREATE", payload.collection, ":", payload.values)
-			return new Promise((resolve, reject) => {
+			return new Promise((resolve) => {
 				api.post("items/" + payload.collection, payload.values)
 					.then(response => {
 						resolve(response)
@@ -209,7 +209,7 @@ export default createStore({
 					.then(response => {
 						resolve(response)
 					})
-					.catch(error => resolve(error.response))
+					.catch(error => reject(error.response))
 			})
 		},
 		//Comprova si hi ha algun error

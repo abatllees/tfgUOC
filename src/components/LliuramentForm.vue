@@ -1,9 +1,6 @@
 <template>
     <form @submit.prevent="">
         <h4 class="text-center">Lliurament de material</h4>
-        <div class="form-group mb-2" v-if="false">
-            <input type="serach" class="form-control" id="searchForm" placeholder="Cerca">
-        </div>
         <div class="row">
             <div class="col-12 col-sm-6 my-1">
                 <label for="tipusMaterial">Tipus de material:</label>
@@ -21,16 +18,6 @@
                     }}
                     </option>
                 </select>
-            </div>
-        </div>
-        <div class="row" v-if="false">
-            <div class="col-12 col-sm-6 my-1">
-                <label for="numMag">Número de magatzem:</label>
-                <input type="text" class="form-control" id="numMag" v-model="numMag">
-            </div>
-            <div class="col-12 col-sm-6 my-1">
-                <label for="numSerie">Número de sèrie:</label>
-                <input type="text" class="form-control" id="numSerie" v-model="numSerie">
             </div>
         </div>
         <button type="submit" class="btn btn-secondary my-2" data-toggle="modal"
@@ -76,6 +63,8 @@
 </template>
 <script>
 import ModalComponent from "@/components/ModalComponent.vue"
+
+import store from "@/store/index.js"
 export default {
     name: 'LliuramentForm',
     components: {
@@ -86,14 +75,14 @@ export default {
     data() {
         return {
             tipusMaterial: null,
-            subcategory: this.$store.state.Subcategory,
+            subcategory: store.getters.getSubcategory,
             model: null,
             numMag: null,
             numSerie: null,
             destinacio: null,
             dataRetorn: null,
 
-            usuariEntrega: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
+            usuariEntrega: store.state.user?.first_name + " " + store.state.user?.last_name,
 
             results: [],
 
@@ -114,36 +103,52 @@ export default {
             let params = {
                 collection: "Model",
                 fields: "?fields=*.*.*",
-                filter: "&filter[status][_eq]=published&filter[Subcategory][_eq]=" + this.tipusMaterial,
+                filter: "&filter[Subcategory][_eq]=" + this.tipusMaterial,
                 sort: "&sort[]=ModelName",
                 limit: ""
             }
-            this.$store.state.Model = await this.$store.dispatch("getCollection", params);
+            store.state.Model = await store.dispatch("getCollection", params);
+
+            this.results = await this.searchElements()
         },
         async model() {
-            let params = {
-                collection: "Element",
-                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID",
-                filter: "&filter[status][_eq]=published&filter[Model][_eq]=" + this.model + "&filter[DelegacioActual][_eq]=22",
-                sort: "",
-                limit: ""
-            }
-            this.results = await this.$store.dispatch("getCollection", params);
+            this.results = await this.searchElements()
         },
         destinacio() {
-            this.$store.state.destinacio = this.destinacio
-            console.log(this.$store.state.destinacio)
+            store.state.destinacio = this.destinacio
         },
         dataRetorn() {
-            this.$store.state.dataRetorn = this.dataRetorn
-            console.log(this.$store.state.dataRetorn)
+            store.state.dataRetorn = this.dataRetorn
         }
     },
     methods: {
         addElement() {
             //Add element to list
-            this.itemsSelected.forEach(item => this.$store.state.llistatMoviment.push(item))
+            this.itemsSelected.forEach(item => store.state.llistatMoviment.push(item))
             this.itemsSelected = []
+        },
+        async searchElements() {
+            let params = {
+                collection: "Element",
+                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID",
+                filter: null,
+                sort: "",
+                limit: ""
+            }
+            if (this.model) {
+                const filter = "&filter[_and][1][Model][_eq]=" + this.model
+                    + "&filter[_and][2][Model][Subcategory][_eq]=" + this.tipusMaterial
+                    + "&filter[DelegacioActual][_eq]=22"
+                params.filter = filter
+            } else {
+                const filter = "&filter[_or][1][Model][_eq]=" + this.model
+                    + "&filter[_or][2][Model][Subcategory][_eq]=" + this.tipusMaterial
+                    + "&filter[DelegacioActual][_eq]=22"
+                params.filter = filter
+
+            }
+
+            return await store.dispatch("getCollection", params);
         }
     },
 }

@@ -17,13 +17,12 @@
 				</router-link>
 			</div>
 		</section>
-		<section class="row">
+		<section class="w-100">
 			<h5>Material en préstec pendent de retornar</h5>
 			<EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination
 				:sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
 				:theme-color="this.$store.state.themeColor">
 			</EasyDataTable>
-			<router-link to="prestecs" class="btn btn-primary mt-2">Mostra tots els préstecs</router-link>
 		</section>
 	</main>
 </template>
@@ -94,12 +93,10 @@ export default {
 
 		//Formata la data
 		this.items.forEach(moviment => {
-			let date_created_Fromatted = new Date(moviment.date_created)
 			const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-			moviment.date_created = date_created_Fromatted.toLocaleDateString('ca-ES', options);
+			moviment.date_created = new Date(moviment.date_created).toLocaleDateString('ca-ES', options);
 
-			let dataRetorn_Fromatted = new Date(moviment.DataRetorn)
-			moviment.DataRetorn = dataRetorn_Fromatted.toLocaleDateString('ca-ES', options);
+			moviment.DataRetorn = new Date(moviment.DataRetorn).toLocaleDateString('ca-ES', options);
 		});
 		console.log(await this.$store.dispatch("handlingError", this.items))
 		this.loading = false

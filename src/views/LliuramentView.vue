@@ -21,7 +21,6 @@
             </template>
         </EasyDataTable>
         <button class="btn btn-primary mt-3" @click="realitzarLliurament()">Realitzar lliurament</button>
-        <button class="btn btn-secondary mt-3" @click="exportPDF()">Export to PDF</button>
     </section>
 </template>
 <script>

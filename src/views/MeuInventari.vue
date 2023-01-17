@@ -17,7 +17,7 @@
     </section>
     <section class="w-100">
         <EasyDataTable :headers="this.headers" :items="this.inventari" alternating buttons-pagination
-            :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading"
+            :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading" @click-row="showDetail"
             :theme-color="this.$store.state.themeColor">
         </EasyDataTable>
         <router-link to="crearElement" class="btn btn-primary mt-2">Crea un element nou</router-link>
@@ -111,6 +111,9 @@ export default {
         this.loading = false
     },
     methods: {
+        showDetail: function (element) {
+            this.$router.push({ name: 'Fitxa', params: { SerialNum: element.SerialNum } })
+        },
         async crearSubcategoria() {
             let payload = {
                 collection: "Subcategory",
