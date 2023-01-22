@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import store from "@/store/index.js"
 import CardButton from "@/components/CardButton.vue"
 import CardCount from "@/components/CardCount.vue"
 
@@ -55,6 +56,7 @@ export default {
 				}
 			],
 			groupedElements: [],
+
 			headers: [
 				{ text: "Data d'entrega", value: "date_created", sortable: true },
 				{ text: "Data de retorn", value: "DataRetorn", sortable: true },
@@ -78,8 +80,8 @@ export default {
 			sort: "",
 			limit: ""
 		}
-		this.groupedElements = await this.$store.dispatch("getCollection", params)
-		console.log(await this.$store.dispatch("handlingError", this.groupedElements))
+		this.groupedElements = await store.dispatch("getCollection", params)
+		console.log(await store.dispatch("handlingError", this.groupedElements))
 
 		//Mostra el material pendent de retorn
 		params = {
@@ -98,7 +100,7 @@ export default {
 
 			moviment.DataRetorn = new Date(moviment.DataRetorn).toLocaleDateString('ca-ES', options);
 		});
-		console.log(await this.$store.dispatch("handlingError", this.items))
+		console.log(await store.dispatch("handlingError", this.items))
 		this.loading = false
 
 		//Set Categories, Subcategories, Model and Delegacions

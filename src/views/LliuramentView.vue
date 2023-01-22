@@ -30,7 +30,7 @@
             <div class="row">
                 <div class="col-12 col-sm">
                     <label for="destinacio">Destinació:</label>
-                    <select class="form-control" name="destinacio" id="destinacio" v-model="destinacio">
+                    <select class="form-control" name="destinacio" id="destinacio" v-model="DestinationSelected">
                         <option v-for="delegacio in DestinationList" :key="delegacio.id" :value="delegacio.ID">
                             {{ delegacio.Name }}
                         </option>
@@ -100,7 +100,6 @@ export default {
             ModelSelected: null,
             ModelList: [],
 
-            DestinationList: store.getters.getDelegacions,
             DestinationSelected: null,
 
             dataRetorn: null,
@@ -121,7 +120,6 @@ export default {
             },
             taulaResultat: {
                 headers: [
-                    { text: "Tipus de material", value: "Model.Subcategory.SubcategoryName", sortable: true },
                     { text: "Marca", value: "Model.Brand.BrandName", sortable: true },
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Núm. Mag", value: "NumMag", sortable: true },
@@ -147,8 +145,10 @@ export default {
         },
         themeColor() {
             return store.getters.getThemeColor
+        },
+        DestinationList() {
+            return store.getters.getDelegacions
         }
-
     },
     watch: {
         async SubcategorySelected() {
@@ -173,29 +173,34 @@ export default {
         },
         realitzarLliurament: async function () {
             console.log("Realitzar lliurament")
-            const response = await this.$store.dispatch("realitzarMoviment", this.$store.state.llistatMoviment);
+            const response = await this.$store.dispatch("realitzarMoviment", {
+                items: this.taulaLliurament.items,
+                destinacio: this.DestinationSelected,
+                dataRetorn: this.dataRetorn
+            });
             //Genera l'informe PDF si el resultat és correcte
             if (response.status == 200) {
                 const data = {
                     tipusMoviment: "Lliurament de material",
-                    realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
+                    realitzatPer: this.usuariEntrega,
                     dataMoviment: new Date(),
                     destinacio: this.DestinationSelected,
                     table: {
-                        headers: this.headers,
-                        data: this.$store.state.llistatMoviment
-                    }
+                        headers: this.taulaLliurament.headers,
+                        data: this.taulaLliurament.items
+                    },
+                    dataRetorn: this.dataRetorn
                 }
-                this.$store.dispatch("exportPDF", data)
-                this.$store.state.llistatMoviment = []
-                this.$store.state.dataRetorn = null
+                store.dispatch("exportPDF", data)
+                this.taulaLliurament.items = []
+                this.dataRetorn = null
             }
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
         },
         deleteItem(item) {
-            const findItem = this.$store.state.llistatMoviment.find(e => e.SerialNum == item.SerialNum);
-            const index = this.$store.state.llistatMoviment.indexOf(findItem);
-            this.$store.state.llistatMoviment.splice(index, 1)
+            const findItem = this.taulaLliurament.items.find(e => e.SerialNum == item.SerialNum);
+            const index = this.taulaLliurament.items.indexOf(findItem);
+            this.taulaLliurament.items.splice(index, 1)
         },
         async searchElements() {
             let params = {

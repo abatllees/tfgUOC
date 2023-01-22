@@ -159,7 +159,7 @@ export default createStore({
 
 			let keys = [] //Create an array with serialNum values to update them
 
-			const iterator = await this.dispatch("SET_UPDATE_PAYLOAD", payload)
+			const iterator = await this.dispatch("SET_KEYS", payload)
 			for (const value of iterator) {
 				keys.push(value.Element)  //Element és el camp ID de la taula Element (que conté el s/n)
 			}
@@ -178,26 +178,24 @@ export default createStore({
 			})
 		},
 		//Configura el llistat per als moviments
-		async SET_UPDATE_PAYLOAD({ state }, payload) {
+		async SET_KEYS({ state }, payload) {
 
 			//Per a crear elements a la taula de lliurament cal especificar l'element, l'origen i el destí
-			console.log("DESTINACIO", state.destinacio)
+			console.log("DESTINACIO", payload.destinacio)
 			let payloadMoviment = []
-			for (let i = 0; i < payload.length; i++) {
+			for (let i = 0; i < payload.items.length; i++) {
 				payloadMoviment[i] = {
-					Element: payload[i].SerialNum,
-					Origen: payload[i].DelegacioActual.ID,
-					Desti: state.destinacio,
+					Element: payload.items[i].SerialNum,
+					Origen: payload.items[i].DelegacioActual.ID,
+					Desti: payload.destinacio,
 					MovimentVigent: false,
-
 				};
 
-				if (state.dataRetorn) {
-					console.log("DATA RETORN:", state.dataRetorn)
-					payloadMoviment[i].DataRetorn = await this.dispatch("formatdate", new Date(state.dataRetorn))
+				if (payload.dataRetorn) {
+					console.log("DATA RETORN:", payload.dataRetorn)
+					payloadMoviment[i].DataRetorn = await this.dispatch("formatdate", new Date(payload.dataRetorn))
 					payloadMoviment[i].MovimentVigent = true
 				}
-
 			}
 			console.log("Llistat configurat moviment: ", payloadMoviment)
 
@@ -344,7 +342,7 @@ export default createStore({
 			let params = {
 				collection: "Delegacio",
 				item: data.destinacio,
-				fields: "?fields=*.*.*lo",
+				fields: "?fields=*.*.*",
 				filter: ""
 			}
 			const desti = await this.dispatch("getElement", params)
@@ -366,8 +364,8 @@ export default createStore({
 			//Informació del moviment
 			doc.setFontSize(12)
 			console.log(state)
-			if (state.dataRetorn) {
-				const dataRetorn = await this.dispatch("formatdate", new Date(this.$store.state.dataRetorn))
+			if (data.dataRetorn) {
+				const dataRetorn = await this.dispatch("formatdate", new Date(data.dataRetorn))
 				doc.text("Data de retorn: " + dataRetorn, amplada / 2, 65)
 			}
 			doc.text("Data: " + today, 10, 65)
