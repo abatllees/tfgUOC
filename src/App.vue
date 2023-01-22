@@ -1,5 +1,5 @@
 <template>
-	<NavBar v-if="this.$store.state.user" class="sticky-top" />
+	<NavBar class="sticky-top" v-if="logged_in" />
 	<main class=" container mt-3 overflow-hidden">
 		<router-view />
 	</main>
@@ -13,11 +13,15 @@ export default {
 	name: 'App',
 	data() {
 		return {
-			user: store.getters.getUser,
 		}
 	},
 	components: {
 		NavBar
+	},
+	computed: {
+		logged_in() {
+			return store.state.access_token
+		}
 	},
 	async beforeMount() {
 		if (!sessionStorage.getItem('access_token')) {

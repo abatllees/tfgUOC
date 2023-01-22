@@ -10,11 +10,9 @@ import autoTable from 'jspdf-autotable'
 export default createStore({
 	state: {
 		//Information about the logged user
-		auth: {
-			user: null,
-			access_token: null,
-			refresh_token: null,
-		},
+		user: null,
+		access_token: null,
+		refresh_token: null,
 
 		GettedElement: null,
 
@@ -26,9 +24,12 @@ export default createStore({
 
 
 		/*START COLLECTIONS*/
-		Element: [], //Element collection
 		Category: null, //Category collection
 		Subcategory: null, //Category collection
+		Brand: null,
+		Model: null,
+		Element: null, //Element collection
+
 		Delegacions: null, //Delegacio collection
 		/*END COLLECTIONS*/
 
@@ -47,20 +48,33 @@ export default createStore({
 		getSubcategory: state => {
 			return state.Subcategory
 		},
+		getBrand: state => {
+			return state.Brand
+		},
+		getModel: state => {
+			return state.Model
+		},
+		getFilterModel: (state, id) => {
+			return state.Model.filter(model => model.Subcategory == id)
+		},
 		getDelegacions: state => {
 			return state.Delegacions
 		},
-		getSingleDelegacio: (state, DelegacioID) => {
-			return state.Delegacions.filter(Delegacio => Delegacio.ID = DelegacioID)
-		},
 		getLlistatConfiguratMoviment: state => {
 			return state.llistatConfiguratMoviment
+		},
+		getThemeColor: state => {
+			return state.themeColor
 		}
 
 	},
 	mutations: {
 		SET_LOGGED_USER(state, payload) {
 			state.user = payload
+		},
+		SET_TOKENS(state, payload) {
+			state.access_token = payload.access_token
+			state.refresh_token = payload.refresh_token
 		},
 	},
 	actions: {
@@ -380,7 +394,8 @@ export default createStore({
 				user: state.user,
 				Subcategory: state.Subcategory,
 				Delegacions: state.Delegacions,
-				auth: state.auth
+				access_token: state.access_token,
+				refresh_token: state.refresh_token,
 			})
 		}).plugin
 	]

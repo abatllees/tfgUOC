@@ -76,6 +76,8 @@
 </template>
 
 <script>
+import store from "@/store/index.js"
+import router from "@/router/index.js"
 
 import api from "@/api.js"
 import CardResult from "@/components/CardResult.vue"
@@ -87,10 +89,14 @@ export default {
 	},
 	data() {
 		return {
-			fullname: this.$store.state.user?.first_name + " " + this.$store.state.user?.last_name,
-			delegacions: this.$store.getters.getDelegacions,
+			delegacions: store.getters.getDelegacions,
 			SearchInput: "",
 			SearchResults: null
+		}
+	},
+	computed: {
+		fullname() {
+			return store.state.user?.first_name + " " + store.state.user?.last_name
 		}
 	},
 	methods: {
@@ -102,8 +108,12 @@ export default {
 					.then(response => {
 						resolve(response)
 						sessionStorage.clear()
-						this.$store.state.user = null
-						this.$router.push("/login")
+						store.commit("SET_LOGGED_USER", null)
+						store.commit("SET_TOKENS", {
+							access_token: null,
+							refresh_token: null
+						})
+						router.replace("/login")
 					})
 					.catch(error => reject(error.message))
 			})

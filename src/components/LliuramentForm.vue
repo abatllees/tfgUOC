@@ -13,7 +13,7 @@
             <div class="col-12 col-sm-6 my-1">
                 <label for="model">Model:</label>
                 <select class="form-control" name="model" id="model" v-model="model">
-                    <option v-for="model in this.$store.state.Model" :key="model.id" :value="model.id">{{
+                    <option v-for="model in store.state.Model" :key="model.id" :value="model.id">{{
                         model.ModelName
                     }}
                     </option>
@@ -26,8 +26,7 @@
             <div class="col-12 col-sm">
                 <label for="destinacio">Destinació:</label>
                 <select class="form-control" name="destinacio" id="destinacio" v-model="this.destinacio">
-                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio.id"
-                        :value="delegacio.ID">
+                    <option v-for="delegacio in store.state.Delegacions" :key="delegacio.id" :value="delegacio.ID">
                         {{ delegacio.Name }}
                     </option>
                 </select>
@@ -35,7 +34,7 @@
             <div class="col-12 col-sm">
                 <label for="dataRetorn">Data de retorn:</label>
                 <input type="date" name="dataRetorn" id="dataRetorn" class="form-control"
-                    v-model="this.$store.state.dataRetorn">
+                    v-model="store.state.dataRetorn">
             </div>
         </div>
 
@@ -52,7 +51,7 @@
         <template v-slot:body>
             <EasyDataTable :headers="this.headers" :items="this.results" alternating buttons-pagination
                 v-model:items-selected="itemsSelected" :sort-by="this.sortBy" :sort-type="this.sortType"
-                :themeColor="this.$store.state.themeColor">
+                :themeColor="store.state.themeColor">
             </EasyDataTable>
         </template>
         <template v-slot:footer>
@@ -82,7 +81,7 @@ export default {
             destinacio: null,
             dataRetorn: null,
 
-            usuariEntrega: store.state.user?.first_name + " " + store.state.user?.last_name,
+            usuariEntrega: store.state.auth.user.first_name + " " + store.state.auth.user.last_name,
 
             results: [],
 
@@ -127,37 +126,7 @@ export default {
             this.itemsSelected.forEach(item => store.state.llistatMoviment.push(item))
             this.itemsSelected = []
         },
-        async searchElements() {
-            let params = {
-                collection: "Element",
-                fields: "?fields=NumMag,Model.Subcategory.SubcategoryName,Model.Brand.BrandName,Model.ModelName,SerialNum,DelegacioActual.ID",
-                filter: null,
-                sort: "",
-                limit: ""
-            }
-            if (this.model) {
-                const filter = "&filter[_and][1][Model][_eq]=" + this.model
-                    + "&filter[_and][2][Model][Subcategory][_eq]=" + this.tipusMaterial
-                    + "&filter[DelegacioActual][_eq]=22"
-                params.filter = filter
-            } else {
-                const filter = "&filter[_or][1][Model][_eq]=" + this.model
-                    + "&filter[_or][2][Model][Subcategory][_eq]=" + this.tipusMaterial
-                    + "&filter[DelegacioActual][_eq]=22"
-                params.filter = filter
 
-            }
-
-            return await store.dispatch("getCollection", params);
-        }
     },
 }
 </script>
-
-<style scoped>
-form {
-    border: 2px solid #bb0000;
-    border-right: 70px solid #bb0000;
-    padding: 10px;
-}
-</style>
