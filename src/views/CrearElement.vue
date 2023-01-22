@@ -82,8 +82,6 @@ export default {
     },
     data() {
         return {
-            delegacions: store.getters.getDelegacions,
-
             //Inici formulari
             status: null,
             model: null, //nomes ID
@@ -99,6 +97,11 @@ export default {
             selectedModel: null, //objecte sencer
 
             response: null
+        }
+    },
+    computed: {
+        delegacions() {
+            return store.getters.getDelegacions
         }
     },
     methods: {

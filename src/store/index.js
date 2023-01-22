@@ -30,7 +30,7 @@ export default createStore({
 		Model: null,
 		Element: null, //Element collection
 
-		Delegacions: null, //Delegacio collection
+		Delegacio: null, //Delegacio collection
 		/*END COLLECTIONS*/
 
 
@@ -58,7 +58,7 @@ export default createStore({
 			return state.Model.filter(model => model.Subcategory == id)
 		},
 		getDelegacions: state => {
-			return state.Delegacions
+			return state.Delegacio
 		},
 		getLlistatConfiguratMoviment: state => {
 			return state.llistatConfiguratMoviment
@@ -75,6 +75,16 @@ export default createStore({
 		SET_TOKENS(state, payload) {
 			state.access_token = payload.access_token
 			state.refresh_token = payload.refresh_token
+		},
+		//Collections mutations
+		SET_Category(state, payload) {
+			state.Category = payload
+		},
+		SET_Subcategory(state, payload) {
+			state.Subcategory = payload
+		},
+		SET_Delegacio(state, payload) {
+			state.Delegacio = payload
 		},
 	},
 	actions: {
@@ -297,47 +307,6 @@ export default createStore({
 			console.log(data)
 			const doc = new jsPDF()
 
-			//Capçaleres de la taula
-			let head = []
-			//Array d'elements. 
-			let rows = []
-
-			//Omplena les dades de la taula
-			data.table.headers.forEach(titol => {
-				head.push(titol.text)
-			})
-			data.table.data.forEach(element => {
-				switch (data.tipusMoviment) {
-					case "Entrada de material":
-						rows.push([
-							element.NumMag,
-							element.Model.Subcategory.SubcategoryName,
-							element.Model.Brand.BrandName,
-							element.Model.ModelName,
-							element.SerialNum,
-							element.DelegacioActual.Name
-						])
-
-						break;
-					case "Lliurament de material":
-						rows.push([
-							element.Model.Subcategory.SubcategoryName,
-							element.Model.Brand.BrandName,
-							element.Model.ModelName,
-							element.NumMag,
-							element.SerialNum
-						])
-						break;
-					default:
-
-						break;
-				}
-
-
-			})
-
-
-
 			const amplada = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 			let params = {
 				collection: "Delegacio",
@@ -375,8 +344,7 @@ export default createStore({
 
 			//Mostra la taula
 			autoTable(doc, {
-				head: [head],
-				body: rows,
+				html: "#" + data.table,
 				startY: 80,
 				margin: 10,
 				headStyles: { fillColor: [187, 0, 0] },
@@ -391,7 +359,7 @@ export default createStore({
 			reducer: (state) => ({
 				user: state.user,
 				Subcategory: state.Subcategory,
-				Delegacions: state.Delegacions,
+				Delegacio: state.Delegacio,
 				access_token: state.access_token,
 				refresh_token: state.refresh_token,
 			})

@@ -91,7 +91,7 @@ export default {
 			sort: "",
 			limit: ""
 		}
-		this.items = await this.$store.dispatch("getCollection", params)
+		this.items = await store.dispatch("getCollection", params)
 
 		//Formata la data
 		this.items.forEach(moviment => {
@@ -111,8 +111,9 @@ export default {
 			sort: "&sort[]=CategoryName",
 			limit: ""
 		}
-		this.$store.state.Categories = await this.$store.dispatch("getCollection", params)
-		console.log(await this.$store.dispatch("handlingError", this.$store.state.Categories))
+		const categories = await store.dispatch("getCollection", params)
+		store.commit("SET_Category", categories)
+		console.log(await store.dispatch("handlingError", categories))
 
 
 		params = {
@@ -122,8 +123,9 @@ export default {
 			sort: "&sort[]=SubcategoryName",
 			limit: ""
 		}
-		this.$store.state.Subcategory = await this.$store.dispatch("getCollection", params)
-		console.log(await this.$store.dispatch("handlingError", this.$store.state.Subcategory))
+		const subcategory = await store.dispatch("getCollection", params)
+		store.commit("SET_Subcategory", subcategory)
+		console.log(await store.dispatch("handlingError", subcategory))
 
 
 		params = {
@@ -133,8 +135,9 @@ export default {
 			sort: "&sort[]=Name",
 			limit: ""
 		}
-		this.$store.state.Delegacions = await this.$store.dispatch("getCollection", params)
-		console.log(await this.$store.dispatch("handlingError", this.$store.state.Delegacions))
+		const delegacions = await store.dispatch("getCollection", params)
+		store.commit("SET_Delegacio", delegacions)
+		console.log(await this.$store.dispatch("handlingError", delegacions))
 
 	}
 }

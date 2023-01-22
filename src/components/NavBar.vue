@@ -18,13 +18,12 @@
 							Delegacions
 						</a>
 						<ul class="dropdown-menu">
-							<li v-for="delegacio in this.$store.state.Delegacions" v-bind:key="delegacio"><router-link
-									:to="{
-										name: 'DelegacioView',
-										params: {
-											id: delegacio.ID
-										}
-									}" class="dropdown-item" replace>{{ delegacio.Name }}</router-link></li>
+							<li v-for="delegacio in delegacions" v-bind:key="delegacio"><router-link :to="{
+								name: 'DelegacioView',
+								params: {
+									id: delegacio.ID
+								}
+							}" class="dropdown-item" replace>{{ delegacio.Name }}</router-link></li>
 						</ul>
 					</li>
 					<li class="nav-item dropdown">
@@ -89,7 +88,6 @@ export default {
 	},
 	data() {
 		return {
-			delegacions: store.getters.getDelegacions,
 			SearchInput: "",
 			SearchResults: null
 		}
@@ -97,6 +95,9 @@ export default {
 	computed: {
 		fullname() {
 			return store.state.user?.first_name + " " + store.state.user?.last_name
+		},
+		delegacions() {
+			return store.getters.getDelegacions
 		}
 	},
 	methods: {

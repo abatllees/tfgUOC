@@ -58,7 +58,8 @@
     </section>
     <section class="w-100 my-5">
         <EasyDataTable :headers="taulaLliurament.headers" :items="taulaLliurament.items" alternating buttons-pagination
-            :sort-by="taulaLliurament.sortBy" :sort-type="taulaLliurament.sortType" :theme-color="themeColor" id="data">
+            :sort-by="taulaLliurament.sortBy" :sort-type="taulaLliurament.sortType" :theme-color="themeColor"
+            :table-node-id="taulaLliurament.tableID">
             <template #item-operation="item">
                 <div class="operation-wrapper">
                     <i class="bi bi-trash" style="font-size: 1rem" @click="deleteItem(item)"></i>
@@ -117,6 +118,7 @@ export default {
                 sortType: "asc",
                 items: [],
                 itemsSelected: [],
+                tableID: "TaulaLliuramentVar",
             },
             taulaResultat: {
                 headers: [
@@ -124,7 +126,6 @@ export default {
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Núm. Mag", value: "NumMag", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                    { text: "Accions", value: "operation" },
                 ],
                 sortBy: "NumMag",
                 sortType: "asc",
@@ -185,14 +186,15 @@ export default {
                     realitzatPer: this.usuariEntrega,
                     dataMoviment: new Date(),
                     destinacio: this.DestinationSelected,
-                    table: {
+                    table: this.taulaLliurament.tableID,
+                    /*table: {
                         headers: this.taulaLliurament.headers,
                         data: this.taulaLliurament.items
-                    },
+                    },*/
                     dataRetorn: this.dataRetorn
                 }
                 store.dispatch("exportPDF", data)
-                this.taulaLliurament.items = []
+                //this.taulaLliurament.items = []
                 this.dataRetorn = null
             }
             this.resultatMoviment = await this.$store.dispatch("handlingError", response)
