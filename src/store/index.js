@@ -16,23 +16,14 @@ export default createStore({
 
 		GettedElement: null,
 
-		//Moviment
-		llistatMoviment: [], //Elements a la taula de LliuramentView
-		llistatConfiguratMoviment: [], //La mateixa llista però configurada per a la càrrega de dades a la API
-		destinacio: undefined, //Destinació del moviment
-		dataRetorn: null, //Data de retporn del moviment
-
-
 		/*START COLLECTIONS*/
 		Category: null, //Category collection
 		Subcategory: null, //Category collection
 		Brand: null,
 		Model: null,
 		Element: null, //Element collection
-
 		Delegacio: null, //Delegacio collection
 		/*END COLLECTIONS*/
-
 
 		//Styling elements
 		themeColor: "#bb0000"
@@ -59,9 +50,6 @@ export default createStore({
 		},
 		getDelegacions: state => {
 			return state.Delegacio
-		},
-		getLlistatConfiguratMoviment: state => {
-			return state.llistatConfiguratMoviment
 		},
 		getThemeColor: state => {
 			return state.themeColor
