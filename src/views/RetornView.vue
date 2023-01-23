@@ -3,31 +3,29 @@
     <section class="row">
         <div class="col col-lg-3">
             <input type="text" class="form-control mb-2" name="search" placeholder="Comença a cercar"
-                v-model="this.LlistatRetorn.searchValue">
+                v-model="LlistatRetorn.searchValue">
         </div>
     </section>
-    <section class="w-100 my-2" v-if="this.response">
-        <div class="alert" v-bind:class="response.alertType">
+    <section class="w-100 my-2" v-if="LlistatRetorn.response">
+        <div class="alert" v-bind:class="LlistatRetorn.response.alertType">
             <ul class="list-unstyled">
-                <li v-for="resposta in response.message" :key="resposta"> {{ resposta }}</li>
+                <li v-for="resposta in LlistatRetorn.response.message" :key="resposta"> {{ resposta }}</li>
             </ul>
         </div>
     </section>
-    <section class="row">
-        <div class="col">
-            <EasyDataTable :headers="this.LlistatRetorn.headers" :items="this.LlistatRetorn.items" alternating
-                buttons-pagination v-model:items-selected="this.LlistatRetorn.itemsSelected"
-                :sort-by="this.LlistatRetorn.sortBy" :sort-type="this.LlistatRetorn.sortType"
-                :loading="this.LlistatRetorn.loading" :theme-color="this.$store.state.themeColor"
-                :search-value="this.LlistatRetorn.searchValue">
-            </EasyDataTable>
-        </div>
+    <section class="w-100">
+        <EasyDataTable :headers="LlistatRetorn.headers" :items="LlistatRetorn.items" alternating buttons-pagination
+            v-model:items-selected="LlistatRetorn.itemsSelected" :sort-by="LlistatRetorn.sortBy"
+            :sort-type="LlistatRetorn.sortType" :loading="LlistatRetorn.loading" :theme-color="$store.state.themeColor"
+            :search-value="LlistatRetorn.searchValue" :table-node-id="LlistatRetorn.tableID">
+        </EasyDataTable>
     </section>
-    <button class="btn btn-primary my-2" @click="realitzarRetorn(this.LlistatRetorn.itemsSelected)">Retornar material
+    <button class="btn btn-primary my-2" @click="realitzarRetorn(LlistatRetorn.itemsSelected)">Retornar material
         seleccionat</button>
 </template>
 
 <script>
+import store from "@/store/index.js"
 export default {
     name: "RetornView",
     components: {
@@ -50,7 +48,7 @@ export default {
                 sortBy: "NumMag",
                 sortType: "asc",
                 loading: true,
-
+                tableID: "TaulaRetorn",
                 response: null
             }
         }
@@ -62,9 +60,9 @@ export default {
     methods: {
         realitzarRetorn: async function () {
             console.log("Realitzar retorn")
-            this.$store.state.destinacio = 22
-            //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
+            //const destinacio = 22
 
+            //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
             for (const elementARetornar of this.LlistatRetorn.itemsSelected) {
                 let found = await this.comprovarPrestec(elementARetornar)
                 //Si és vigent actualitzar-lo a no vigent (és préstec. Al actualitzar-lo ja no surt a la llista de pendent de retorn)
@@ -77,32 +75,33 @@ export default {
                             MovimentVigent: false
                         }
                     }
-                    let eliminarVigencia = await this.$store.dispatch("updateItem", payload)
-                    console.log(await this.$store.dispatch("handlingError", eliminarVigencia))
+                    const eliminarVigencia = await store.dispatch("updateItem", payload)
+                    console.log(await store.dispatch("handlingError", eliminarVigencia))
                 }
                 //Si no és vigent (no és préstec) no cal fer res 
-
             }
             //Realitzar el moviment dels elements seleccionats
-            const response = await this.$store.dispatch("realitzarMoviment", this.LlistatRetorn.itemsSelected);
+            const response = await store.dispatch("realitzarMoviment", {
+                items: this.LlistatRetorn.itemsSelected,
+                destinacio: 22
+            });
             console.log("RESPONSE ENTRADA", response)
-            this.response = await this.$store.dispatch("handlingError", response)
+            this.LlistatRetorn.response = await store.dispatch("handlingError", response)
 
+            //Genera l'informe PDF si el resultat és correcte
             if (response.status == 200) {
                 const data = {
                     tipusMoviment: "Entrada de material",
-                    realitzatPer: this.$store.state.user.first_name + " " + this.$store.state.user.last_name,
+                    realitzatPer: store.getters.getUser.first_name + " " + store.getters.getUser.last_name,
                     dataMoviment: new Date(),
                     destinacio: 22,
-                    table: {
-                        headers: this.LlistatRetorn.headers,
-                        data: this.LlistatRetorn.itemsSelected
-                    }
+                    table: this.LlistatRetorn.tableID,
                 }
-                this.$store.dispatch("exportPDF", data)
-                this.$store.state.llistatMoviment = []
+                store.dispatch("exportPDF", data)
+                //this.taulaLliurament.items = []
+                this.dataRetorn = null
             }
-            this.LlistatRetorn.items = []
+            this.resultatMoviment = await this.$store.dispatch("handlingError", response)
             this.LlistatRetorn.loading = true
             this.LlistatRetorn.items = await this.elementsPendentRetorn()
             this.LlistatRetorn.loading = false
@@ -116,7 +115,7 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await this.$store.dispatch("getCollection", payload)
+            return await store.dispatch("getCollection", payload)
         },
         comprovarPrestec: async function (element) {
             let payload = {
@@ -126,7 +125,7 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await this.$store.dispatch("getCollection", payload)
+            return await store.dispatch("getCollection", payload)
         }
     }
 }

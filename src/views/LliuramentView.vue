@@ -187,10 +187,6 @@ export default {
                     dataMoviment: new Date(),
                     destinacio: this.DestinationSelected,
                     table: this.taulaLliurament.tableID,
-                    /*table: {
-                        headers: this.taulaLliurament.headers,
-                        data: this.taulaLliurament.items
-                    },*/
                     dataRetorn: this.dataRetorn
                 }
                 store.dispatch("exportPDF", data)
