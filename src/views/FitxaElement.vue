@@ -1,9 +1,11 @@
 <template>
+    <section class="w-100">
+        <h1>{{ element?.Model.Subcategory.SubcategoryName }} {{ element?.Model.Brand.BrandName }} {{
+            element?.Model.ModelName
+        }} </h1>
+    </section>
     <section class="row">
         <div class="col-12 col-sm col-lg-9">
-            <h1>{{ element?.Model.Subcategory.SubcategoryName }} {{ element?.Model.Brand.BrandName }} {{
-                element?.Model.ModelName
-            }} </h1>
             <form @submit.prevent="UpdateElement()">
                 <div class="row">
                     <div class="col-12 col-sm-4">
@@ -56,8 +58,8 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        bullist numlist outdent indent | removeformat | help'
                 }" v-model="observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>

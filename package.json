@@ -27,6 +27,7 @@
     "swrv": "^1.0.1",
     "tinymce": "^6.3.1",
     "vue": "^3.2.13",
+    "vue-gtag": "^2.0.1",
     "vue-html2pdf": "^1.8.0",
     "vue-loading-overlay": "6.0",
     "vue-router": "^4.0.3",

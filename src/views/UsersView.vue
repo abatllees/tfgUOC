@@ -26,7 +26,8 @@ export default {
             filter: "&filter[status][_eq]=active",
             sort: "&sort=first_name"
         }
-        this.users = await this.$store.dispatch("getUsers", params)
+        const users = await this.$store.dispatch("getUsers", params)
+        this.users = users.data.data
     }
 }
 </script>

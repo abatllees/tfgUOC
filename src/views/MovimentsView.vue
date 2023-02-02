@@ -6,7 +6,7 @@
                 <label for="delegacio">Selecciona una delegació</label>
                 <select class="form-control" id="delegacio" name="delegacio" v-model="FiltreDelegacio">
                     <option value="">--TOTES LES DELEGACIONS--</option>
-                    <option v-for="delegacio in this.$store.state.Delegacions" :key="delegacio" :value="delegacio.ID">{{
+                    <option v-for="delegacio in delegacions" :key="delegacio" :value="delegacio.ID">{{
                         delegacio.Name
                     }}
                     </option>
@@ -19,7 +19,7 @@
     </EasyDataTable>
 </template>
 <script>
-
+import store from '@/store/index.js'
 export default {
     name: "MovimentsView",
     data() {
@@ -50,6 +50,11 @@ export default {
                 sort: "",
                 limit: "&limit=-1"
             },
+        }
+    },
+    computed: {
+        delegacions() {
+            return store.getters.getDelegacions
         }
     },
     watch: {

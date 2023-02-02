@@ -115,7 +115,8 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await store.dispatch("getCollection", payload)
+            const LlistatPendentRetorn = await store.dispatch("getCollection", payload)
+            return LlistatPendentRetorn.data.data
         },
         comprovarPrestec: async function (element) {
             let payload = {
@@ -125,12 +126,9 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await store.dispatch("getCollection", payload)
+            const ComprovarPrestec = await store.dispatch("getCollection", payload)
+            return ComprovarPrestec.data.data
         }
     }
 }
 </script>
-
-<style>
-
-</style>

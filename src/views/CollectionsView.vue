@@ -59,6 +59,8 @@
 import CardButton from '@/components/CardButton.vue'
 import ModalComponent from "@/components/ModalComponent.vue"
 
+import store from "@/store/index.js"
+
 export default {
     name: 'CollectionsView',
     components: {
@@ -69,19 +71,9 @@ export default {
     },
     data() {
         return {
-            params: {
-                collection: "Category",
-                fields: "?fields=CategoryName,id,CategoryOwner.first_name,CategoryOwner.last_name",
-                filter: "&filter[status][_eq]=published&filter[CategoryName][_neq]=NULL",
-                sort: "&sort[]=CategoryName",
-                limit: ""
-            },
-            categories: [],
-
             respCreateCat: null,
 
             users: null,
-
 
             //CREAR CATEGORIA
             NomCategoria: null,
@@ -89,22 +81,24 @@ export default {
             //CREAR CATEGORIA
         }
     },
-    async mounted() {
-        this.categories = await this.$store.dispatch("getCollection", this.params)
-        await this.listusers()
+    computed: {
+        categories() {
+            return store.getters.getCategory
+        },
+
+    },
+    async beforeMount() {
+        let params = {
+            collection: "",
+            id: "",
+            fields: "?fields=*.*.*",
+            filter: "&filter[status][_eq]=active",
+            sort: "&sort=first_name"
+        }
+        const users = await this.$store.dispatch("getUsers", params)
+        this.users = users.data.data
     },
     methods: {
-        async listusers() {
-            let params = {
-                id: "",
-                collection: "",
-                fields: "?fields=first_name,last_name,id",
-                filter: "&filter[status][_eq]=active",
-                sort: "&sort=first_name",
-                limit: ""
-            }
-            this.users = await this.$store.dispatch("getUsers", params)
-        },
         async crearCategoria() {
             let payload = {
                 collection: "Category",
@@ -114,8 +108,8 @@ export default {
                 }
             }
 
-            const response = await this.$store.dispatch("createItem", payload)
-            this.respCreateCat = await this.$store.dispatch("handlingError", response)
+            const response = await store.dispatch("createItem", payload)
+            this.respCreateCat = await store.dispatch("handlingError", response)
 
         }
     }

@@ -44,6 +44,7 @@
 <script>
 import CardButton from '@/components/CardButton.vue';
 import ModalComponent from '@/components/ModalComponent.vue';
+import store from "@/store/index.js"
 export default {
     name: "BrandView",
     components: {
@@ -69,8 +70,8 @@ export default {
                     "BrandName": this.BrandName,
                 }
             }
-            const response = await this.$store.dispatch("createItem", payload)
-            this.BrandResponse = await this.$store.dispatch("handlingError", response)
+            const response = await store.dispatch("createItem", payload)
+            this.BrandResponse = await store.dispatch("handlingError", response)
             this.brands = await this.listBrands()
 
         },
@@ -82,8 +83,8 @@ export default {
                 sort: "&sort[]=BrandName",
                 limit: ""
             }
-
-            return await this.$store.dispatch("getCollection", params)
+            const BrandList = await store.dispatch("getCollection", params)
+            return BrandList.data.data
         }
     }
 }

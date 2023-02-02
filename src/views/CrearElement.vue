@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-12 col-lg-6 mb-2">
                     <label for="NumMag">Número de magatzem</label>
-                    <input type="text" class="form-control" name="NumMag" v-model="NumMag">
+                    <input type="text" class="form-control" name="NumMag" v-model="numMag">
                 </div>
                 <div class="col-12 col-lg-6 mb-2">
                     <label for="NumSerie">Número de sèrie</label>
@@ -114,7 +114,8 @@ export default {
                 sort: "",
                 limit: "&limit=-1"
             }
-            return await this.$store.dispatch("getCollection", params)
+            const Model = await store.dispatch("getCollection", params)
+            return Model.data.data
         },
         async debounceSearch() {
             setTimeout(async () => {
@@ -132,7 +133,7 @@ export default {
                 values: {
                     status: this.status,
                     Model: this.selectedModel,
-                    NumMag: this.NumMag,
+                    NumMag: this.numMag,
                     SerialNum: this.SerialNum,
                     DelegacioAssignada: this.delegacioAssignada,
                     DelegacioActual: this.delegacioActual,

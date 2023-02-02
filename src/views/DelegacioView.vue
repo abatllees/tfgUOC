@@ -1,19 +1,20 @@
 <template>
-    <h1 class="text-center">{{ this.delegacio.Name }}</h1>
+    <h1 class="text-center">{{ delegacio.Name }}</h1>
     <section class="row justify-content-end">
         <div class="col-12 col-md-6 col-lg-3">
-            <ContactCard v-if="this.delegacio.ResponsableDelegacio"
-                :contactPerson="this.delegacio.ResponsableDelegacio"></ContactCard>
+            <ContactCard v-if="delegacio.ResponsableDelegacio" :contactPerson="delegacio.ResponsableDelegacio">
+            </ContactCard>
         </div>
     </section>
     <h5>Material a la delegació</h5>
-    <EasyDataTable :headers="this.headers" :items="this.items" alternating buttons-pagination :sort-by="this.sortBy"
-        :sort-type="this.sortType" :theme-color="this.$store.state.themeColor" :loading="this.loading">
+    <EasyDataTable :headers="headers" :items="items" alternating buttons-pagination :sort-by="sortBy"
+        :sort-type="sortType" :theme-color="$store.state.themeColor" :loading="loading">
     </EasyDataTable>
     <button class="btn btn-secondary mt-3 float-right">Imprimeix</button>
 </template>
 <script>
 import ContactCard from '@/components/ContactCard.vue'
+import store from "@/store/index.js"
 export default {
     name: "DelegacioView",
     components: {
@@ -28,7 +29,7 @@ export default {
                 { text: "Model", value: "Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Data d'entrada", value: "DataEntrada", sortable: true },
-                { text: "Entrat per", value: "user_created.first_name", sortable: true },
+                { text: "Creat per", value: "user_created.first_name", sortable: true },
             ],
             items: [],
             sortBy: "",
@@ -42,14 +43,6 @@ export default {
         this.items = await this.getElements()
         this.loading = !this.loading
     },
-    watch: {
-        async '$route.params.id'() {
-            this.delegacio = await this.getDelegacio()
-            this.loading = true
-            this.items = await this.getElements()
-            this.loading = false
-        }
-    },
     methods: {
         getDelegacio: async function () {
             let params = {
@@ -60,7 +53,7 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await this.$store.dispatch("getElement", params)
+            return await store.dispatch("getElement", params)
         },
         getElements: async function () {
             let params = {
@@ -70,7 +63,8 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await this.$store.dispatch("getCollection", params)
+            const ElementsDelegacio = await store.dispatch("getCollection", params)
+            return ElementsDelegacio.data.data
         }
     }
 }

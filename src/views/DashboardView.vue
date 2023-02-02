@@ -3,7 +3,7 @@
 		<h1 class="text-center">Tauler principal</h1>
 		<section class="row">
 			<div class="col-6 col-sm-4 col-lg-2" v-for="option in options" :key="option">
-				<router-link :to="{ path: option.router, params: { id: '2' } }">
+				<router-link :to=option.router>
 					<CardButton :title="option.name" :icon="option.icon" :bg-color="'#bb0000'"></CardButton>
 				</router-link>
 			</div>
@@ -43,13 +43,11 @@ export default {
 		return {
 			options: [
 				{
-					id: 0,
 					icon: "bi bi-box-arrow-up-right",
 					router: "lliurament",
 					name: "Sortida de material"
 				},
 				{
-					id: 2,
 					icon: "bi bi-box-arrow-in-down-right",
 					router: "retorn",
 					name: "Entrada de material"
@@ -80,8 +78,9 @@ export default {
 			sort: "",
 			limit: ""
 		}
-		this.groupedElements = await store.dispatch("getCollection", params)
-		console.log(await store.dispatch("handlingError", this.groupedElements))
+		const agrupats = await store.dispatch("getCollection", params)
+		this.groupedElements = agrupats.data.data
+		console.log(await store.dispatch("handlingError", agrupats))
 
 		//Mostra el material pendent de retorn
 		params = {
@@ -91,7 +90,9 @@ export default {
 			sort: "",
 			limit: ""
 		}
-		this.items = await store.dispatch("getCollection", params)
+		const moviments = await store.dispatch("getCollection", params)
+		this.items = moviments.data.data
+		console.log(await store.dispatch("handlingError", moviments))
 
 		//Formata la data
 		this.items.forEach(moviment => {
@@ -100,31 +101,30 @@ export default {
 
 			moviment.DataRetorn = new Date(moviment.DataRetorn).toLocaleDateString('ca-ES', options);
 		});
-		console.log(await store.dispatch("handlingError", this.items))
 		this.loading = false
 
 		//Set Categories, Subcategories, Model and Delegacions
 		params = {
 			collection: "Category",
 			fields: "?fields=*.*.*",
-			filter: "?filter[status][_eq]=published",
+			filter: "",
 			sort: "&sort[]=CategoryName",
 			limit: ""
 		}
 		const categories = await store.dispatch("getCollection", params)
-		store.commit("SET_Category", categories)
+		store.commit("SET_Category", categories.data.data)
 		console.log(await store.dispatch("handlingError", categories))
 
 
 		params = {
 			collection: "Subcategory",
 			fields: "?fields=*.*.*",
-			filter: "?filter[status][_eq]=published",
+			filter: "",
 			sort: "&sort[]=SubcategoryName",
 			limit: ""
 		}
 		const subcategory = await store.dispatch("getCollection", params)
-		store.commit("SET_Subcategory", subcategory)
+		store.commit("SET_Subcategory", subcategory.data.data)
 		console.log(await store.dispatch("handlingError", subcategory))
 
 
@@ -136,7 +136,7 @@ export default {
 			limit: ""
 		}
 		const delegacions = await store.dispatch("getCollection", params)
-		store.commit("SET_Delegacio", delegacions)
+		store.commit("SET_Delegacio", delegacions.data.data)
 		console.log(await this.$store.dispatch("handlingError", delegacions))
 
 	}

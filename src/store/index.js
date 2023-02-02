@@ -91,7 +91,7 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.get("users/" + payload.id + payload.fields + payload.filter + payload.sort)
 					.then(response => {
-						resolve(response.data.data)
+						resolve(response)
 					})
 					.catch(error => reject(error.response))
 			})
@@ -111,7 +111,7 @@ export default createStore({
 			return new Promise((resolve) => {
 				api.get("items/" + payload.collection + payload.fields + payload.filter + payload.sort + payload.limit)
 					.then(response => {
-						resolve(response.data.data)
+						resolve(response)
 					})
 					.catch(error => resolve(error.response))
 			})
@@ -224,10 +224,11 @@ export default createStore({
 		},
 		//Comprova si hi ha algun error
 		async handlingError({ commit, dispatch, state }, response) {
-			let responseMessage = {
+			const responseMessage = {
 				"alertType": "",
 				"message": []
 			}
+			console.log("STATUS", response.status)
 			//Comprova el codi d'error per prendre una acció o una altra
 			switch (response.status) {
 				case 403: {
@@ -240,8 +241,12 @@ export default createStore({
 				}
 				case 401: {//No funciona!!!!
 					console.log("Token expired", response)
+					state.user = null
+					state.access_token = null
+					state.refresh_token = null
+					sessionStorage.clear();
 
-					const refresh = await dispatch("refresh_token", state.auth.refresh_token)
+					const refresh = await dispatch("refresh_token", state.refresh_token)
 					console.log("REFRESH", refresh)
 					break;
 				}

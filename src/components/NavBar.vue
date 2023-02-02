@@ -102,7 +102,7 @@ export default {
 	},
 	methods: {
 		logout: async function () {
-			return new Promise((resolve, reject) => {
+			const logout = await new Promise((resolve, reject) => {
 				api.post("auth/logout", {
 					refresh_token: sessionStorage.getItem("access_token")
 				})
@@ -118,6 +118,9 @@ export default {
 					})
 					.catch(error => reject(error.message))
 			})
+			console.log(await store.dispatch("handlingError", logout))
+
+
 		},
 		searchElement: async function () {
 			let params = {
@@ -132,7 +135,7 @@ export default {
 			}
 
 			const response = await this.$store.dispatch("getCollection", params)
-			this.SearchResults = response
+			this.SearchResults = response.data.data
 			this.$store.state.NavQuery = params //Defineix l'objecte a l'STATE per quan s'amplia la cerca
 			console.log(await this.$store.dispatch("handlingError", response))
 

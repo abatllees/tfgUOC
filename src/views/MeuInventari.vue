@@ -1,7 +1,7 @@
 <template>
     <h1 class="text-center">El meu inventari</h1>
     <section class="row row-cols-5">
-        <div class="col-6 col-sm col-md-2 my-3" v-for="subcategory in this.subcategories" :key="subcategory">
+        <div class="col-6 col-sm col-md-2 my-3" v-for="subcategory in subcategories" :key="subcategory">
             <router-link :to="{
                 name: 'LlistatElements', params: { id: subcategory.id }
             }">
@@ -16,9 +16,8 @@
         </div>
     </section>
     <section class="w-100">
-        <EasyDataTable :headers="this.headers" :items="this.inventari" alternating buttons-pagination
-            :sort-by="this.sortBy" :sort-type="this.sortType" :loading="this.loading" @click-row="showDetail"
-            :theme-color="this.$store.state.themeColor">
+        <EasyDataTable :headers="headers" :items="inventari" alternating buttons-pagination :sort-by="sortBy"
+            :sort-type="sortType" :loading="loading" @click-row="showDetail" :theme-color="$store.state.themeColor">
         </EasyDataTable>
         <router-link to="crearElement" class="btn btn-primary mt-2">Crea un element nou</router-link>
     </section>
@@ -60,6 +59,8 @@
 <script>
 import ModalComponent from '@/components/ModalComponent.vue'
 import CardButton from '@/components/CardButton.vue'
+
+import store from "@/store/index.js"
 export default {
     name: "MeuInventari",
     components: {
@@ -104,8 +105,8 @@ export default {
         }
     },
     async created() {
-        this.subcategories = await this.$store.dispatch("getCollection", this.params)
-        console.log(this.subcategories)
+        const subcategories = await store.dispatch("getCollection", this.params)
+        this.subcategories = subcategories.data.data
         this.CategoriesPropietat = await this.mostrarCategories()
         this.inventari = await this.mostrarElements()
         this.loading = false
@@ -123,8 +124,8 @@ export default {
                 }
             }
 
-            const response = await this.$store.dispatch("createItem", payload)
-            this.respCreateCat = await this.$store.dispatch("handlingError", response)
+            const response = await store.dispatch("createItem", payload)
+            this.respCreateCat = await store.dispatch("handlingError", response)
 
         },
         async mostrarCategories() {
@@ -135,8 +136,8 @@ export default {
                 sort: "&sort[]=CategoryName",
                 limit: ""
             }
-
-            return await this.$store.dispatch("getCollection", params);
+            const categories = await store.dispatch("getCollection", params)
+            return categories.data.data
         },
         async mostrarElements() {
             let params = {
@@ -146,8 +147,8 @@ export default {
                 sort: "",
                 limit: ""
             }
-
-            return await this.$store.dispatch("getCollection", params);
+            const elements = await store.dispatch("getCollection", params);
+            return elements.data.data
         }
     }
 }

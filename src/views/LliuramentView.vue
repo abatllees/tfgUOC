@@ -112,7 +112,7 @@ export default {
                     { text: "Model", value: "Model.ModelName", sortable: true },
                     { text: "Núm. Mag", value: "NumMag", sortable: true },
                     { text: "Número de sèrie", value: "SerialNum", sortable: true },
-                    { text: "Accions", value: "operation" },
+                    { text: "", value: "operation" },
                 ],
                 sortBy: "NumMag",
                 sortType: "asc",
@@ -160,7 +160,9 @@ export default {
                 sort: "&sort[]=ModelName",
                 limit: ""
             }
-            this.ModelList = await this.$store.dispatch("getCollection", params)
+            const ModelList = await store.dispatch("getCollection", params)
+            this.ModelList = ModelList.data.data
+            console.log(await store.dispatch("handlingError", ModelList))
             this.taulaResultat.items = await this.searchElements()
         },
         async ModelSelected() {
@@ -220,8 +222,8 @@ export default {
                 params.filter = filter
 
             }
-
-            return await store.dispatch("getCollection", params);
+            const resultatCerca = await store.dispatch("getCollection", params);
+            return resultatCerca.data.data
         }
     },
 }
