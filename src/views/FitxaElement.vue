@@ -1,7 +1,7 @@
 <template>
     <section class="w-100">
-        <h1>{{ element?.Model.Subcategory.SubcategoryName }} {{ element?.Model.Brand.BrandName }} {{
-            element?.Model.ModelName
+        <h1>{{ element.Model.Subcategory.SubcategoryName }} {{ element.Model.Brand.BrandName }} {{
+            element.Model.ModelName
         }} </h1>
     </section>
     <section class="row">
@@ -10,12 +10,13 @@
                 <div class="row">
                     <div class="col-12 col-sm-4">
                         <label for="NumMag">Número de magatzem:</label>
-                        <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="NumMag" disabled>
+                        <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="element.NumMag"
+                            disabled>
                     </div>
                     <div class="col-12 col-sm-4">
                         <label for="SerialNum">Número de sèrie:</label>
-                        <input type="text" name="SerialNum" id="SerialNum" class="form-control"
-                            :value=element?.SerialNum disabled>
+                        <input type="text" name="SerialNum" id="SerialNum" class="form-control" :value=element.SerialNum
+                            disabled>
                     </div>
                     <div class="col-12 col-sm-4">
                         <label for="responsable">Responsable:</label>
@@ -24,9 +25,9 @@
                     </div>
                     <div class="col-12 col-sm-4">
                         <label for="status">Estat:</label>
-                        <select name="status" id="status" class="form-control" disabled v-model="status"
+                        <select name="status" id="status" class="form-control" disabled v-model="element.status"
                             v-if="statusValues">
-                            <option v-for="state in this.statusValues.meta.display_options.choices" :value="state.value"
+                            <option v-for="state in statusValues.meta.display_options.choices" :value="state.value"
                                 :key="state">
                                 {{ state.text }}
                             </option>
@@ -35,8 +36,8 @@
                     <div class="col-12 col-sm-4">
                         <label for="delegacioAssignada">Delegació assignada:</label>
                         <select name="delegacioAssignada" id="delegacioAssignada" class="form-control" disabled
-                            v-model="DelegacioAssignada">
-                            <option v-for="delegacio in this.delegacionsValues" :value="delegacio.ID" :key="delegacio">
+                            v-model="element.DelegacioAssignada">
+                            <option v-for="delegacio in delegacionsValues" :value="delegacio.ID" :key="delegacio">
                                 {{ delegacio.Name }}
                             </option>
                         </select>
@@ -58,9 +59,9 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        bullist numlist outdent indent | removeformat | help'
-                }" v-model="observacions" id="observations" :disabled=tinyDisabled />
+                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
@@ -74,26 +75,25 @@
     <section class="row">
         <div class="col-12 col-lg">
             <h6>Historial de moviments</h6>
-            <EasyDataTable :headers="this.historialMoviments.headers" :items="this.historialMoviments.items" alternating
-                buttons-pagination :sort-by="this.historialMoviments.sortBy"
-                :sort-type="this.historialMoviments.sortType" :theme-color="this.$store.state.themeColor"
-                :loading="this.historialMoviments.loading">
+            <EasyDataTable :headers="historialMoviments.headers" :items="historialMoviments.items" alternating
+                buttons-pagination :sort-by="historialMoviments.sortBy" :sort-type="historialMoviments.sortType"
+                :theme-color="this.$store.state.themeColor" :loading="historialMoviments.loading">
             </EasyDataTable>
         </div>
         <div class="col-12 col-lg">
             <h6>Incidències</h6>
-            <EasyDataTable :headers="this.incidencies.headers" :items="this.incidencies.items" alternating
-                buttons-pagination :sort-by="this.incidencies.sortBy" :sort-type="this.incidencies.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="this.incidencies.loading">
+            <EasyDataTable :headers="incidencies.headers" :items="incidencies.items" alternating buttons-pagination
+                :sort-by="incidencies.sortBy" :sort-type="incidencies.sortType"
+                :theme-color="this.$store.state.themeColor" :loading="incidencies.loading">
             </EasyDataTable>
             <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#incidencia">Crear
                 incidència</button>
         </div>
         <div class="col-12 col-lg">
             <h6>Equips assignats</h6>
-            <EasyDataTable :headers="this.accessoris.headers" :items="this.accessoris.items" alternating
-                buttons-pagination :sort-by="this.accessoris.sortBy" :sort-type="this.accessoris.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="this.accessoris.loading">
+            <EasyDataTable :headers="accessoris.headers" :items="accessoris.items" alternating buttons-pagination
+                :sort-by="accessoris.sortBy" :sort-type="accessoris.sortType"
+                :theme-color="this.$store.state.themeColor" :loading="accessoris.loading">
                 <template #item-operation="item">
                     <div class="operation-wrapper">
                         <i class="bi bi-trash" style="font-size: 1rem" @click="deleteAccessori(item)"></i>
@@ -114,20 +114,20 @@
                 <label for="tipusMaterial" class="col-sm col-form-label">Tipus de material: </label>
                 <div class="col-sm-8">
                     <select class="form-control" name="tipusMaterial" id="tipusMaterial" v-model="tipusMaterial">
-                        <option v-for="subcategory in this.subcategory" :key="subcategory.id" :value="subcategory.id">
+                        <option v-for="subcategory in subcategory" :key="subcategory.id" :value="subcategory.id">
                             {{ subcategory.SubcategoryName }}
                         </option>
                     </select>
                 </div>
             </div>
-            <EasyDataTable :headers="this.nousAccessoris.headers" :items="this.nousAccessoris.items" alternating
-                buttons-pagination v-model:items-selected="this.nousAccessoris.itemsSelected"
-                :sort-by="this.nousAccessoris.sortBy" :sort-type="this.nousAccessoris.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="this.nousAccessoris.loading">
+            <EasyDataTable :headers="nousAccessoris.headers" :items="nousAccessoris.items" alternating
+                buttons-pagination v-model:items-selected="nousAccessoris.itemsSelected"
+                :sort-by="nousAccessoris.sortBy" :sort-type="nousAccessoris.sortType"
+                :theme-color="this.$store.state.themeColor" :loading="nousAccessoris.loading">
             </EasyDataTable>
         </template>
         <template v-slot:footer>
-            <button class="btn btn-primary" @click="associar(this.nousAccessoris.itemsSelected)"
+            <button class="btn btn-primary" @click="associar(nousAccessoris.itemsSelected)"
                 data-dismiss="modal">Associar elements</button>
         </template>
     </ModalComponent>
@@ -173,13 +173,9 @@ export default {
             element: null, //Objecte amb tota la informació de l'item
             statusValues: null, //Valors disponibles de l'estat de l'item
 
-            NumMag: null,
-            status: null,
-            observacions: null,
-            responsable: null,
+            responsable: "",
 
             delegacionsValues: store.getters.getDelegacions,
-            DelegacioAssignada: null,
 
             subcategory: store.getters.getSubcategory,
             tipusMaterial: null,
@@ -190,7 +186,6 @@ export default {
             incidencia: null,
             respIncidencia: null,
 
-            response: null,
             respEditElement: null,
 
             historialMoviments: {
@@ -245,19 +240,58 @@ export default {
         }
     },
     async beforeMount() {
-        await this.getData()
+        this.element = await this.getElementInfo()
 
     },
     watch: {
-        '$route'() {
+        /*'$route'() {
             this.$router.replace({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
             this.getData()
         },
         async tipusMaterial() {
             await this.llistarAccessoris()
-        }
+        }*/
     },
     methods: {
+        getElementInfo: async function () {
+            //Obté informació de l'element
+            let params = {
+                collection: "Element",
+                item: this.$route.params.SerialNum,
+                fields: "?fields=*.*.*.*",
+                filter: ""
+            }
+
+
+            //Obté els possibles valors del desplegable de l'estat
+            let payload = {
+                collection: "Element",
+                field: "status"
+            }
+            this.statusValues = await store.dispatch("getFields", payload)
+
+
+            const element = await store.dispatch("getElement", params)
+            return element.data.data
+            /*
+
+            
+                        //Obtenir l'usuari responsable
+                        payload = {
+                            id: this.element.Model.Subcategory.Category.CategoryOwner,
+                            fields: "?fields=first_name,last_name",
+                            filter: "",
+                            sort: "",
+                            limit: ""
+                        }
+                        const responsable = await store.dispatch("getUsers", payload)
+                        this.responsable = responsable.data.data
+            
+                        this.status = this.element.status
+                        this.NumMag = this.element.NumMag
+                        this.observacions = this.element.Observacions
+                        this.DelegacioAssignada = this.element.DelegacioAssignada.ID*/
+        },
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
             document.getElementById("status").disabled = false;
@@ -282,41 +316,8 @@ export default {
                     Observacions: this.observacions
                 }
             }
-            const response = await this.$store.dispatch("updateItem", payload)
-            console.log("RESPONSE UPDATE", response)
-            this.respEditElement = await this.$store.dispatch("handlingError", response)
-        },
-        getElementInfo: async function () {
-            //Obté informació de l'element
-            let params = {
-                collection: "Element",
-                item: this.$route.params.SerialNum,
-                fields: "?fields=*.*.*.*",
-                filter: ""
-            }
-            this.element = await this.$store.dispatch("getElement", params)
-
-            //Obté els possibles valors del desplegable de l'estat
-            let payload = {
-                collection: "Element",
-                field: "status"
-            }
-            this.statusValues = await this.$store.dispatch("getFields", payload)
-
-            //Obtenir l'usuari responsable
-            payload = {
-                id: this.element.Model.Subcategory.Category.CategoryOwner,
-                fields: "?fields=first_name,last_name",
-                filter: "",
-                sort: "",
-                limit: ""
-            }
-            this.responsable = await this.$store.dispatch("getUsers", payload)
-
-            this.status = this.element.status
-            this.NumMag = this.element.NumMag
-            this.observacions = this.element.Observacions
-            this.DelegacioAssignada = this.element.DelegacioAssignada.ID
+            const response = await store.dispatch("updateItem", payload)
+            this.respEditElement = await store.dispatch("handlingError", response)
         },
         CrearIncidencia: async function () {
             let payload = {
@@ -327,8 +328,8 @@ export default {
 
                 }
             }
-            const novaIncidencia = await this.$store.dispatch("createItem", payload)
-            this.respIncidencia = await this.$store.dispatch("handlingError", novaIncidencia)
+            const novaIncidencia = await store.dispatch("createItem", payload)
+            this.respIncidencia = await store.dispatch("handlingError", novaIncidencia)
             this.incidencies.loading = true
             this.getIncidencies()
         },
@@ -341,7 +342,8 @@ export default {
                 sort: "&sort[]=-date_created",
                 limit: "&limit=10"
             }
-            this.historialMoviments.items = await this.$store.dispatch("getCollection", payload)
+            const historialMoviments = await store.dispatch("getCollection", payload)
+            this.historialMoviments.items = historialMoviments.data.data
             this.historialMoviments.loading = false
 
             this.historialMoviments.items.forEach(moviment => {
@@ -359,7 +361,8 @@ export default {
                 sort: "",
                 limit: ""
             }
-            this.incidencies.items = await this.$store.dispatch("getCollection", payload)
+            const incidencies = await store.dispatch("getCollection", payload)
+            this.incidencies.items = incidencies.data.data
             this.incidencies.loading = false
 
             this.incidencies.items.forEach(incidencia => {
@@ -379,13 +382,14 @@ export default {
                 limit: ""
             }
             this.accessoris.loading = false
-            return await this.$store.dispatch("getCollection", payload)
+            const accessoris = await store.dispatch("getCollection", payload)
+            return accessoris.data.data
         },
         getData: async function () {
             await this.getElementInfo()
-            await this.getMoviments()
+            /*await this.getMoviments()
             await this.getIncidencies()
-            this.accessoris.items = await this.getAccessoris()
+            this.accessoris.items = await this.getAccessoris()*/
         },
         llistarAccessoris: async function () {
             this.nousAccessoris.loading = true
@@ -396,7 +400,7 @@ export default {
                 sort: "&sort[]=Model.ModelName",
                 limit: ""
             }
-            this.nousAccessoris.items = await this.$store.dispatch("getCollection", params)
+            this.nousAccessoris.items = await store.dispatch("getCollection", params)
             this.nousAccessoris.loading = false
         },
         associar: async function (elements) {
@@ -413,8 +417,8 @@ export default {
                     }
                 }
             }
-            const response = this.$store.dispatch("updateMultipleItems", payload)
-            const resposta = await this.$store.dispatch("handlingError", response)
+            const response = store.dispatch("updateMultipleItems", payload)
+            const resposta = await store.dispatch("handlingError", response)
             console.log(resposta)
             this.nousAccessoris.itemsSelected = []
             this.accessoris.items = await this.getAccessoris()
@@ -429,8 +433,8 @@ export default {
                     ElementPare: null,
                 }
             }
-            await this.$store.dispatch("updateItem", payload)
-            //const resposta = await this.$store.dispatch("handlingError", response)
+            await store.dispatch("updateItem", payload)
+            //const resposta = await store.dispatch("handlingError", response)
 
             this.accessoris.items = await this.getAccessoris()
             this.accessoris.loading = false

@@ -121,7 +121,7 @@ export default createStore({
 			return new Promise((resolve, reject) => {
 				api.get("items/" + payload.collection + "/" + payload.item + payload.fields)
 					.then(response => {
-						resolve(response.data.data)
+						resolve(response)
 					})
 					.catch(error => reject(error.response))
 			})
