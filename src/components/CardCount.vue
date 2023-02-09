@@ -6,7 +6,6 @@
 </template>
 
 <script>
-
 export default {
 	name: 'CardCount',
 	props: {
@@ -31,7 +30,8 @@ export default {
 				sort: null,
 				limit: ""
 			}
-			return await this.$store.dispatch("getElement", params)
+			const modelName = await this.$store.dispatch("getElement", params)
+			return modelName.data.data
 		}
 	},
 }

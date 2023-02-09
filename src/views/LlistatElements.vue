@@ -15,6 +15,7 @@
     </router-link>
 </template>
 <script>
+import store from "@/store/index.js"
 export default {
     name: "LlistatElements",
     components: {
@@ -42,7 +43,7 @@ export default {
             searchValue: "",
             llistatElement: [],
 
-            title: "Títol",
+            title: null,
 
             loading: true,
         }
@@ -56,7 +57,7 @@ export default {
             limit: ""
         }
         //Resultats de la cerca
-        if (this.$store.state.NavQuery) {
+        if (store.state.NavQuery) {
             params = this.$store.state.NavQuery
             params.limit = "&limit=-1"
             this.title = "Resultats de la cerca"
@@ -85,7 +86,9 @@ export default {
             this.title = response.ModelName
 
         }
-        this.llistatElement = await this.$store.dispatch("getCollection", params)
+
+        const Llistat = await store.dispatch("getCollection", params)
+        this.llistatElement = Llistat.data.data
         this.loading = false
     },
     methods: {

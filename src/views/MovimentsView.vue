@@ -74,7 +74,8 @@ export default {
     },
     methods: {
         async getMoviments() {
-            return await this.$store.dispatch("getCollection", this.params);
+            const moviments = await store.dispatch("getCollection", this.params)
+            return moviments.data.data;
         }
     },
     async beforeMount() {

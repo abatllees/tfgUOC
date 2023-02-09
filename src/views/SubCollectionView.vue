@@ -1,7 +1,7 @@
 <template>
     <section class="row">
-        <h1 class="text-center w-100"> {{ category?.CategoryName }}</h1>
-        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in this.subcategory" :key="subcategory">
+        <h1 class="text-center w-100"> {{ category.CategoryName }}</h1>
+        <div class="col-6 col-sm-4 col-md-3  my-1" v-for="subcategory in subcategory" :key="subcategory">
             <router-link :to="{
                 name: 'LlistatElements', params: { id: subcategory.id }
             }">
@@ -77,19 +77,10 @@ export default {
             sort: "&sort[]=SubcategoryName",
             limit: ""
         }
+        const subcategory = await this.$store.dispatch("getCollection", params)
+        this.subcategory = subcategory.data.data
 
-        this.subcategory = await this.$store.dispatch("getCollection", params);
-
-        params = {
-            collection: "Category",
-            item: this.$route.params.id,
-            fields: "?fields=CategoryName",
-            filter: "&filter[status][_eq]=published&filter[Category][_eq]=" + this.$route.params.id,
-            sort: "",
-            limit: ""
-        }
-
-        this.category = await this.$store.dispatch("getElement", params);
+        this.category = await this.getCategory()
     },
     methods: {
         async crearCategoria() {
@@ -97,12 +88,25 @@ export default {
                 collection: "Subcategory",
                 values: {
                     "SubcategoryName": this.NomCategoria,
-                    "Category": this.CategoriaPare
+                    "Category": await this.getCategory()
                 }
             }
 
             const response = await this.$store.dispatch("createItem", payload)
             this.respCreateCat = await this.$store.dispatch("handlingError", response)
+        },
+        async getCategory() {
+            const params = {
+                collection: "Category",
+                item: this.$route.params.id,
+                fields: "?fields=*",
+                filter: "&filter[Category][_eq]=" + this.$route.params.id,
+                sort: "",
+                limit: ""
+            }
+
+            const category = await this.$store.dispatch("getElement", params)
+            return category.data.data
         }
     }
 }

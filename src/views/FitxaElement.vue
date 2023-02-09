@@ -59,8 +59,8 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
                 }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
@@ -244,7 +244,7 @@ export default {
         this.responsable = await this.getResponsable()
         this.getMoviments()
         this.getIncidencies()
-        this.getAccessoris()
+        this.accessoris.items = await this.getAccessoris()
     },
     watch: {
         async '$route'() {
