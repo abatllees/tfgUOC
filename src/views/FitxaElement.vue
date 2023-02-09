@@ -6,7 +6,7 @@
     </section>
     <section class="row">
         <div class="col-12 col-sm col-lg-9">
-            <form @submit.prevent="UpdateElement()">
+            <form @submit.prevent="UpdateElement(element)">
                 <div class="row">
                     <div class="col-12 col-sm-4">
                         <label for="NumMag">Número de magatzem:</label>
@@ -36,7 +36,7 @@
                     <div class="col-12 col-sm-4">
                         <label for="delegacioAssignada">Delegació assignada:</label>
                         <select name="delegacioAssignada" id="delegacioAssignada" class="form-control" disabled
-                            v-model="element.DelegacioAssignada">
+                            v-model="element.DelegacioAssignada.ID">
                             <option v-for="delegacio in delegacionsValues" :value="delegacio.ID" :key="delegacio">
                                 {{ delegacio.Name }}
                             </option>
@@ -59,8 +59,8 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
                 }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
             </form>
@@ -100,8 +100,8 @@
                     </div>
                 </template>
             </EasyDataTable>
-            <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#gestionarAccessoris"
-                @click="obtenirelements('Element')">Afegir un accessori</button>
+            <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#gestionarAccessoris">Afegir un
+                accessori</button>
         </div>
     </section>
 
@@ -123,7 +123,7 @@
             <EasyDataTable :headers="nousAccessoris.headers" :items="nousAccessoris.items" alternating
                 buttons-pagination v-model:items-selected="nousAccessoris.itemsSelected"
                 :sort-by="nousAccessoris.sortBy" :sort-type="nousAccessoris.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="nousAccessoris.loading">
+                :theme-color="this.$store.state.themeColor" :loading="nousAccessoris.loading" :rows-per-page=10>
             </EasyDataTable>
         </template>
         <template v-slot:footer>
@@ -241,16 +241,19 @@ export default {
     },
     async beforeMount() {
         this.element = await this.getElementInfo()
-
+        this.responsable = await this.getResponsable()
+        this.getMoviments()
+        this.getIncidencies()
+        this.getAccessoris()
     },
     watch: {
-        /*'$route'() {
+        async '$route'() {
             this.$router.replace({ name: 'Fitxa', params: { SerialNum: this.$route.params.SerialNum } })
-            this.getData()
+            await this.getElementInfo()
         },
         async tipusMaterial() {
             await this.llistarAccessoris()
-        }*/
+        }
     },
     methods: {
         getElementInfo: async function () {
@@ -262,7 +265,6 @@ export default {
                 filter: ""
             }
 
-
             //Obté els possibles valors del desplegable de l'estat
             let payload = {
                 collection: "Element",
@@ -270,27 +272,20 @@ export default {
             }
             this.statusValues = await store.dispatch("getFields", payload)
 
-
             const element = await store.dispatch("getElement", params)
             return element.data.data
-            /*
-
-            
-                        //Obtenir l'usuari responsable
-                        payload = {
-                            id: this.element.Model.Subcategory.Category.CategoryOwner,
-                            fields: "?fields=first_name,last_name",
-                            filter: "",
-                            sort: "",
-                            limit: ""
-                        }
-                        const responsable = await store.dispatch("getUsers", payload)
-                        this.responsable = responsable.data.data
-            
-                        this.status = this.element.status
-                        this.NumMag = this.element.NumMag
-                        this.observacions = this.element.Observacions
-                        this.DelegacioAssignada = this.element.DelegacioAssignada.ID*/
+        },
+        getResponsable: async function () {
+            //Obtenir l'usuari responsable
+            const payload = {
+                id: this.element.Model.Subcategory.Category.CategoryOwner,
+                fields: "?fields=first_name,last_name",
+                filter: "",
+                sort: "",
+                limit: ""
+            }
+            const responsable = await store.dispatch("getUsers", payload)
+            return responsable.data.data
         },
         EditElement: function () { //Desbloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = false;
@@ -299,7 +294,7 @@ export default {
             this.tinyDisabled = false
             this.editMode = true
         },
-        UpdateElement: async function () { //Bloqueja tots els elements del formulari per poder-los modificar
+        UpdateElement: async function (element) { //Bloqueja tots els elements del formulari per poder-los modificar
             document.getElementById("NumMag").disabled = true;
             document.getElementById("status").disabled = true;
             document.getElementById("delegacioAssignada").disabled = true;
@@ -310,10 +305,10 @@ export default {
                 collection: "Element",
                 item: this.$route.params.SerialNum,
                 data: {
-                    NumMag: this.NumMag,
-                    status: this.status,
-                    DelegacioAssignada: this.DelegacioAssignada,
-                    Observacions: this.observacions
+                    NumMag: element.NumMag,
+                    status: element.status,
+                    DelegacioAssignada: element.DelegacioAssignada.ID,
+                    Observacions: element.Observacions
                 }
             }
             const response = await store.dispatch("updateItem", payload)
@@ -385,12 +380,6 @@ export default {
             const accessoris = await store.dispatch("getCollection", payload)
             return accessoris.data.data
         },
-        getData: async function () {
-            await this.getElementInfo()
-            /*await this.getMoviments()
-            await this.getIncidencies()
-            this.accessoris.items = await this.getAccessoris()*/
-        },
         llistarAccessoris: async function () {
             this.nousAccessoris.loading = true
             let params = {
@@ -400,7 +389,8 @@ export default {
                 sort: "&sort[]=Model.ModelName",
                 limit: ""
             }
-            this.nousAccessoris.items = await store.dispatch("getCollection", params)
+            const nousAccessoris = await store.dispatch("getCollection", params)
+            this.nousAccessoris.items = nousAccessoris.data.data
             this.nousAccessoris.loading = false
         },
         associar: async function (elements) {
@@ -417,28 +407,26 @@ export default {
                     }
                 }
             }
-            const response = store.dispatch("updateMultipleItems", payload)
+            const response = await store.dispatch("updateMultipleItems", payload)
             const resposta = await store.dispatch("handlingError", response)
-            console.log(resposta)
+            console.log("HANDLING ERROR", resposta)
             this.nousAccessoris.itemsSelected = []
             this.accessoris.items = await this.getAccessoris()
         },
-
         deleteAccessori: async function (item) {
             this.accessoris.loading = true
-            let payload = {
+            const payload = {
                 collection: "Element",
                 item: item.SerialNum,
                 data: {
                     ElementPare: null,
                 }
             }
-            await store.dispatch("updateItem", payload)
-            //const resposta = await store.dispatch("handlingError", response)
-
+            const deleteAccessori = await store.dispatch("updateItem", payload)
+            const resposta = await store.dispatch("handlingError", deleteAccessori)
+            console.log(resposta)
             this.accessoris.items = await this.getAccessoris()
             this.accessoris.loading = false
-
         }
     }
 
