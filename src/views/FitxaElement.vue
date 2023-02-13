@@ -59,8 +59,8 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
                 }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
                 <button type="button" class="btn btn-secondary mx-1" v-show="editMode"
@@ -72,6 +72,9 @@
                     <li v-for="resposta in respEditElement.message" :key="resposta"> {{ resposta }}</li>
                 </ul>
             </div>
+        </div>
+        <div class="col">
+            <Historial :item="element.SerialNum"></Historial>
         </div>
     </section>
     <section class="row">
@@ -167,12 +170,14 @@ import store from "@/store/index.js"
 
 import ModalComponent from "@/components/ModalComponent.vue"
 import Editor from '@tinymce/tinymce-vue'
+import Historial from "@/components/HistorialElement.vue"
 
 export default {
     name: "FitxaElement",
     components: {
         ModalComponent,
-        'editor': Editor
+        'editor': Editor,
+        Historial
     },
     data() {
         return {
