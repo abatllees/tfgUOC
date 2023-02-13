@@ -59,10 +59,12 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
                 }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
+                <button type="button" class="btn btn-secondary mx-1" v-show="editMode"
+                    @click="resetChanges()">Cancel·la</button>
             </form>
             <button class="btn btn-secondary my-2" @click="EditElement()" v-show="!editMode">Edita</button>
             <div class="alert" v-if="respEditElement" v-bind:class="respEditElement.alertType">
@@ -120,6 +122,11 @@
                     </select>
                 </div>
             </div>
+            <div class="alert" v-if="respAssociar" v-bind:class="respAssociar.alertType">
+                <ul class="list-unstyled">
+                    <li v-for="resposta in respAssociar.message" :key="resposta"> {{ resposta }}</li>
+                </ul>
+            </div>
             <EasyDataTable :headers="nousAccessoris.headers" :items="nousAccessoris.items" alternating
                 buttons-pagination v-model:items-selected="nousAccessoris.itemsSelected"
                 :sort-by="nousAccessoris.sortBy" :sort-type="nousAccessoris.sortType"
@@ -127,8 +134,7 @@
             </EasyDataTable>
         </template>
         <template v-slot:footer>
-            <button class="btn btn-primary" @click="associar(nousAccessoris.itemsSelected)"
-                data-dismiss="modal">Associar elements</button>
+            <button class="btn btn-primary" @click="associar(nousAccessoris.itemsSelected)">Associar elements</button>
         </template>
     </ModalComponent>
     <ModalComponent id="incidencia">
@@ -157,9 +163,9 @@
     </ModalComponent>
 </template>
 <script>
-import ModalComponent from "@/components/ModalComponent.vue"
 import store from "@/store/index.js"
 
+import ModalComponent from "@/components/ModalComponent.vue"
 import Editor from '@tinymce/tinymce-vue'
 
 export default {
@@ -236,7 +242,9 @@ export default {
                 sortType: "asc",
                 itemsSelected: [],
                 loading: true,
-            }
+                response: null
+            },
+            respAssociar: null
         }
     },
     async beforeMount() {
@@ -275,6 +283,15 @@ export default {
             const element = await store.dispatch("getElement", params)
             return element.data.data
         },
+        resetChanges: async function () {
+            this.element = await this.getElementInfo()
+            this.responsable = await this.getResponsable()
+            document.getElementById("NumMag").disabled = true;
+            document.getElementById("status").disabled = true;
+            document.getElementById("delegacioAssignada").disabled = true;
+            this.tinyDisabled = true
+            this.editMode = false
+        },
         getResponsable: async function () {
             //Obtenir l'usuari responsable
             const payload = {
@@ -311,8 +328,8 @@ export default {
                     Observacions: element.Observacions
                 }
             }
-            const response = await store.dispatch("updateItem", payload)
-            this.respEditElement = await store.dispatch("handlingError", response)
+            const updateElement = await store.dispatch("updateItem", payload)
+            this.respEditElement = await store.dispatch("handlingError", updateElement)
         },
         CrearIncidencia: async function () {
             let payload = {
@@ -320,12 +337,10 @@ export default {
                 values: {
                     ElementIncidencia: this.$route.params.SerialNum,
                     DescripcioIncidencia: this.incidencia
-
                 }
             }
             const novaIncidencia = await store.dispatch("createItem", payload)
             this.respIncidencia = await store.dispatch("handlingError", novaIncidencia)
-            this.incidencies.loading = true
             this.getIncidencies()
         },
         getMoviments: async function () {
@@ -343,11 +358,12 @@ export default {
 
             this.historialMoviments.items.forEach(moviment => {
                 let dateFromatted = new Date(moviment.date_created)
-                const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' };
                 moviment.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
             });
         },
         getIncidencies: async function () {
+            this.incidencies.loading = true
             //Obtenir les incidències
             let payload = {
                 collection: "Incidencia",
@@ -362,13 +378,13 @@ export default {
 
             this.incidencies.items.forEach(incidencia => {
                 let dateFromatted = new Date(incidencia.date_created)
-                const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' };
                 incidencia.date_created = dateFromatted.toLocaleDateString('ca-ES', options);
             });
         },
         getAccessoris: async function () {
             this.accessoris.loading = true
-            //Obtenir els accessoris assignats actualment
+            //Obtenir els accessoris assignats
             let payload = {
                 collection: "Element",
                 fields: "?fields=SerialNum,Model.ModelName,Model.Subcategory.SubcategoryName",
@@ -376,8 +392,9 @@ export default {
                 sort: "",
                 limit: ""
             }
-            this.accessoris.loading = false
             const accessoris = await store.dispatch("getCollection", payload)
+            this.accessoris.loading = false
+
             return accessoris.data.data
         },
         llistarAccessoris: async function () {
@@ -408,10 +425,11 @@ export default {
                 }
             }
             const response = await store.dispatch("updateMultipleItems", payload)
-            const resposta = await store.dispatch("handlingError", response)
-            console.log("HANDLING ERROR", resposta)
+            const handle_error = await store.dispatch("handlingError", response)
+            console.log("Resultat associar", handle_error)
             this.nousAccessoris.itemsSelected = []
             this.accessoris.items = await this.getAccessoris()
+            this.respAssociar = handle_error
         },
         deleteAccessori: async function (item) {
             this.accessoris.loading = true
@@ -424,9 +442,8 @@ export default {
             }
             const deleteAccessori = await store.dispatch("updateItem", payload)
             const resposta = await store.dispatch("handlingError", deleteAccessori)
-            console.log(resposta)
+            console.log("Resultat eliminar accessori:", resposta)
             this.accessoris.items = await this.getAccessoris()
-            this.accessoris.loading = false
         }
     }
 

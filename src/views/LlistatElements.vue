@@ -105,7 +105,8 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await this.$store.dispatch("getElement", params);
+            const title = await await store.dispatch("getElement", params);
+            return title.data.data
         }
     }
 }
