@@ -15,6 +15,7 @@ import RetornView from "@/views/RetornView.vue"
 import MeuInventari from "@/views/MeuInventari.vue"
 import CrearElement from "@/views/CrearElement.vue"
 import BrandView from "@/views/BrandView.vue"
+import IncidenciesView from "@/views/IncidenciesView.vue"
 
 const routes = [
   {
@@ -92,6 +93,12 @@ const routes = [
     path: "/meuInventari",
     name: "MeuInventari",
     component: MeuInventari,
+    params: true
+  },
+  {
+    path: "/incidencies",
+    name: "Incidencies",
+    component: IncidenciesView,
     params: true
   },
   {

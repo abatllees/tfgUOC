@@ -45,6 +45,11 @@
 						<router-link to="moviments" class="nav-link" replace><i class="bi bi-arrow-left-right"></i>
 							Moviments</router-link>
 					</li>
+					<li class="nav-item">
+						<router-link to="incidencies" class="nav-link" replace><i
+								class="bi bi-exclamation-triangle-fill"></i>
+							Incidències</router-link>
+					</li>
 				</ul>
 				<form class="d-flex" role="search">
 					<input class="form-control me-2" type="search" placeholder="Cerca un element" aria-label="Search"
@@ -123,8 +128,6 @@ export default {
 					.catch(error => reject(error.message))
 			})
 			console.log(await store.dispatch("handlingError", logout))
-
-
 		},
 		searchElement: async function () {
 			let params = {
