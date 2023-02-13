@@ -115,7 +115,6 @@ export default {
 		store.commit("SET_Category", categories.data.data)
 		console.log(await store.dispatch("handlingError", categories))
 
-
 		params = {
 			collection: "Subcategory",
 			fields: "?fields=*.*.*",
@@ -127,7 +126,6 @@ export default {
 		store.commit("SET_Subcategory", subcategory.data.data)
 		console.log(await store.dispatch("handlingError", subcategory))
 
-
 		params = {
 			collection: "Delegacio",
 			fields: "?fields=*.*.*",
@@ -138,7 +136,6 @@ export default {
 		const delegacions = await store.dispatch("getCollection", params)
 		store.commit("SET_Delegacio", delegacions.data.data)
 		console.log(await this.$store.dispatch("handlingError", delegacions))
-
 	}
 }
 </script>

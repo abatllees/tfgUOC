@@ -30,7 +30,7 @@ export default {
                 { text: "Marca", value: "Element.Model.Brand.BrandName", sortable: true },
                 { text: "Model", value: "Element.Model.ModelName", sortable: true },
                 { text: "Número de sèrie", value: "Element.SerialNum", sortable: true },
-                { text: "Data", value: "date_created", sortable: true },
+                { text: "Data moviment", value: "date_created", sortable: true },
                 { text: "Realitzat per", value: "user_created.first_name", sortable: true },
                 { text: "", value: "user_created.last_name", sortable: true },
                 { text: "Origen", value: "Origen.Name", sortable: true },
@@ -47,7 +47,7 @@ export default {
                 collection: "Moviment",
                 fields: "?fields=Element.*.*.*,Origen.Name,Desti.Name,user_created.first_name,user_created.last_name,date_created",
                 filter: "&filter[status][_eq]=published",
-                sort: "",
+                sort: "&sort[]=-date_created",
                 limit: "&limit=-1"
             },
         }
@@ -79,7 +79,9 @@ export default {
         }
     },
     async beforeMount() {
-        this.moviments = await this.getMoviments()
+        const moviments = await this.getMoviments()
+        this.moviments = moviments
+        //await this.dispatch("formatdate", new Date(payload.dataRetorn))
         this.loading = false
     },
 }

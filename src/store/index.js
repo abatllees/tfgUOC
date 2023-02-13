@@ -13,6 +13,8 @@ export default createStore({
 		user: null,
 		access_token: null,
 		refresh_token: null,
+		call_new_token: false,
+
 
 		GettedElement: null,
 
@@ -74,6 +76,9 @@ export default createStore({
 		SET_Delegacio(state, payload) {
 			state.Delegacio = payload
 		},
+		SET_CallNewToken(state, payload) {
+			state.call_new_token = payload
+		}
 	},
 	actions: {
 		//Obté l'usuari logat i el desa a l'state i al sessionStorage
@@ -239,15 +244,16 @@ export default createStore({
 					}
 					break;
 				}
-				case 401: {//No funciona!!!!
+				case 401: {
 					console.log("Token expired", response)
-					state.user = null
+					/*state.user = null
 					state.access_token = null
 					state.refresh_token = null
-					sessionStorage.clear();
+					sessionStorage.clear();*/
 
 					const refresh = await dispatch("refresh_token", state.refresh_token)
 					console.log("REFRESH", refresh)
+
 					break;
 				}
 				case 400: {
@@ -307,8 +313,8 @@ export default createStore({
 				fields: "?fields=*.*.*",
 				filter: ""
 			}
-			const desti = await this.dispatch("getElement", params)
-
+			const response = await this.dispatch("getElement", params)
+			const desti = response.data.data
 
 			const today = await this.dispatch("formatdate", new Date())
 

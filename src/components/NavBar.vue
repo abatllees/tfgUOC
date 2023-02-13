@@ -10,12 +10,13 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item">
-						<router-link to="users" class="nav-link" replace>Persones</router-link>
+						<router-link to="users" class="nav-link" replace> <i class="bi bi-people"></i>
+							Persones</router-link>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
 							aria-expanded="false">
-							Delegacions
+							<i class="bi bi-house"></i> Delegacions
 						</a>
 						<ul class="dropdown-menu">
 							<li v-for="delegacio in delegacions" v-bind:key="delegacio"><router-link :to="{
@@ -29,7 +30,7 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
 							aria-expanded="false">
-							Inventari
+							<i class="bi bi-box"></i> Inventari
 						</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"> <router-link to="MeuInventari" replace>El meu
@@ -41,7 +42,8 @@
 						</ul>
 					</li>
 					<li class="nav-item">
-						<router-link to="moviments" class="nav-link" replace>Moviments</router-link>
+						<router-link to="moviments" class="nav-link" replace><i class="bi bi-arrow-left-right"></i>
+							Moviments</router-link>
 					</li>
 				</ul>
 				<form class="d-flex" role="search">
@@ -114,6 +116,8 @@ export default {
 							access_token: null,
 							refresh_token: null
 						})
+						store.commit("SET_CallNewToken", false)
+
 						router.replace("/login")
 					})
 					.catch(error => reject(error.message))

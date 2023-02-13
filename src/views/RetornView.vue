@@ -20,6 +20,11 @@
             :search-value="LlistatRetorn.searchValue" :table-node-id="LlistatRetorn.tableID">
         </EasyDataTable>
     </section>
+    <section class="w-100" v-show="false">
+        <EasyDataTable :headers="LlistatRetorn.headers" :items="LlistatRetorn.itemsSelected" alternating
+            :sort-by="LlistatRetorn.sortBy" :theme-color="$store.state.themeColor" :table-node-id="'LlistatRetorn'">
+        </EasyDataTable>
+    </section>
     <button class="btn btn-primary my-2" @click="realitzarRetorn(LlistatRetorn.itemsSelected)">Retornar material
         seleccionat</button>
 </template>
@@ -60,7 +65,6 @@ export default {
     methods: {
         realitzarRetorn: async function () {
             console.log("Realitzar retorn")
-            //const destinacio = 22
 
             //Buscar a la taula de moviments el darrer moviment de l'element seleccionat i comprovar si és vigent
             for (const elementARetornar of this.LlistatRetorn.itemsSelected) {
@@ -81,30 +85,29 @@ export default {
                 //Si no és vigent (no és préstec) no cal fer res 
             }
             //Realitzar el moviment dels elements seleccionats
-            const response = await store.dispatch("realitzarMoviment", {
+            const retorn = await store.dispatch("realitzarMoviment", {
                 items: this.LlistatRetorn.itemsSelected,
                 destinacio: 22
             });
-            console.log("RESPONSE ENTRADA", response)
-            this.LlistatRetorn.response = await store.dispatch("handlingError", response)
+            console.log("RESPONSE ENTRADA", retorn)
+            this.LlistatRetorn.response = await store.dispatch("handlingError", retorn)
 
             //Genera l'informe PDF si el resultat és correcte
-            if (response.status == 200) {
+            if (retorn.status == 200) {
                 const data = {
                     tipusMoviment: "Entrada de material",
                     realitzatPer: store.getters.getUser.first_name + " " + store.getters.getUser.last_name,
                     dataMoviment: new Date(),
                     destinacio: 22,
-                    table: this.LlistatRetorn.tableID,
+                    table: "LlistatRetorn",
                 }
-                store.dispatch("exportPDF", data)
-                //this.taulaLliurament.items = []
-                this.dataRetorn = null
+                await store.dispatch("exportPDF", data)
             }
-            this.resultatMoviment = await this.$store.dispatch("handlingError", response)
+            this.resultatMoviment = await store.dispatch("handlingError", retorn)
             this.LlistatRetorn.loading = true
             this.LlistatRetorn.items = await this.elementsPendentRetorn()
             this.LlistatRetorn.loading = false
+            this.LlistatRetorn.itemsSelected = []
 
         },
         elementsPendentRetorn: async function () {

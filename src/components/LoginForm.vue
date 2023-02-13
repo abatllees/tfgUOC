@@ -41,19 +41,22 @@ export default {
                     email: this.email,
                     password: this.password
                 })
-                    .then(async response => {
-
+                    .then(response => {
+                        resolve(response.data.data)
                         sessionStorage.setItem("access_token", response.data.data.access_token)
                         sessionStorage.setItem("expires", response.data.data.expires)
                         sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
-                        resolve(response.data.data)
 
-                        store.dispatch("getUser")
                         store.commit("SET_TOKENS", {
                             access_token: response.data.data.access_token,
                             refresh_token: response.data.data.refresh_token
                         })
+                        store.commit("SET_CallNewToken", true)
 
+                        const expires = Date.now() + response.data.data.expires
+                        console.log("EXPIRES", new Date(expires))
+                        sessionStorage.setItem("expires", new Date(expires))
+                        store.dispatch("getUser")
 
                         router.push("/")
                     })
