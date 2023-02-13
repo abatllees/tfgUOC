@@ -1,6 +1,5 @@
 <template>
 	<NavBar class="sticky-top" v-if="logged_in" />
-	{{ call_new_token }}
 	<main class="container mt-3 overflow-auto">
 		<router-view />
 	</main>

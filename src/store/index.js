@@ -246,13 +246,15 @@ export default createStore({
 				}
 				case 401: {
 					console.log("Token expired", response)
-					/*state.user = null
+					alert("TOKEN EXPIRED")
+					state.user = null
 					state.access_token = null
 					state.refresh_token = null
-					sessionStorage.clear();*/
+					sessionStorage.clear();
 
-					const refresh = await dispatch("refresh_token", state.refresh_token)
-					console.log("REFRESH", refresh)
+					/*const refresh = await dispatch("refresh_token", state.refresh_token)
+					console.log("REFRESH", refresh)*/
+					this.$router.push("/")
 
 					break;
 				}
