@@ -22,13 +22,6 @@ export default {
             activities: null
         }
     },
-    methods: {
-        formatDate: function (date) {
-            let dateFromatted = new Date(date)
-            const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
-            return dateFromatted.toLocaleDateString('ca-ES', options);
-        },
-    },
     async beforeMount() {
         const params = {
             fields: "?fields=id,action,user.first_name,user.last_name,timestamp,colelction,item,revisions.*",

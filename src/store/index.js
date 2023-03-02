@@ -251,10 +251,7 @@ export default createStore({
 					state.access_token = null
 					state.refresh_token = null
 					sessionStorage.clear();
-
-					/*const refresh = await dispatch("refresh_token", state.refresh_token)
-					console.log("REFRESH", refresh)*/
-					this.$router.push("/")
+					this.$router.replace("/")
 
 					break;
 				}
@@ -273,7 +270,7 @@ export default createStore({
 				}
 				case 200: {
 					responseMessage.alertType = "alert-success"
-					responseMessage.message.push("No s'ha obtingut cap codi d'error")
+					responseMessage.message.push("Acció realitzada correctament")
 					break;
 				}
 

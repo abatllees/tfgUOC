@@ -102,6 +102,12 @@ const routes = [
     params: true
   },
   {
+    path: "/incidencies/:id?",
+    name: "Incidencies",
+    component: IncidenciesView,
+    params: true
+  },
+  {
     path: "/CrearElement",
     name: "CrearElement",
     component: CrearElement,

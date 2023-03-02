@@ -28,15 +28,6 @@ export default {
 			return store.state.call_new_token
 		}
 	},
-	watch: {
-		call_new_token() {
-			if (this.call_new_token) {
-				console.log("CHECK FOR NEW TOKEN")
-			} else {
-				console.log("NO")
-			}
-		}
-	},
 	async beforeMount() {
 		if (!sessionStorage.getItem('access_token')) {
 			router.push("/login")
