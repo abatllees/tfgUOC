@@ -1,7 +1,9 @@
 <template>
-    <form @submit.prevent="HANDLE_LOGIN()">
+    <form @submit.prevent="HANDLE_LOGIN()" class="bg-light p-4">
+        <div class="bg-primary text-white p-2"><i class="bi bi-lock-fill"></i></div>
+
         <div class="form-group my-2">
-            <label for="emailLogin">Usuari</label>
+            <label for="emailLogin">Nom d'usuari</label>
             <input type="email" class="form-control" id="emailLogin" aria-describedby="emailHelp" v-model="email">
         </div>
         <div class="form-group my-2">
@@ -13,9 +15,11 @@
                 <li v-for="error in error" :key="error">{{ error.message }}</li>
             </ul>
         </div>
-        <button type="submit" class="btn btn-secondary my-2">Inicia sessió</button>
+        <button type="submit" class="btn btn-primary my-2">Inicia sessió</button>
     </form>
-    <img src="@/assets/logoCCMA.png" alt="Logotip CCCMA" class="mx-auto d-block py-5">
+    <p class="text-center">
+        <small class="mt-2">Tingueu en compte que la sessió caduca després de 15 minuts d'haver iniciat sessió</small>
+    </p>
 </template>
 <script>
 import store from '@/store/index.js'
@@ -70,11 +74,8 @@ export default {
     }
 }
 </script>
-
 <style scoped>
-form {
-    border: 2px solid #bb0000;
-    border-right: 70px solid #bb0000;
-    padding: 56px 16px 56px 16px;
+i {
+    font-size: 1.3rem;
 }
 </style>

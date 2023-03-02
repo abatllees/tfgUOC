@@ -3,15 +3,12 @@
 	<main class="container mt-3 overflow-auto">
 		<router-view />
 	</main>
-	<footer>
-		<FooterComponent class="p-2 text-center w-100"></FooterComponent>
-	</footer>
 </template>
 
 <script>
 import router from "@/router"
 import NavBar from "@/components/NavBar.vue"
-import FooterComponent from "@/components/FooterComponent.vue"
+//import FooterComponent from "@/components/FooterComponent.vue"
 import store from "@/store/index.js"
 export default {
 	name: 'App',
@@ -21,7 +18,7 @@ export default {
 	},
 	components: {
 		NavBar,
-		FooterComponent
+		//FooterComponent
 	},
 	computed: {
 		logged_in() {

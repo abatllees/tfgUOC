@@ -10,8 +10,7 @@
                 <div class="row">
                     <div class="col-12 col-sm-4">
                         <label for="NumMag">Número de magatzem:</label>
-                        <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="element.NumMag"
-                            disabled>
+                        <input type="text" name="NumMag" id="NumMag" class="form-control" v-model="element.NumMag" disabled>
                     </div>
                     <div class="col-12 col-sm-4">
                         <label for="SerialNum">Número de sèrie:</label>
@@ -59,8 +58,8 @@
                     ],
                     toolbar:
                         'undo redo | formatselect | bold italic backcolor | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                alignleft aligncenter alignright alignjustify | \
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                bullist numlist outdent indent | removeformat | help'
                 }" v-model="element.Observacions" id="observations" :disabled=tinyDisabled />
                 <button type="submit" class="btn btn-primary my-2" v-show="editMode">Desa els canvis</button>
                 <button type="button" class="btn btn-secondary mx-1" v-show="editMode"
@@ -73,7 +72,7 @@
                 </ul>
             </div>
         </div>
-        <div class="col">
+        <div class="col-12 col-md-3">
             <Historial :item="element.SerialNum"></Historial>
         </div>
     </section>
@@ -88,8 +87,8 @@
         <div class="col-12 col-lg">
             <h6>Incidències</h6>
             <EasyDataTable :headers="incidencies.headers" :items="incidencies.items" alternating buttons-pagination
-                :sort-by="incidencies.sortBy" :sort-type="incidencies.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="incidencies.loading">
+                :sort-by="incidencies.sortBy" :sort-type="incidencies.sortType" :theme-color="this.$store.state.themeColor"
+                :loading="incidencies.loading">
             </EasyDataTable>
             <button class="btn btn-primary mt-1" data-toggle="modal" data-target="#incidencia">Crear
                 incidència</button>
@@ -97,8 +96,8 @@
         <div class="col-12 col-lg">
             <h6>Equips assignats</h6>
             <EasyDataTable :headers="accessoris.headers" :items="accessoris.items" alternating buttons-pagination
-                :sort-by="accessoris.sortBy" :sort-type="accessoris.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="accessoris.loading">
+                :sort-by="accessoris.sortBy" :sort-type="accessoris.sortType" :theme-color="this.$store.state.themeColor"
+                :loading="accessoris.loading">
                 <template #item-operation="item">
                     <div class="operation-wrapper">
                         <i class="bi bi-trash" style="font-size: 1rem" @click="deleteAccessori(item)"></i>
@@ -130,10 +129,10 @@
                     <li v-for="resposta in respAssociar.message" :key="resposta"> {{ resposta }}</li>
                 </ul>
             </div>
-            <EasyDataTable :headers="nousAccessoris.headers" :items="nousAccessoris.items" alternating
-                buttons-pagination v-model:items-selected="nousAccessoris.itemsSelected"
-                :sort-by="nousAccessoris.sortBy" :sort-type="nousAccessoris.sortType"
-                :theme-color="this.$store.state.themeColor" :loading="nousAccessoris.loading" :rows-per-page=10>
+            <EasyDataTable :headers="nousAccessoris.headers" :items="nousAccessoris.items" alternating buttons-pagination
+                v-model:items-selected="nousAccessoris.itemsSelected" :sort-by="nousAccessoris.sortBy"
+                :sort-type="nousAccessoris.sortType" :theme-color="this.$store.state.themeColor"
+                :loading="nousAccessoris.loading" :rows-per-page=10>
             </EasyDataTable>
         </template>
         <template v-slot:footer>

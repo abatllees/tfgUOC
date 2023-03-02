@@ -7,8 +7,8 @@
         </div>
     </section>
     <h5>Material a la delegació</h5>
-    <EasyDataTable :headers="headers" :items="items" alternating buttons-pagination :sort-by="sortBy"
-        :sort-type="sortType" :theme-color="$store.state.themeColor" :loading="loading">
+    <EasyDataTable :headers="headers" :items="items" alternating buttons-pagination :sort-by="sortBy" :sort-type="sortType"
+        :theme-color="$store.state.themeColor" :loading="loading">
     </EasyDataTable>
     <button class="btn btn-secondary mt-3 float-right">Imprimeix</button>
 </template>
@@ -24,12 +24,12 @@ export default {
     data() {
         return {
             headers: [
-                { text: "Núm. Mag", value: "NumMag", sortable: true },
+                { text: "Estat", value: "status", sortable: true },
                 { text: "Tipus de material", value: "Model.Subcategory.SubcategoryName", sortable: true },
                 { text: "Model", value: "Model.ModelName", sortable: true },
+                { text: "Núm. Mag", value: "NumMag", sortable: true },
                 { text: "Número de sèrie", value: "SerialNum", sortable: true },
                 { text: "Data d'entrada", value: "DataEntrada", sortable: true },
-                { text: "Creat per", value: "user_created.first_name", sortable: true },
             ],
             items: [],
             sortBy: "",
@@ -39,11 +39,21 @@ export default {
         }
     },
     async beforeMount() {
-        this.delegacio = await this.getDelegacio()
-        this.items = await this.getElements()
-        this.loading = !this.loading
+        this.getData()
+
+    },
+    watch: {
+        '$route.params.id': async function () {
+            this.getData()
+        }
     },
     methods: {
+        getData: async function () {
+            this.loading = true
+            this.delegacio = await this.getDelegacio()
+            this.items = await this.getElements()
+            this.loading = false
+        },
         getDelegacio: async function () {
             let params = {
                 collection: "Delegacio",
@@ -53,13 +63,14 @@ export default {
                 sort: "",
                 limit: ""
             }
-            return await store.dispatch("getElement", params)
+            const Delegacio = await store.dispatch("getElement", params)
+            return Delegacio.data.data
         },
         getElements: async function () {
             let params = {
                 collection: "Element",
                 fields: "?fields=*.*.*",
-                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id + "&filter[status][_eq]=published",
+                filter: "&filter[DelegacioActual][_eq]=" + this.$route.params.id,
                 sort: "",
                 limit: ""
             }
@@ -69,6 +80,3 @@ export default {
     }
 }
 </script>
-<style>
-
-</style>
