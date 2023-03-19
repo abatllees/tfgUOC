@@ -215,18 +215,7 @@ export default createStore({
 					.catch(error => resolve(error.response))
 			})
 		},
-		refresh_token({ commit }, refresh_token) {
-			return new Promise((resolve, reject) => {
-				api.post("auth/refresh", {
-					refresh_token: refresh_token,
-					mode: "json"
-				})
-					.then(response => {
-						resolve(response)
-					})
-					.catch(error => reject(error.response))
-			})
-		},
+
 		//Comprova si hi ha algun error
 		async handlingError({ commit, dispatch, state }, response) {
 			const responseMessage = {

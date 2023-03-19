@@ -16,6 +16,7 @@ import NavBar from "@/components/NavBar.vue"
 //import FooterComponent from "@/components/FooterComponent.vue"
 import InstallPWA from "./components/InstallPWA.vue"
 
+import api from "@/api.js"
 import store from "@/store/index.js"
 
 
@@ -53,12 +54,21 @@ export default {
 	},
 	methods: {
 		createInterval: function () {
-			const intervalID = setInterval(this.refreshToken, 1000, this.logged_in);
+			const intervalID = setInterval(this.refreshToken, 5000, this.logged_in);
 			return intervalID
 		},
 		refreshToken: function () {
-			console.log("Hola")
-		}
+			return new Promise((resolve, reject) => {
+				api.post("auth/refresh", {
+					refresh_token: sessionStorage.getItem("refresh_token"),
+					mode: "json"
+				})
+					.then(response => {
+						resolve(response)
+					})
+					.catch(error => reject(error.response))
+			})
+		},
 
 	},
 	async beforeMount() {
