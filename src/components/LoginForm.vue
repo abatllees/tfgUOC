@@ -15,11 +15,36 @@
                 <li v-for="error in error" :key="error">{{ error.message }}</li>
             </ul>
         </div>
-        <button type="submit" class="btn btn-primary my-2">Inicia sessió</button>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">Has oblidat la
+            contrasenya?</button>
+        <button type="submit" class="btn btn-primary m-2 ">Inicia sessió</button>
     </form>
     <p class="text-center">
         <small class="mt-2">Tingueu en compte que la sessió caduca després de 15 minuts d'haver iniciat sessió</small>
     </p>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Recupera la contrasenya</h5>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group my-2">
+                        <label for="email_reset">Correu electrònic:</label>
+                        <input type="password" class="form-control" id="email_reset" v-model="email_reset">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="reset_password(email_reset)">Continuar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 import store from '@/store/index.js'
@@ -35,7 +60,8 @@ export default {
         return {
             email: "",
             password: "",
-            error: null
+            error: null,
+            email_reset: null
         }
     },
     methods: {
@@ -68,6 +94,21 @@ export default {
                         this.error = error.response.data.errors
                         reject(error.response)
 
+                    })
+            })
+        },
+        //Actualitza més d'un element
+        async reset_password(email) {
+            return new Promise((resolve) => {
+                api.patch("auth/password/request/", {
+                    "email": email
+                })
+                    .then(response => {
+                        resolve(response)
+                        console.log(response)
+                    })
+                    .catch(error => {
+                        resolve(error.response)
                     })
             })
         },

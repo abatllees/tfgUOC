@@ -16,6 +16,8 @@ import VueGtag from "vue-gtag";
 /* import font awesome icon component */
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
+import './registerServiceWorker'
+
 createApp(App)
     .use(store).use(router).use(LoadingPlugin).use(VueGtag, {
         config: {
