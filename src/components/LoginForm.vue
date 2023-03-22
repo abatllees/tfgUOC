@@ -36,7 +36,7 @@
                 <div class="modal-body">
                     <div class="form-group my-2">
                         <label for="email_reset">Correu electrònic:</label>
-                        <input type="password" class="form-control" id="email_reset" v-model="email_reset">
+                        <input type="email" class="form-control" id="email_reset" v-model="email_reset">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -72,7 +72,6 @@ export default {
                     password: this.password
                 })
                     .then(response => {
-                        resolve(response.data.data)
                         sessionStorage.setItem("access_token", response.data.data.access_token)
                         sessionStorage.setItem("expires", response.data.data.expires)
                         sessionStorage.setItem("refresh_token", response.data.data.refresh_token)
@@ -81,12 +80,13 @@ export default {
                             access_token: response.data.data.access_token,
                             refresh_token: response.data.data.refresh_token
                         })
-                        store.commit("SET_CallNewToken", true)
 
                         const expires = Date.now() + response.data.data.expires
                         console.log("EXPIRES", new Date(expires))
-                        sessionStorage.setItem("expires", new Date(expires))
                         store.dispatch("getUser")
+
+                        resolve(response.data.data)
+
 
                         router.push("/")
                     })
@@ -100,7 +100,7 @@ export default {
         //Actualitza més d'un element
         async reset_password(email) {
             return new Promise((resolve) => {
-                api.patch("auth/password/request/", {
+                api.post("auth/password/request", {
                     "email": email
                 })
                     .then(response => {

@@ -13,7 +13,6 @@
 <script>
 import router from "@/router"
 import NavBar from "@/components/NavBar.vue"
-//import FooterComponent from "@/components/FooterComponent.vue"
 import InstallPWA from "./components/InstallPWA.vue"
 
 import api from "@/api.js"
@@ -30,7 +29,6 @@ export default {
 	components: {
 		NavBar,
 		InstallPWA,
-		//FooterComponent
 	},
 	computed: {
 		logged_in() {
@@ -42,10 +40,9 @@ export default {
 	},
 	watch: {
 		call_new_token() {
-
 			if (this.call_new_token) {
 				this.refreshID = this.createInterval()
-				console.log("Logged in", this.refreshID)
+				console.log("Interval created", this.refreshID)
 			} else {
 				console.log("Interval to clear:", this.refreshID)
 				clearInterval(this.refreshID)

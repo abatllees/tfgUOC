@@ -2,9 +2,8 @@
 	<nav class="navbar navbar-expand-md bg-primary text-white">
 		<div class="container-fluid">
 			<router-link to="/" class="navbar-brand">Inventari MGM-CEI</router-link>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-				data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-				aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -65,8 +64,7 @@
 								</router-link>
 							</li>
 
-							<li class="text-center list-group-item list-group-item-primary"><router-link
-									to="ResultatCerca">
+							<li class="text-center list-group-item list-group-item-primary"><router-link to="ResultatCerca">
 									Amplia la cerca</router-link>
 							</li>
 
@@ -121,7 +119,6 @@ export default {
 							access_token: null,
 							refresh_token: null
 						})
-						store.commit("SET_CallNewToken", false)
 
 						router.replace("/login")
 					})

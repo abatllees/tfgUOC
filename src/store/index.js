@@ -13,6 +13,7 @@ export default createStore({
 		user: null,
 		access_token: null,
 		refresh_token: null,
+
 		call_new_token: false,
 
 
@@ -55,6 +56,12 @@ export default createStore({
 		},
 		getThemeColor: state => {
 			return state.themeColor
+		},
+		call_new_token: state => {
+			return state.call_new_token
+		},
+		getAccessToken: state => {
+			return state.access_token
 		}
 
 	},
@@ -75,20 +82,18 @@ export default createStore({
 		},
 		SET_Delegacio(state, payload) {
 			state.Delegacio = payload
-		},
-		SET_CallNewToken(state, payload) {
-			state.call_new_token = payload
 		}
 	},
 	actions: {
-		//Obté l'usuari logat i el desa a l'state i al sessionStorage
+		//Obté l'usuari logat i el desa a l'state
 		getUser({ commit }) {
-			return new Promise((resolve) => {
+			return new Promise((resolve, reject) => {
 				api.get("users/me")
 					.then(response => {
 						resolve(commit('SET_LOGGED_USER', response.data.data))
+
 					})
-					.catch(error => resolve(error.response))
+					.catch(error => reject(error))
 			})
 		},
 		//Obté el llistat d'usuaris
